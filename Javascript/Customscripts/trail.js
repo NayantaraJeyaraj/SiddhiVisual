@@ -5006,7 +5006,7 @@
     function getJoinConnectionDetails(element)
     {
         var clickedId =  element.id;
-
+        clickedId=clickedId.charAt(0);
         var from = clickedId+"-out";
         var from1 = clickedId;
         clickedId = clickedId+"-in";
@@ -5050,7 +5050,7 @@
         jfromStreamId1 = jfromStreamId1.charAt(0);
         jfromStreamId2 = jfromStreamId2.charAt(0);
         jintoStreamId = jintoStreamId.charAt(0);
-        getJoinFromStreamName(jfromStreamId1,jfromStreamId2,jintoStreamId,clickedId);
+        getJoinFromStreamName(jfromStreamId1,jfromStreamId2,jintoStreamId,element.id);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -5060,7 +5060,8 @@
 
     function getStateMachineConnectionDetails(element)
     {
-        var clickedId =  element.id;
+        var clickedId =  element.id.charAt(0);
+        var idTest=/^\d+-pc\d+$/.test(element.id);
 
         var from = clickedId+"-out";
         var from1 = clickedId;
@@ -5071,9 +5072,17 @@
 
         for(var i=0;i<con.length;i++)
         {
-            if(con[i].targetId==clickedId)
+            if(idTest==false)
             {
-                connectedStreamIdListArray[i] = con[i].sourceId;
+                if (con[i].targetId == clickedId) {
+                    connectedStreamIdListArray[i] = con[i].sourceId;
+                }
+            }
+            else
+            {
+                if (con[i].targetId == element.id) {
+                    connectedStreamIdListArray[i] = con[i].sourceId;
+                }
             }
 
             if(con[i].sourceId==from || con[i].sourceId==from1)
@@ -5244,8 +5253,6 @@
         var subPcId= elementID.substr(elementID.indexOf("c") + 1);
         var idTest=/^\d+-pc\d+$/.test(elementID);
         var fromStreamIndex1,fromStreamIndex2,intoStreamIndex;
-        elementID=elementID.charAt(0);
-
         var fromStreamNameListArray = [];
         var fromStreamIndexListArray = [];
 
@@ -5313,6 +5320,7 @@
             }
 
         }
+        elementID=elementID.charAt(0);
         //To retrieve the number of attributes
         getAttributes(selctedSt);
         //attrNumber gives the number of attributes
