@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html><head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+
+  
+  
+
+  
+  
+  
+
+  
+
+  <script type="text/javascript" src="a_data/jquery-1.js"></script>
+
+  
+
+  
+
+  
+    
+      <script type="text/javascript" src="a_data/jquery-ui.js"></script>
+    
+    
+      <link rel="stylesheet" type="text/css" href="a_data/jquery-ui.css">
+    
+  
+
+  
+    <link rel="stylesheet" type="text/css" href="a_data/result-light.css">
+  
+
+  
+    
+      <script type="text/javascript" src="a_data/jquery.js"></script>
+    
+  
+
+  <style type="text/css">
+    .window { 
+    
+}
+
+.window:hover{ 
+    cursor: pointer;
+}
+
+.menu { 
+    background-color: #EFEFEF;
+    border: 1px solid #346789;
+    box-shadow: 2px 2px 5px #AAAAAA;
+    color: black;
+    min-height: 3em;
+    position: absolute;
+    min-width: 5em;
+}
+
+.task { 
+    background-color: #EEEEEF;
+    border: 1px solid #346789;
+    border-radius: 0.5em;
+    box-shadow: 2px 2px 5px #AAAAAA;
+    color: black;
+    min-height: 3em;
+    position: absolute;
+    min-width: 5em;
+}
+
+.point{ 
+    background-color: #333333;
+    border: 1px solid #AAAAAA;
+    border-radius: 50%;
+    box-shadow: 2px 2px 5px #AAAAAA;
+    color: white;
+    min-width: 50px;
+    min-height: 30px;
+    font-size:11pt;
+    padding:10px;
+    position: absolute;
+    text-align: center;
+}
+
+.point:hover { 
+    box-shadow: 2px 2px 19px #AAAAAA;
+}
+
+.decision{
+    transform:rotate(-45deg);
+    overflow:hidden;
+    border: 1px solid #346789;
+    border-radius: 0.3em;
+    color: black;
+    backface-visibility: hidden;
+    background: none repeat scroll 0 0 #F4F4F4;
+    box-shadow: 0 0 0 1px #CCCCCC;
+    color: #000000;
+    display: block;
+    height: 80px;
+    overflow: hidden;
+    position: relative;
+    text-decoration: none;
+    width: 80px;
+}
+
+.decision .ctrl_container{
+    display: table-cell;
+    height: 80px;
+    padding: 0 10px;
+    text-align: center;
+    transform: rotate(45deg);
+    vertical-align: middle;
+    width: 80px;
+}
+
+.button {
+    text-align: center;
+    border: 1px solid;
+    margin: 5px;
+}
+
+.button:hover {
+    cursor: pointer;
+}
+
+.menu_button{
+    padding:5px;
+}
+
+.menu_button:hover{
+    background-color:#AAAAAA;
+    color:black;
+}
+
+.button_add{
+    background-color: #00CC00;
+    float:left;
+    border-radius: 50%;
+    box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
+    padding:2px;
+    height:25px;
+    width:25px;
+    color:grey;
+}
+
+.button_add:hover{
+    background-color: #00AA00;
+    color:black;
+}
+
+.button_remove{
+    font-size:9pt;
+    color:darkgrey;
+    border-radius: 30%;
+    box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
+    padding:5px;
+    min-width:10px;
+    max-width:15px;
+    text-align:center;
+}
+
+.task .button_remove{
+    float:right;
+}
+
+.decision .button_remove{
+    margin: auto auto;
+}
+
+.button_remove:hover{
+    background-color: darkred;
+    color:white;
+}
+
+.menu_button_container {
+    margin: 5px;
+}
+
+.ctrl_container{
+    margin:5px;
+    height:40px;
+}
+
+.details_container{
+    margin:5px;
+    min-height:40px;
+}
+
+.detail_label{
+    font-size: 9pt;
+    color:grey;
+}
+
+.detail_text{
+    width:80px;
+    font-size: 10pt;
+}
+
+._jsPlumb_connector, ._jsPlumb_startpoint{
+    cursor: pointer;
+}
+  </style>
+
+  <title></title>
+
+  
+    
+
+
+
+
+<script type="text/javascript">//<![CDATA[
+$(window).load(function(){
+var numberOfElements = 0;
+var htmlBase = 'drawingArea';
+jsPlumb.ready(function () {
+
+	//FIX DOM:
+	$(("#taskcontainer0"))[0].innerHTML = $(("#taskcontainer0"))[0].innerHTML;
+	$(("#decisioncontainer0"))[0].innerHTML = $(("#decisioncontainer0"))[0].innerHTML;
+
+	jsPlumb.draggable($(".window"));
+	
+	jsPlumb.importDefaults({
+		Endpoint : ["Dot", {radius:8}],
+		EndpointStyle : { fillStyle : "#4A6" },
+		HoverPaintStyle : {strokeStyle:"#42a62c", lineWidth:8 },
+		Connector:[ "Flowchart" ],
+		ConnectionOverlays : [
+			[ "Arrow", { 
+				location:1,
+				id:"arrow",
+				length:20,
+				foldback:0.4
+			} ]
+		]
+	});
+
+	var workflowConnectorStartpoint = {
+		isSource: true,
+		isTarget: false,
+		maxConnections: 1,				 
+		anchor:"BottomCenter"
+	};
+	
+	var workflowConnectorEndpoint = {
+		isSource: false,
+		isTarget: true,
+		maxConnections: -1,				 
+		anchor:"TopCenter",
+		paintStyle: { fillStyle: 'red' },
+		endpoint: ["Rectangle", {width:12, height:12}]
+	};
+	
+	jsPlumb.addEndpoint(
+		$('.startpoint'),
+		workflowConnectorStartpoint
+	);
+	
+	jsPlumb.addEndpoint(
+		$('.endpoint'),
+		workflowConnectorEndpoint
+	);
+					
+	$('#'+htmlBase).on("click", ".button_remove", function () {
+		var parentnode = $(this)[0].parentNode.parentNode;
+		jsPlumb.detachAllConnections(parentnode);
+		jsPlumb.removeAllEndpoints(parentnode);
+		$(parentnode).remove(); 
+	});
+	
+	$(".button_add_task").click(function () {
+		addTask();
+	});
+					
+	$(".button_add_decision").click(function () {
+		addDecision();
+	});
+	
+	$('#saveButton').click(function(){
+		saveFlowchart();
+	});
+	
+	$('#loadButton').click(function(){
+		loadFlowchart();
+	});
+});
+function addTask(id){
+	if(typeof id === "undefined"){
+		numberOfElements++;
+		id = "taskcontainer" + numberOfElements;
+	}
+	
+	$('<div class="window task node" id="' + id + '" data-nodetype="task" style="left:30px; top:30px;">').appendTo('#'+htmlBase).html($(("#taskcontainer0"))[0].innerHTML);
+						
+	var taskSourceConnectorEndpoint = {
+		isSource: true,
+		isTarget: false,
+		maxConnections: 1,
+		anchor:[ 0.5, 1, 0, 1, 0, 0 , "task_end endpoint"],
+	};
+
+	var taskTargetConnectorEndpoint = {
+		isSource: false,
+		isTarget: true,
+		maxConnections: 1,	
+		anchor:[ 0.5, 0, 0, -1, 0, 0 , "task_end endpoint"],
+		paintStyle: { fillStyle: 'red' },
+		endpoint: ["Rectangle", {width:12, height:12}]
+	};
+	
+	jsPlumb.addEndpoint(
+		$('#'+id),
+		taskSourceConnectorEndpoint
+	);
+	
+	jsPlumb.addEndpoint(
+		$('#'+id),
+		taskTargetConnectorEndpoint
+	);
+	
+	jsPlumb.draggable($('#' + id));
+	return id;
+}
+function addDecision(id){
+	if(typeof id === "undefined"){
+		numberOfElements++;
+		id = "decisioncontainer" + numberOfElements;
+	}
+	$('<div class="window decision node" id="' + id + '" data-nodetype="decision" style="left:30px; top:30px;">').appendTo('#'+htmlBase).html($(("#decisioncontainer0"))[0].innerHTML);
+					
+	var upperDecisionConnectorEndpoint = {
+		isSource: false,
+		isTarget: true,
+		maxConnections: 1,				 
+		anchor:[ 0.5, 0, 0, -1, 16, 0 , "upper_dec_end endpoint"],
+		paintStyle: { fillStyle: 'red' },
+		endpoint: ["Rectangle", {width:12, height:12}]
+	};
+	
+	var leftDecisionConnectorEndpoint = {
+		isSource: true,
+		isTarget: false,
+		maxConnections: 1,				 
+		anchor:[ 0, 0.5, 0, 1, 0, 16 , "left_dec_start startpoint"]
+	};
+	
+	var rightDecisionConnectorEndpoint = {
+		isSource: true,
+		isTarget: false,
+		maxConnections: 1,				 
+		anchor:[ 1.0, 0.5, 0, 1, 32, 16 , "right_dec_start startpoint"]
+	};
+	
+	jsPlumb.addEndpoint(
+		$('#'+id),
+		leftDecisionConnectorEndpoint
+	);
+	
+	jsPlumb.addEndpoint(
+		$('#'+id),
+		rightDecisionConnectorEndpoint
+	);
+	
+	jsPlumb.addEndpoint(
+		$('#'+id),
+		upperDecisionConnectorEndpoint
+	);
+	
+	jsPlumb.draggable($('#' + id));
+	return id;
+}
+function saveFlowchart(){
+	var nodes = []
+	$(".node").each(function (idx, elem) {
+	var $elem = $(elem);
+	var endpoints = jsPlumb.getEndpoints($elem.attr('id'));
+	console.log('endpoints of '+$elem.attr('id'));
+	console.log(endpoints);
+		nodes.push({
+			blockId: $elem.attr('id'),
+			nodetype: $elem.attr('data-nodetype'),
+			positionX: parseInt($elem.css("left"), 10),
+			positionY: parseInt($elem.css("top"), 10)
+		});
+	});
+	var connections = [];
+	$.each(jsPlumb.getConnections(), function (idx, connection) {
+		connections.push({
+			connectionId: connection.id,
+			pageSourceId: connection.sourceId,
+			pageTargetId: connection.targetId,
+      anchors: $.map(connection.endpoints, function(endpoint) {
+        return [[endpoint.anchor.x, 
+        endpoint.anchor.y, 
+        endpoint.anchor.getOrientation()[0], 
+        endpoint.anchor.getOrientation()[1],
+        endpoint.anchor.offsets[0],
+        endpoint.anchor.offsets[1]
+        ]];
+				
+      })
+		});
+	});
+	
+	var flowChart = {};
+	flowChart.nodes = nodes;
+	flowChart.connections = connections;
+	flowChart.numberOfElements = numberOfElements;
+	
+	var flowChartJson = JSON.stringify(flowChart);
+	//console.log(flowChartJson);
+	
+	$('#jsonOutput').val(flowChartJson);
+}
+function loadFlowchart(){
+	var flowChartJson = $('#jsonOutput').val();
+	var flowChart = JSON.parse(flowChartJson);
+	var nodes = flowChart.nodes;
+	$.each(nodes, function( index, elem ) {
+		if(elem.nodetype === 'startpoint'){
+			repositionElement('startpoint', elem.positionX, elem.positionY);
+		}else if(elem.nodetype === 'endpoint'){
+			repositionElement('endpoint', elem.positionX, elem.positionY);
+		}else if(elem.nodetype === 'task'){
+			var id = addTask(elem.blockId);
+			repositionElement(id, elem.positionX, elem.positionY);
+		}else if(elem.nodetype === 'decision'){
+			var id = addDecision(elem.blockId);
+			repositionElement(id, elem.positionX, elem.positionY);
+		}else{
+			
+		}
+	});
+							
+	var connections = flowChart.connections;
+	$.each(connections, function( index, elem ) {
+		 var connection1 = jsPlumb.connect({
+			source: elem.pageSourceId,
+			target: elem.pageTargetId,
+			anchors: elem.anchors
+			
+		});
+	});
+	
+	numberOfElements = flowChart.numberOfElements;
+}
+function repositionElement(id, posX, posY){
+	$('#'+id).css('left', posX);
+	$('#'+id).css('top', posY);
+	jsPlumb.repaint(id);
+}
+});//]]> 
+
+</script>
+
+  
+</head>
+
+<body style="cursor: auto;">
+  <div id="drawingArea" style="width:100%;min-height:500px;">
+    <div class="startpoint point window node ui-draggable _jsPlumb_endpoint_anchor_" style="left: 150px; top:20px" data-nodetype="startpoint" id="startpoint">Start</div>
+    
+    <div class="window menu ui-draggable" style="left: 600px" id="menuContainer">
+        <p style="text-align: center">Menu</p>
+        <div class="menu_button_container">
+            <div class="button_add_task button menu_button">Add Task</div>
+            <div class="button_add_decision button menu_button">Add Decision</div>
+            <button id="saveButton" class="button menu_button">Save</button>
+            <button id="loadButton" class="button menu_button">Load</button>
+        </div>
+    </div>
+    
+    <div class="window task ui-draggable" style="left: 120px; top:200px; display:none;" data-nodetype="task" id="taskcontainer0">
+        <div class="ctrl_container">
+            <div class="button_remove">x</div>
+        </div>
+        <div class="details_container">
+            <label class="detail_label">Name</label>
+            <input class="detail_text">
+        </div>
+    </div>
+    
+    <div class="window decision ui-draggable" style="left: 250px; top:300px; display:none;" data-nodetype="decision" id="decisioncontainer0">
+        <div class="ctrl_container">
+            <div class="button_remove">x</div>
+        </div>
+    </div>
+    
+    <div class="endpoint point window node ui-draggable _jsPlumb_endpoint_anchor_" style="left: 150px; top:400px" data-nodetype="endpoint" id="endpoint">End</div>
+<div elid="startpoint" dragid="jsPlumb_1_6" class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable endpointDrag _jsPlumb_endpoint_connected" style="position: absolute; height: 16px; width: 16px; left: 178px; top: 64px; visibility: visible;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable _jsPlumb_endpoint_connected" style="position: absolute; height: 12px; width: 12px; left: 180px; top: 394px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="12" width="12" style="position:absolute;left:0px;top:0px"><rect stroke="none" fill="red" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" height="12" width="12"></rect></svg></div><svg class="_jsPlumb_connector " xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="none" height="356" width="24" style="position:absolute;left:174px;top:56px"><path stroke-width="8" stroke="#456" fill="none" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="visibleStroke" transform="translate(12,16)" d="M 0 -4 L 0 34 M 0 26 L 0 168 M 0 160 L 0 302 M 0 298 L 0 328 "></path><path transform="translate(12,16)" fill="#456" stroke="#456" class="" d="M0,328 L10.000000000000002,308 L4.898587196589413e-16,320 L-9.999999999999998,308 L0,328" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="all"></path></svg><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 178px; top: 64px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 178px; top: 392px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><svg class="_jsPlumb_connector " xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="none" height="356" width="24" style="position:absolute;left:174px;top:56px"><path stroke-width="8" stroke="#456" fill="none" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="visibleStroke" transform="translate(12,16)" d="M 0 -4 L 0 34 M 0 26 L 0 168 M 0 160 L 0 302 M 0 298 L 0 328 "></path><path transform="translate(12,16)" fill="#456" stroke="#456" class="" d="M0,328 L10.000000000000002,308 L4.898587196589413e-16,320 L-9.999999999999998,308 L0,328" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="all"></path></svg><div class="window task node _jsPlumb_endpoint_anchor_task_end endpoint ui-draggable _jsPlumb_endpoint_anchor_" id="taskcontainer2" data-nodetype="task" style="left: 352px; top: 152px;">
+        <div class="ctrl_container">
+            <div class="button_remove">x</div>
+        </div>
+        <div class="details_container">
+            <label class="detail_label">Name</label>
+            <input class="detail_text">
+        </div>
+    </div><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_task_end endpoint ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 418.5px; top: 241px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_task_end endpoint ui-draggable ui-droppable" style="position: absolute; height: 12px; width: 12px; left: 420.5px; top: 146px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="12" width="12" style="position:absolute;left:0px;top:0px"><rect stroke="none" fill="red" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" height="12" width="12"></rect></svg></div><div class="window decision node _jsPlumb_endpoint_anchor_left_dec_start startpoint _jsPlumb_endpoint_anchor_right_dec_start _jsPlumb_endpoint_anchor_upper_dec_end endpoint ui-draggable _jsPlumb_endpoint_anchor_" id="decisioncontainer3" data-nodetype="decision" style="left: 273px; top: 47px;">
+        <div class="ctrl_container">
+            <div class="button_remove">x</div>
+        </div>
+    </div><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_left_dec_start startpoint ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 256.017px; top: 87.0167px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_right_dec_start startpoint ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 370.017px; top: 87.0167px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_upper_dec_end endpoint ui-draggable ui-droppable" style="position: absolute; height: 12px; width: 12px; left: 315.017px; top: 32.0167px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="12" width="12" style="position:absolute;left:0px;top:0px"><rect stroke="none" fill="red" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" height="12" width="12"></rect></svg></div><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 178px; top: 64px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 178px; top: 392px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><svg class="_jsPlumb_connector " xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="none" height="356" width="24" style="position:absolute;left:174px;top:56px"><path stroke-width="8" stroke="#456" fill="none" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="visibleStroke" transform="translate(12,16)" d="M 0 -4 L 0 34 M 0 26 L 0 168 M 0 160 L 0 302 M 0 298 L 0 328 "></path><path transform="translate(12,16)" fill="#456" stroke="#456" class="" d="M0,328 L10.000000000000002,308 L4.898587196589413e-16,320 L-9.999999999999998,308 L0,328" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="all"></path></svg><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 178px; top: 64px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 178px; top: 392px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><svg class="_jsPlumb_connector " xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="none" height="356" width="24" style="position:absolute;left:174px;top:56px"><path stroke-width="8" stroke="#456" fill="none" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="visibleStroke" transform="translate(12,16)" d="M 0 -4 L 0 34 M 0 26 L 0 168 M 0 160 L 0 302 M 0 298 L 0 328 "></path><path transform="translate(12,16)" fill="#456" stroke="#456" class="" d="M0,328 L10.000000000000002,308 L4.898587196589413e-16,320 L-9.999999999999998,308 L0,328" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="all"></path></svg><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 418.5px; top: 241px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 178px; top: 392px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><svg class="_jsPlumb_connector " xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="none" height="179" width="272.5" style="position:absolute;left:170px;top:233px"><path stroke-width="8" stroke="#456" fill="none" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="visibleStroke" transform="translate(16,16)" d="M 240.5 -4 L 240.5 34 M 240.5 26 L 240.5 79.5 M 244.5 75.5 L -4 75.5 M 0 71.5 L 0 125 M 0 121 L 0 151 "></path><path transform="translate(16,16)" fill="#456" stroke="#456" class="" d="M0,151 L10.000000000000002,131 L4.898587196589413e-16,143 L-9.999999999999998,131 L0,151" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="all"></path></svg><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 370.017px; top: 87.0167px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 418.5px; top: 144px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><svg class="_jsPlumb_connector " xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="none" height="84.98333740234375" width="80.48333740234375" style="position:absolute;left:362.01666259765625px;top:79.01666259765625px"><path stroke-width="8" stroke="#456" fill="none" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="visibleStroke" transform="translate(16,16)" d="M 0 -4 L 0 32.491668701171875 M -4 28.491668701171875 L 28.241668701171875 28.491668701171875 M 20.241668701171875 28.491668701171875 L 52.48333740234375 28.491668701171875 M 48.48333740234375 28.491668701171875 L 48.48333740234375 56.98333740234375 "></path><path transform="translate(16,16)" fill="#456" stroke="#456" class="" d="M48.48333740234375,56.98333740234375 L58.48333740234375,36.98333740234375 L48.48333740234375,48.98333740234375 L38.48333740234375,36.98333740234375 L48.48333740234375,56.98333740234375" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="all"></path></svg><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 256.017px; top: 87.0167px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><div class="_jsPlumb_endpoint  _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable" style="position: absolute; height: 16px; width: 16px; left: 178px; top: 392px;"><svg xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="all" height="16" width="16" style="position:absolute;left:0px;top:0px"><circle stroke="none" fill="#4A6" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" r="8" cy="8" cx="8"></circle></svg></div><svg class="_jsPlumb_connector " xmlns="http://www.w3.org/1999/xhtml" version="1.1" position="absolute" pointer-events="none" height="332.98333740234375" width="110.01666259765625" style="position:absolute;left:170px;top:79.01666259765625px"><path stroke-width="8" stroke="#456" fill="none" style="" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="visibleStroke" transform="translate(16,16)" d="M 78.01666259765625 -4 L 78.01666259765625 34 M 78.01666259765625 26 L 78.01666259765625 156.49166870117188 M 82.01666259765625 152.49166870117188 L -4 152.49166870117188 M 0 148.49166870117188 L 0 278.98333740234375 M 0 274.98333740234375 L 0 304.98333740234375 "></path><path transform="translate(16,16)" fill="#456" stroke="#456" class="" d="M0,304.98333740234375 L10.000000000000002,284.98333740234375 L4.898587196589413e-16,296.98333740234375 L-9.999999999999998,284.98333740234375 L0,304.98333740234375" xmlns="http://www.w3.org/1999/xhtml" version="1.1" pointer-events="all"></path></svg></div>
+<textarea id="jsonOutput" style="width:100%;height:100px;">{"nodes":[{"blockId":"startpoint","nodetype":"startpoint","positionX":150,"positionY":20},{"blockId":"endpoint","nodetype":"endpoint","positionX":150,"positionY":400},{"blockId":"taskcontainer2","nodetype":"task","positionX":352,"positionY":152},{"blockId":"decisioncontainer3","nodetype":"decision","positionX":273,"positionY":47}],"connections":[{"connectionId":"con_8","pageSourceId":"startpoint","pageTargetId":"endpoint","anchors":[[0.5,1,0,1,0,0],[0.5,0,0,-1,0,0]]},{"connectionId":"con_29","pageSourceId":"startpoint","pageTargetId":"endpoint","anchors":[[0.5,1,0,1,0,0],[0.5,0,0,-1,0,0]]},{"connectionId":"con_42","pageSourceId":"taskcontainer2","pageTargetId":"endpoint","anchors":[[0.5,1,0,1,0,0],[0.5,0,0,-1,0,0]]},{"connectionId":"con_52","pageSourceId":"decisioncontainer3","pageTargetId":"taskcontainer2","anchors":[[1,0.5,0,1,32,16],[0.5,0,0,-1,0,0]]},{"connectionId":"con_56","pageSourceId":"decisioncontainer3","pageTargetId":"endpoint","anchors":[[0,0.5,0,1,0,16],[0.5,0,0,-1,0,0]]}],"numberOfElements":3}</textarea>
+  
+
+
+
+
+</body></html>

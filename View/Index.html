@@ -1,0 +1,133 @@
+<html>
+<head>
+
+    <script src="../Javascript/Helperscripts/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="../Javascript/Helperscripts/jquery-ui.min.js"></script>
+    <script src="../Javascript/Helperscripts/jquery.jsPlumb-1.4.1-all-min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jsPlumb/1.4.1/jquery.jsPlumb-1.4.1-all-min.js"></script>
+    <script src="../Javascript/Helperscripts/jquery.jsPlumb-1.6.4-min.js"></script>
+    <script src="../Javascript/Customscripts/trail.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="../CSS/restartstyle.css">
+    <link rel="stylesheet" type="text/css" href="../CSS/propertybox.css">
+
+
+</head>
+
+<body>
+
+<section>
+
+    <!--Toolbox for Elements-->
+
+    <h1 class="toolbox-title">Toolbox</h1>
+    <div style="float: left;" class="toolbox" id="toolbox">
+        <table>
+            <tr>
+                <td>
+                    <h4>Stream</h4>
+                </td>
+                <td>
+                    <div class="stream" id="cId"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Window</h4>
+                </td>
+                <td>
+                    <div class="wstream" id="wiId"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Simple Query</h4>
+                </td>
+                <td>
+                    <div class="squery" id="rId"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Windows Query</h4>
+                </td>
+                <td>
+                    <div class="wquery" id="wId"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Join Query</h4>
+                </td>
+                <td>
+                    <div class="joquery" id="jId"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>State-machine Query</h4>
+                </td>
+                <td>
+                    <div class="stquery" id="stId"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Partition</h4>
+                </td>
+                <td>
+                    <div class="partition" id="pId"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!--Container/Canvas-->
+
+    <div id="container" class="container">
+    </div>
+
+    <div style="float: left" class="property" id="propertypane">
+        <h1 class="toolbox-titlex" id="toolbox-titlex" name="toolbox-titlex">Properties</h1>
+        <form class="panel"  id="lot" name="lot">
+        </form>
+    </div>
+
+    <!--Json Output and Manipulation Panel-->
+
+    <div>
+        <table style="margin-top: 780px">
+            <tr>
+                <td>
+                    <label>Json Output:</label>
+                </td>
+                <td>
+                    <textarea id="jsonOutput" style="width:1108px;height:100px;"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>File name to save as:</label>
+                </td>
+                <td>
+                    <input id="inputFileNameToSaveAs"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="saveButton" class="myButton">Save</button>
+                </td>
+                <td>
+                    <button id="exportButton" class="myButton">Export</button>
+                </td>
+                <td>
+                    <button id="loadButton" class="myButton" style="margin-left: -900px">Load</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</section>
+</body>
+
+</html>

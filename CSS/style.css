@@ -1,0 +1,219 @@
+@import url(http://fonts.googleapis.com/css?family=Montserrat);
+
+* {
+    font-family: 'Montserrat', sans-serif;
+}
+#container {
+    position: relative;
+    resize: both;
+    border: 1px solid #aaaaaa;
+    width: 1000px;;
+    float: left;
+    margin: -60px auto 20px 10px;
+    height: 800px;
+    overflow-x: scroll;
+    overflow-y: scroll;
+}
+
+/*
+    Toolbox Elements
+*/
+
+.stream {
+    border-style: outset;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    width: 130px;
+    height: 72px;
+    background-color: lightpink;
+}
+
+.wstream {
+    border-style: outset;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    width: 130px;
+    height: 72px;
+    background-color: honeydew;
+}
+
+.squery {
+    border-style: outset;
+    text-align: center;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    width: 130px;
+    height: 72px;
+    background-color: powderblue;
+
+}
+.wquery {
+    border-style: outset;
+    text-align: center;
+    margin-left: 10px;
+    width: 130px;
+    margin-bottom: 20px;
+    height: 72px;
+    background-color: lightgreen;
+
+}
+.joquery {
+    border-style: outset;
+    text-align: center;
+    margin-left: 10px;
+    width: 130px;
+    margin-bottom: 20px;
+    height: 72px;
+    background-color: burlywood;
+
+}
+.stquery {
+    border-style: outset;
+    text-align: center;
+    margin-left: 10px;
+    width: 130px;
+    margin-bottom: 20px;
+    height: 72px;
+    background-color: peachpuff;
+
+}
+
+/*
+    Dropped Elements corresponding to their toolbox elements
+*/
+
+.streamdrop {
+    border: 1px solid gray;
+    text-align: center;
+    width: 130px;
+    height: 72px;
+    background-color:  lightpink;
+    position: fixed;
+}
+
+.wstreamdrop {
+    border: 1px solid gray;
+    text-align: center;
+    width: 130px;
+    height: 72px;
+    background-color:  honeydew;
+    position: fixed;
+}
+
+.squerydrop {
+    border: 1px solid gray;
+    text-align: center;
+    width: 130px;
+    height: 72px;
+    background-color:  powderblue;
+    position: fixed;
+}
+
+.wquerydrop {
+    border: 1px solid gray;
+    text-align: center;
+    width: 130px;
+    height: 72px;
+    background-color:  lightgreen;
+    position: absolute;
+}
+
+.joquerydrop {
+    border: 1px solid gray;
+    text-align: center;
+    width: 130px;
+    height: 72px;
+    background-color:  burlywood;
+    position: absolute;
+}
+
+.stquerydrop {
+    border: 1px solid gray;
+    text-align: center;
+    width: 130px;
+    height: 72px;
+    background-color:  peachpuff;
+    position: absolute;
+}
+
+/*
+    Element Divisions added as clases when the element is appended
+*/
+
+.task {
+    font-size: 12px;
+    text-align: right;
+    font-weight: 200;
+    border: 1px solid black;
+    background-color: #ddddff;
+}
+
+.title {
+    padding: 10px;
+    cursor: move;
+}
+.connection {
+    font-size:10px;
+    text-align: center;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    margin-left: -10px;
+    margin-top: 0px;
+    border: 1px solid black;
+    background-color: white;
+}
+
+.pro:hover {
+    box-shadow: 2px 2px 19px #444;
+    -o-box-shadow: 2px 2px 19px #444;
+    -webkit-box-shadow: 2px 2px 19px #444;
+    -moz-box-shadow: 2px 2px 19px #444;
+    opacity:0.6;
+    filter:alpha(opacity=60);
+}
+
+#container1 {
+    width:100%;
+    margin:0 auto;
+    background-color:transparent;
+    position:relative;
+    clear:both;
+}
+
+section .col {
+    width: 180px;
+    height: 650px;
+    background-color: whitesmoke;
+    border-style: outset;
+    float:left;
+}
+
+.propertyBox {
+    float: right;
+    width: 150px;
+    background-color: lightgrey;
+    height: 650px;
+}
+
+.prop{
+    width: 18px;
+    height:18px;
+    border:outset;
+
+}
+
+.input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+
+.br-div{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
