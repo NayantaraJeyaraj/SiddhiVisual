@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="../CSS/propertybox.css">
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="../assets/css/taro/pe-icon-7-stroke.css" rel="stylesheet" />
 
 </head>
 
@@ -24,7 +25,6 @@
     <h1 class="toolbox-title">Toolbox</h1>
     <div style="float: left;" class="toolbox" id="toolbox">
         <table>
-            <div class="form-group">
             <tr>
                 <td>
                     <label class="col-md-4 control-label">Stream</label>
@@ -33,7 +33,6 @@
                     <div class="stream" id="cId"></div>
                 </td>
             </tr>
-            </div>
             <tr>
                 <td>
                     <label class="col-md-4 control-label">Window</label>
@@ -52,7 +51,7 @@
             </tr>
             <tr>
                 <td>
-                    <label class="col-md-4 control-label">Windows Query</label>
+                    <label class="col-md-4 control-label">Window Query</label>
                 </td>
                 <td>
                     <div class="wquery" id="wId"></div>
@@ -68,7 +67,7 @@
             </tr>
             <tr>
                 <td>
-                    <label class="col-md-4 control-label">State-machine Query</label>
+                    <label class="col-md-4 control-label">State Machine Query</label>
                 </td>
                 <td>
                     <div class="stquery" id="stId"></div>
@@ -98,9 +97,6 @@
 
     <!--Json Output and Manipulation Panel-->
 
-
-
-
     <div>
         <table style="margin-top: 780px">
             <tr>
@@ -108,7 +104,7 @@
                     <label>Json Output:</label>
                 </td>
                 <td>
-                    <textarea id="jsonOutput" style="width:1108px;height:100px;"></textarea>
+                    <textarea id="jsonOutput" style="width:1108px;height:100px" class="form-control input-md"></textarea>
                 </td>
             </tr>
             <tr>
@@ -116,7 +112,7 @@
                     <label>File name to save as:</label>
                 </td>
                 <td>
-                    <input id="inputFileNameToSaveAs"/>
+                    <input id="inputFileNameToSaveAs" class="form-control input-md"/>
                 </td>
             </tr>
             <tr>
