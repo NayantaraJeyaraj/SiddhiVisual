@@ -5006,6 +5006,7 @@
     function getJoinConnectionDetails(element)
     {
         var clickedId =  element.id;
+
         var from = clickedId+"-out";
         var from1 = clickedId;
         clickedId = clickedId+"-in";
@@ -5128,53 +5129,72 @@
     {
         var fromNameSt1,fromNameSt2, intoNameSt, streamType, selctedSt;
         var elementID=clickedId.charAt(0);
+
+        var elClickedId= clickedId.substr(0, clickedId.indexOf('-'));
+        var subPcId= clickedId.substr(clickedId.indexOf("c") + 1);
+        var idTest=/^\d+-pc\d+$/.test(clickedId);
         var fromStreamIndex1,fromStreamIndex2,intoStreamIndex;
-        var attrList = [];
+
         for(var x = 0; x<100; x++)
         {
-            //To retrieve the first 'from Stream' Name
-            if(createdImportStreamArray[x][0]==jfromStreamId1)
+            if(idTest==false)
             {
-                fromNameSt1 = createdImportStreamArray[x][2];
-                fromStreamIndex1 =x;
+                //To retrieve the first 'from Stream' Name
+                if (createdImportStreamArray[x][0] == jfromStreamId1) {
+                    fromNameSt1 = createdImportStreamArray[x][2];
+                    fromStreamIndex1 = x;
+                }
+                else if (createdExportStreamArray[x][0] == jfromStreamId1) {
+                    fromNameSt1 = createdExportStreamArray[x][2];
+                    fromStreamIndex1 = x;
+                }
+                else if (createdDefinedStreamArray[x][0] == jfromStreamId1) {
+                    fromNameSt1 = createdDefinedStreamArray[x][1];
+                    fromStreamIndex1 = x;
+                }
+                else if (createdWindowStreamArray[x][0] == jfromStreamId1) {
+                    fromNameSt1 = createdWindowStreamArray[x][1];
+                    fromStreamIndex1 = x;
+                }
             }
-            else if(createdExportStreamArray[x][0]==jfromStreamId1)
+            else
             {
-                fromNameSt1 = createdExportStreamArray[x][2];
-                fromStreamIndex1 =x;
-            }
-            else if(createdDefinedStreamArray[x][0]==jfromStreamId1)
-            {
-                fromNameSt1 = createdDefinedStreamArray[x][1];
-                fromStreamIndex1 =x;
-            }
-            else if(createdWindowStreamArray[x][0]==jfromStreamId1)
-            {
-                fromNameSt1 = createdWindowStreamArray[x][1];
-                fromStreamIndex1 =x;
+                if (createdPartitionConditionArray[x][0]==elClickedId && createdPartitionConditionArray[x][5]==subPcId)
+                {
+                    fromNameSt1 = createdPartitionConditionArray[x][1];
+                    fromStreamIndex1 = x;
+                }
             }
 
-            //To retrieve the first 'from Stream' Name
-            if(createdImportStreamArray[x][0]==jfromStreamId2)
+            if(idTest==false)
             {
-                fromNameSt2 = createdImportStreamArray[x][2];
-                fromStreamIndex2 =x;
+                //To retrieve the first 'from Stream' Name
+                if (createdImportStreamArray[x][0] == jfromStreamId2) {
+                    fromNameSt2 = createdImportStreamArray[x][2];
+                    fromStreamIndex2 = x;
+                }
+                else if (createdExportStreamArray[x][0] == jfromStreamId2) {
+                    fromNameSt2 = createdExportStreamArray[x][2];
+                    fromStreamIndex2 = x;
+                }
+                else if (createdDefinedStreamArray[x][0] == jfromStreamId2) {
+                    fromNameSt2 = createdDefinedStreamArray[x][1];
+                    fromStreamIndex2 = x;
+                }
+                else if (createdWindowStreamArray[x][0] == jfromStreamId2) {
+                    fromNameSt2 = createdWindowStreamArray[x][1];
+                    fromStreamIndex2 = x;
+                }
             }
-            else if(createdExportStreamArray[x][0]==jfromStreamId2)
+            else
             {
-                fromNameSt2 = createdExportStreamArray[x][2];
-                fromStreamIndex2 =x;
+                if (createdPartitionConditionArray[x][0]==elClickedId && createdPartitionConditionArray[x][5]==subPcId)
+                {
+                    fromNameSt2 = createdPartitionConditionArray[x][1];
+                    fromStreamIndex2 = x;
+                }
             }
-            else if(createdDefinedStreamArray[x][0]==jfromStreamId2)
-            {
-                fromNameSt2 = createdDefinedStreamArray[x][1];
-                fromStreamIndex2 =x;
-            }
-            else if(createdWindowStreamArray[x][0]==jfromStreamId2)
-            {
-                fromNameSt2 = createdWindowStreamArray[x][1];
-                fromStreamIndex2 =x;
-            }
+
 
             //To retrieve the 'into Stream' Name
             if(createdImportStreamArray[x][0]==jintoStreamId)
