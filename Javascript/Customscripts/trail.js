@@ -1960,9 +1960,6 @@
 
     function dropCompleteElement(newAgent,i,e,kind,ptop,left)
     {
-
-        //Todo Anchor point appears only upon button click
-
         $(droppedElement).draggable({containment: "container"});
 
         var finalElement =  newAgent;
@@ -5436,7 +5433,7 @@
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     var stqueryDiv, stqueryDivState, stMultipleStateDiv, stqueryDivLogic, stqueryDivAttrMap;
 
     function createStateMachineQueryForm(elementID, fromStreamNameListArray, intoNameSt, fromStreamIndexListArray, intoStreamIndex, streamType, defAttrNum)
