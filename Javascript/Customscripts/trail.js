@@ -1392,7 +1392,7 @@
     /**
      *
      * @function Create the combo box
-     * @description Stores the Predifined array data onto individual arrays
+     * @description Stores the Predefined array data onto individual arrays
      *
      */
 
