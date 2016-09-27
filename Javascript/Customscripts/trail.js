@@ -146,33 +146,46 @@
             //Todo Canvas - all elements of the same type- .svg, html5
             //Todo Angular schema forms for the form designs
             drop: function (e, ui) {
+
+                //mouseTop, mouseLeft - To retrieve the mouse position at the time of drop so that the elements can be placed at the same spot
                 var mouseTop = e.pageX;
                 var mouseLeft = e.pageY;
 
                 var dropElem = ui.draggable.attr('class');
+                //Clone the element in the toolbox in order to drop the clone on the canvas
                 droppedElement = ui.helper.clone();
+                //To further manipulate the jsplumb element, remove the jquery UI clone helper as jsPlumb doesn't support it
                 ui.helper.remove();
                 $(droppedElement).removeAttr("class");
                 $(droppedElement).draggable({containment: "container"});
+                //Repaint to reposition all the elements that are on the canvas after the drop/addition of a new element on the canvas
                 jsPlumb.repaint(ui.helper);
 
+                //If the dropped Element is a Stream then->
                 if (dropElem == "stream ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('streamdrop');
                     $("#container").addClass("disabledbutton");
                     $("#toolbox").addClass("disabledbutton");
-                    
+
+                    /*Create a stream form where the user can set whether the dropped element is an Import/Export/defined stream
+                      Element is not dropped on the canvas before the data is entered in the form as the user shouldn't be able to manipulate the
+                    Stream element before it has been initialized*/
+
                     createStreamForm(newAgent, i, e,mouseTop,mouseLeft);
                     i++;
                     finalElementCount=i;
                 }
 
+                //If the dropped Element is a Window(not window query) then->
                 else if (dropElem == "wstream ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('wstreamdrop');
+                    //Drop the element instantly since its attributes will be set only when the user requires it
                     dropWindowStream(newAgent, i, e,mouseTop,mouseLeft);
                     i++;
                     finalElementCount=i;
                 }
 
+                //If the dropped Element is a Simple Query(Pass-through, filter) then->
                 else if (dropElem == "squery ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('squerydrop');
                     droptype = "squerydrop";
@@ -181,6 +194,7 @@
                     finalElementCount=i;
                 }
 
+                //If the dropped Element is a Window Query then->
                 else if (dropElem == "wquery ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('wquerydrop');
                     droptype = "wquerydrop";
@@ -189,6 +203,7 @@
                     finalElementCount=i;
                 }
 
+                //If the dropped Element is a Join Query then->
                 else if (dropElem == "joquery ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('joquerydrop');
                     droptype = "joquerydrop";
@@ -197,6 +212,7 @@
                     finalElementCount=i;
                 }
 
+                //If the dropped Element is a State machine Query(Pattern and Sequence) then->
                 else if(dropElem == "stquery ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('stquerydrop');
                     droptype = "stquerydrop";
@@ -205,16 +221,28 @@
                     finalElementCount=i;
                 }
 
+                //If the dropped Element is a Partition then->
                 else{
                     var newAgent = $('<div>').attr('id', i).addClass('partitiondrop');
                     droptype = "partitiondrop";
                     $(droppedElement).draggable({containment: "container"});
                     dropPartition(newAgent,i,e,droptype);
+                    //Todo: Issues in dragging + resizing a partition at the same time.
+                    /*Hence, for now, the partition can be dragged and dropped onto the canvas but after that it cannot be dragged within the canvas.
+                     It can only be resized and the other elements need to be repositioned as desired
+                     Solutions:
+                            1. JsPlumb library's Drag + Resize
+                            2. Interact.js Drag + Resize
+                      But, these implement either one functionality and not both, simultaneously*/
+
                     // resizePartition(newAgent);
                     // enableDrag(newAgent);
                     i++;
                     finalElementCount=i;
                 }
+                /*
+                @function Delete an element detaching all its connections when the 'boxclose' icon is clicked
+                 */
                 newAgent.on('click', '.boxclose', function (e) {
 
                     jsPlumb.detachAllConnections(newAgent.attr('id'));
@@ -239,14 +267,17 @@
             }
         });
 
+        //Display the model in Json format in the text area
         $('#saveButton').click(function(){
             saveFlowchart();
         });
 
+        //Export the generated Json output as a text file for storage purposes
         $('#exportButton').click(function(){
             exportFlowChart();
         });
 
+        //Recreate the model based on the Json output provided
         $('#loadButton').click(function(e){
             loadFlowchart(e);
         });
@@ -255,17 +286,26 @@
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * @function Save info on all the elements dropped on the canvas
+     * @function Display info of all the elements dropped on the canvas
      * @jsonOutput
-     * @object To store the element related info inside the finalArray
      */
 
     function saveFlowchart(){
+        //node - Array that stores the element related information as objects
         var node = [];
+        //matches - Array that stores element IDs of elements that exist on te canvas
         var matches = [];
+        /*attrArray - Array that stores the attributes of an element
+          Since there maybe multiple attributes for a single element, they need to be related to the element.
+          Hence, attrArray is an array within the 'node' array's 'attributes' object*/
         var attrArray = [];
+        /*states - Array that stores the different states of a state machine query element
+         Since there maybe multiple states for a single element, they need to be related to the element.
+         Hence, states is an array within the 'node' array's 'states' object*/
         var states = [];
+        //totalElementCount - Number of elements at the time of saving the json for the model
         var totalElementCount=0;
+        //Get the element IDs of all the elements existing on the canvas
         var searchEles = document.getElementById("container").children;
         for(var i = 0; i < searchEles.length; i++)
         {
@@ -279,14 +319,20 @@
                 var dropElem = $("#" + searchEles[i].id).attr('class');
     
                 var position = $element.position();
-    
+
                 var elId = parseInt(idOfEl);
-    
+
+                //If the element is a stream
                 if (dropElem == "streamdrop ui-draggable")
                 {
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
-    
+
+                    /*Check whether the stream is an import, export or a defined stream by checking whether the ID exists in the
+                      createdImportStreamArray, createdExportStreamArray or the createdDefinedStreamArray
+                      Loop through 100 as these arrays have been initialized to hold 100 records where non-existent element records may be null.
+                      Since these were intermediate storage points, objects werent created and arrays were used instead.
+                     */
                     for (var count = 0; count < 100; count++) {
                         if (createdImportStreamArray[count][0] == idOfEl) {
                             node.push({
@@ -325,9 +371,8 @@
                             var attrNum = createdDefinedStreamArray[count][4];
 
                             for (var f = 0; f < attrNum-1; f++) {
-                                // console.log(count);
-                                // console.log(f);
 
+                                //Loop through the attribute list to retrieve them and store them in attrArray
                                 attrArray.push({
                                         attributeName: createdDefinedStreamArray[count][2][f][0],
                                         attributeType: createdDefinedStreamArray[count][2][f][1]
@@ -360,15 +405,14 @@
                     position.right = position.left + $element.width();
                     var fromStream = createdWindowStreamArray[idOfEl][2];
 
-
                     var attrNum = createdDefinedStreamArray[idOfEl][4];
                     for (var f = 0; f < attrNum; f++) {
-                        //Todo PUSH TO NODE WHILE LOOPING- Uncaught TypeError:Cannot read property '0' of undefined
                         attrArray.push({
                                         attrname: createdWindowStreamArray[idOfEl][4][f][0],
                                         attrType: createdWindowStreamArray[idOfEl][4][f][1]
                                });
                     }
+                    //If the window is defined by the user and not derived from a stream
                     if(fromStream == null)
                     {
                         node.push({
@@ -386,6 +430,8 @@
                             attributes: attrArray
                         });
                     }
+
+                    //If the window is derived from a stream
                     else
                     {
                         node.push({
@@ -2189,8 +2235,6 @@
      * @description Drops the Partition
      *
      */
-    
-    //Todo Drag partition while it is still resizable
 
     function resizePartition(newAgent)
     {
