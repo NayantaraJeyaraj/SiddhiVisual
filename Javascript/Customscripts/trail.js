@@ -142,9 +142,12 @@
              * @helper clone
              */
 
-            //Todo js-tooling-framework
-            //Todo Canvas - all elements of the same type- .svg, html5
-            //Todo Angular schema forms for the form designs
+            //Todo Suggested @codeReview 
+                // 1. js-tooling-framework  
+                // 2. All elements on the canvas should be of the same type(.svg/html5)    
+                // 3. Angular schema forms for the form designs    
+                // 4. Disable a stream as soon as it's dropped
+            
             drop: function (e, ui) {
 
                 //mouseTop, mouseLeft - To retrieve the mouse position at the time of drop so that the elements can be placed at the same spot
@@ -451,7 +454,7 @@
                         });
                     }
                 }
-    
+
                 else if (dropElem=="squerydrop ui-draggable")
                 {
                     position.bottom = position.top + $element.height();
@@ -641,7 +644,8 @@
             }
 
         }
-    
+
+        //connections - Array that stores all connection related info. This is handled by jsPlumb's 'getConnections() method and not done manually
         var connections = [];
         $.each(jsPlumb.getConnections(), function (idx, connection) {
             connections.push({
@@ -664,7 +668,7 @@
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * @description Method to export the generated json output/ svg
+     * @description Method to export and download the generated json output as a text file
      */
 
     function exportFlowChart()
@@ -698,8 +702,7 @@
      * @function Method to load a previously saved model
      * @description After saving the elements even if they are deleted or distorted, loading the model will restore the last saved version
      */
-
-    //TODO stream disables as soon as it's dropped
+    
     function loadFlowchart(e) {
         
         var flowChartJson = $('#jsonOutput').val();
@@ -2718,7 +2721,6 @@
 
     function partitiontypeGenerate(streamType,selctedSt,fromStreamIndex,defAttrNum, type)
     {
-        //Todo Partition Condition Anchors need to be bigger in size
         var attributes = [];
         alert("fromStreamIndex:"+fromStreamIndex);
 
@@ -5434,9 +5436,7 @@
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    //Todo highlight individual state definition divisions rather than clustering them all in one big div
-
+    
     var stqueryDiv, stqueryDivState, stMultipleStateDiv, stqueryDivLogic, stqueryDivAttrMap;
 
     function createStateMachineQueryForm(elementID, fromStreamNameListArray, intoNameSt, fromStreamIndexListArray, intoStreamIndex, streamType, defAttrNum)
@@ -5533,6 +5533,8 @@
         stfilterInput= document.createElement("input");
         stfilterInput.id = "stfilterInput0";
         stfilterInput.className = "stfilterInput0";
+        
+        hr = document.createElement('hr');
 
         stqueryAddState=document.createElement("button");
         stqueryAddState.type="button";
@@ -5663,6 +5665,7 @@
         tr5.appendChild(td8);
 
         stMultipleStateDiv.appendChild(tableStateQueryForm);
+        stMultipleStateDiv.appendChild(hr);
         stqueryDivState.appendChild(stMultipleStateDiv);
 
         ///////////////////////////////////////////////////////////////////////
@@ -5869,6 +5872,8 @@
         StreamDropdownx.id = StreamDropdownstr+numberOfStateDivs;
         StreamDropdownx.className = StreamDropdownstr+numberOfStateDivs;
 
+        var hr= document.createElement("hr");
+
         streamcomboId = StreamCombostr +numberOfStateDivs;
 
         var StreamOptions = '<select id='+streamcomboId+'>', StreamOpt = StreamGenerator(fromStreamNameListArray), i;
@@ -5925,6 +5930,7 @@
         tableStateQueryForm.appendChild(tr4);
 
         stMultipleStateDiv.appendChild(tableStateQueryForm);
+        stMultipleStateDiv.appendChild(hr);
         stqueryDivState.appendChild(stMultipleStateDiv);
     }
 
