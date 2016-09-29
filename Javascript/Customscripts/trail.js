@@ -195,14 +195,7 @@
                 //If the dropped Element is a Stream then->
                 else if (dropElem == "nElem ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('nElemdrop');
-                    $("#container").addClass("disabledbutton");
-                    $("#toolbox").addClass("disabledbutton");
-
-                    /*Create a stream form where the user can set whether the dropped element is an Import/Export/defined stream
-                     Element is not dropped on the canvas before the data is entered in the form as the user shouldn't be able to manipulate the
-                     Stream element before it has been initialized*/
-
-                    createStreamForm(newAgent, i, e,mouseTop,mouseLeft);
+                    dropQuery(newAgent, i, e,droptype,mouseTop,mouseLeft,"Empty Query");
                     i++;
                     finalElementCount=i;
                 }
@@ -2106,7 +2099,7 @@
         textnode.id = i+"-textnodeInitial";
         node.appendChild(textnode);
 
-        if(droptype=="squerydrop")
+        if(droptype=="squerydrop" || droptype=="nElemdrop")
         {
             var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-prop')));
             var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
