@@ -149,7 +149,7 @@
                 // 4. Disable a stream as soon as it's dropped
             
             drop: function (e, ui) {
-
+                
                 //mouseTop, mouseLeft - To retrieve the mouse position at the time of drop so that the elements can be placed at the same spot
                 var mouseTop = e.pageX;
                 var mouseLeft = e.pageY;
@@ -183,7 +183,7 @@
                 else if (dropElem == "wstream ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('wstreamdrop');
                     //Drop the element instantly since its attributes will be set only when the user requires it
-                    dropWindowStream(newAgent, i, e,mouseTop,mouseLeft);
+                    dropWindowStream(newAgent, i, e,mouseTop,mouseLeft,"Window");
                     i++;
                     finalElementCount=i;
                 }
@@ -768,16 +768,16 @@
                         createdDefinedStreamArray[id][4]= tblerows;
                         createdDefinedStreamArray[id][2]=new Array(tblerows);
 
-                        
 
+                    
                         for (r = 1; r < tblerows+1; r++)
                         {
-                            var attributes = elem.attributes.attributeName;
-                            for(var c=0; c<1;c++)
+                            var attributes = elem.attributes;
+                            for(var c=0; c<attributes.length;c++)
                             {
                                 createdDefinedStreamArray[id][2][r-1]= new Array(2);
-                                createdDefinedStreamArray[id][2][r-1][0]=attributes;
-                                createdDefinedStreamArray[id][2][r-1][1]=attrTp;
+                                createdDefinedStreamArray[id][2][r-1][0]=attributes.attrArray[c].attributeName;
+                                createdDefinedStreamArray[id][2][r-1][1]=attributes.attrArray[c].attributeType;
                             }
                         }
                         
@@ -821,7 +821,7 @@
                     // }
 
                     var newAgent = $('<div>').attr('id', id).addClass('wstreamdrop');
-                    dropWindowStream(newAgent, id, e,top,left);
+                    dropWindowStream(newAgent, id, e,top,left,asName);
                 }
                     
                 else if(classes == "squerydrop ui-draggable")
@@ -1938,14 +1938,8 @@
         createdDefinedStreamArray[i][3]="Defined Stream";
         createdDefinedStreamArray[i][4]= tblerows;
         
-        console.log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
-        console.log(createdDefinedStreamArray);
-
-
-
-        
-
-
+        // console.log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+        // console.log(createdDefinedStreamArray);
 
         var prop = $('<a onclick="doclickDefine(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-prop'));
         var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (i+'vis'));
@@ -2023,12 +2017,12 @@
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function dropWindowStream(newAgent, i, e,topP,left)
+    function dropWindowStream(newAgent, i, e,topP,left,asName)
     {
         var windowNode = document.createElement("div");
         windowNode.id = i+"-windowNode";
         windowNode.className = "windowNameNode";
-        var windowTextnode = document.createTextNode("Window");
+        var windowTextnode = document.createTextNode(asName);
         windowTextnode.id = i+"-windowTextnode";
         windowNode.appendChild(windowTextnode);
 
@@ -2323,16 +2317,16 @@
         });
 
         $('#container').append(finalElement);
-
+        $(finalElement).resizable({
+            resize: function (e, ui) {
+                jsPlumb.repaint(ui.helper);
+            }
+        });
         // jsPlumb.draggable(finalElement, {
         //     containment: 'parent'
         // });
 
-        $(finalElement).resizable({
-            resize: function (event, ui) {
-                jsPlumb.repaint(ui.helper);
-            }
-        });
+        
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
