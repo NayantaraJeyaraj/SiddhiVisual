@@ -70,6 +70,19 @@
         });
 
         /**
+         * @function draggable method for the 'simple query' tool
+         * @helper clone
+         */
+
+        $(".nElem").draggable
+        ({
+            helper: 'clone',
+            cursor: 'pointer',
+            tolerance: 'fit',
+            revert: true
+        });
+
+        /**
          * @function draggable method for the 'windows query' tool
          * @helper clone
          */
