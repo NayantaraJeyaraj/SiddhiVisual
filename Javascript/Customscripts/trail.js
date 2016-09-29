@@ -145,7 +145,7 @@
 
         $("#container").droppable
         ({
-            accept: '.stream, .wstream , .squery, .wquery, .joquery, .stquery , .partition',
+            accept: '.stream, .wstream , .squery, .nElem, .wquery, .joquery, .stquery , .partition',
             containment: 'container',
 
             /**
@@ -186,6 +186,21 @@
                     /*Create a stream form where the user can set whether the dropped element is an Import/Export/defined stream
                       Element is not dropped on the canvas before the data is entered in the form as the user shouldn't be able to manipulate the
                     Stream element before it has been initialized*/
+
+                    createStreamForm(newAgent, i, e,mouseTop,mouseLeft);
+                    i++;
+                    finalElementCount=i;
+                }
+
+                //If the dropped Element is a Stream then->
+                else if (dropElem == "nElem ui-draggable") {
+                    var newAgent = $('<div>').attr('id', i).addClass('nElemdrop');
+                    $("#container").addClass("disabledbutton");
+                    $("#toolbox").addClass("disabledbutton");
+
+                    /*Create a stream form where the user can set whether the dropped element is an Import/Export/defined stream
+                     Element is not dropped on the canvas before the data is entered in the form as the user shouldn't be able to manipulate the
+                     Stream element before it has been initialized*/
 
                     createStreamForm(newAgent, i, e,mouseTop,mouseLeft);
                     i++;
