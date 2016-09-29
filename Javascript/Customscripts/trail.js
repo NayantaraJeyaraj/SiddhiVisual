@@ -192,14 +192,6 @@
                     finalElementCount=i;
                 }
 
-                //If the dropped Element is a Stream then->
-                else if (dropElem == "nElem ui-draggable") {
-                    var newAgent = $('<div>').attr('id', i).addClass('nElemdrop');
-                    dropQuery(newAgent, i, e,droptype,mouseTop,mouseLeft,"Empty Query");
-                    i++;
-                    finalElementCount=i;
-                }
-
                 //If the dropped Element is a Window(not window query) then->
                 else if (dropElem == "wstream ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('wstreamdrop');
@@ -209,6 +201,14 @@
                     finalElementCount=i;
                 }
 
+                //If the dropped Element is a pass-through then->
+                else if (dropElem == "nElem ui-draggable") {
+                    var newAgent = $('<div>').attr('id', i).addClass('nElemdrop');
+                    dropQuery(newAgent, i, e,droptype,mouseTop,mouseLeft,"Empty Query");
+                    i++;
+                    finalElementCount=i;
+                }
+                    
                 //If the dropped Element is a Simple Query(Pass-through, filter) then->
                 else if (dropElem == "squery ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('squerydrop');
@@ -2099,21 +2099,14 @@
         textnode.id = i+"-textnodeInitial";
         node.appendChild(textnode);
 
-        if(droptype=="squerydrop" || droptype=="nElemdrop")
+        if(droptype=="squerydrop" || droptype=="wquerydrop")
         {
             var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-prop')));
             var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
             newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
             dropCompleteQueryElement(newAgent,i,e,topP,left);
         }
-
-        else if(droptype=="wquerydrop")
-        {
-            var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a> ').attr('id', (i+('-prop')));
-            var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
-            newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
-            dropCompleteQueryElement(newAgent,i,e,topP,left);
-        }
+            
         else if(droptype=="joquerydrop")
         {
             var prop = $('<a onclick="getJoinConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a> ').attr('id', (i+('-prop')));
