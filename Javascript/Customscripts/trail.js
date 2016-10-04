@@ -204,6 +204,7 @@
                 //If the dropped Element is a pass-through then->
                 else if (dropElem == "nElem ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('nElemdrop');
+                    droptype = "nElemdrop";
                     dropQuery(newAgent, i, e,droptype,mouseTop,mouseLeft,"Empty Query");
                     i++;
                     finalElementCount=i;
@@ -2099,7 +2100,7 @@
         textnode.id = i+"-textnodeInitial";
         node.appendChild(textnode);
 
-        if(droptype=="squerydrop" || droptype=="wquerydrop")
+        if(droptype=="squerydrop" || droptype=="wquerydrop" || droptype=="nElemdrop")
         {
             var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-prop')));
             var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
@@ -2114,7 +2115,7 @@
             newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
             dropCompleteJoinQueryElement(newAgent,i,e,topP,left);
         }
-        else
+        else 
         {
             var prop = $('<a onclick="getStateMachineConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a> ').attr('id', (i+('-prop')));
             var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
@@ -3509,7 +3510,7 @@
         getAttributes(selctedSt);
         //attrNumber gives the number of attributes
         //streamInd gives the index of the selected stream
-        if(droptype=="squerydrop")
+        if(droptype=="squerydrop" || droptype=="nElemdrop")
         {
             createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum);
         }
