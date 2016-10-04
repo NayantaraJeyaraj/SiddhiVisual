@@ -22,7 +22,7 @@
      */
 
     jsPlumb.ready(function() {
-
+        
         // jsPlumb.Defaults.Container = $("#container");
         jsPlumb.Defaults.PaintStyle = {strokeStyle: "palevioletred", lineWidth: 2, dashstyle: '3 3'}; //Connector line style
         jsPlumb.Defaults.EndpointStyle = {radius: 7, fillStyle: "palevioletred"}; //Connector endpoint/anchor style
@@ -513,6 +513,46 @@
                         {
                             index:createdSimpleQueryArray[elId][5][0],
                             name:createdSimpleQueryArray[elId][5][1]
+                        }
+                    });
+                }
+
+                else if (dropElem=="nElemdrop ui-draggable")
+                {
+                    position.bottom = position.top + $element.height();
+                    position.right = position.left + $element.width();
+                    // var arrlen = createdSimpleQueryArray[elId][4].length;
+
+                    for(var ct=0;ct<createdSimpleQueryArray[elId][4].length;ct++)
+                    {
+                        attrArray.push({
+                            attrName:createdSimpleQueryArray[elId][4][ct][0],
+                            attrType:createdSimpleQueryArray[elId][4][ct][1]
+                        });
+                    }
+
+                    node.push({
+                        id:idOfEl,
+                        class:dropElem,
+                        position:
+                        {
+                            top: position.top,
+                            left: position.left,
+                            bottom: position.bottom,
+                            right: position.right
+                        },
+                        name:createdPassThroughQueryArray[elId][1],
+                        fromStream:
+                        {
+                            index:createdPassThroughQueryArray[elId][2][0],
+                            name:createdPassThroughQueryArray[elId][2][1]
+                        },
+                        filter:createdPassThroughQueryArray[elId][3],
+                        attributes: attrArray,
+                        intoStream:
+                        {
+                            index:createdPassThroughQueryArray[elId][5][0],
+                            name:createdPassThroughQueryArray[elId][5][1]
                         }
                     });
                 }
@@ -1189,6 +1229,19 @@
             if(y==2 || y==5)
             {
                 createdSimpleQueryArray[x][y]= [];
+            }
+        }
+    }
+
+    //Array that stores Pass-through query related info
+    var createdPassThroughQueryArray = [];
+    for(var x = 0; x < 100; x++){
+        createdPassThroughQueryArray[x] = [];
+        for(var y = 0; y < 6; y++){
+            createdPassThroughQueryArray[x][y] = null;
+            if(y==2 || y==5)
+            {
+                createdPassThroughQueryArray[x][y]= [];
             }
         }
     }
@@ -3424,9 +3477,6 @@
         DefWindowAttrDiv.appendChild(tableWindowStreamForm);
         DefwindowStreamDiv.appendChild(DefWindowAttrDiv);
 
-
-
-
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3510,9 +3560,13 @@
         getAttributes(selctedSt);
         //attrNumber gives the number of attributes
         //streamInd gives the index of the selected stream
-        if(droptype=="squerydrop" || droptype=="nElemdrop")
+        if(droptype=="squerydrop") 
         {
-            createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum);
+            createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum, "Filter Query");
+        }
+        else if (droptype=="nElemdrop") 
+        {
+            createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum, "Pass-through Query");
         }
         else if(droptype=="wquerydrop")
         {
@@ -3753,7 +3807,7 @@
 
 
 
-    function createQueryForm(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum)
+    function createQueryForm(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum,formHeading)
     {
         $("#container").addClass("disabledbutton");
         $("#toolbox").addClass("disabledbutton");
@@ -3769,7 +3823,7 @@
         simpleQueryLabel= document.createElement("label");
         simpleQueryLabel.className="simpleQueryLabel";
         simpleQueryLabel.id="simpleQueryLabel";
-        simpleQueryLabel.innerHTML='Simple Query';
+        simpleQueryLabel.innerHTML=formHeading;
 
         simpleQueryName= document.createElement("label");
         simpleQueryName.id ="simpleQueryName";
@@ -3790,15 +3844,18 @@
         fromStream.className = "fromStream";
         fromStream.innerHTML = fromNameSt;
 
-        filterLabel= document.createElement("label");
-        filterLabel.className="filterLabel";
-        filterLabel.id="filterLabel";
-        filterLabel.innerHTML = "Filter: ";
+        if(droptype=="squerydrop")
+        {
+            filterLabel = document.createElement("label");
+            filterLabel.className = "filterLabel";
+            filterLabel.id = "filterLabel";
+            filterLabel.innerHTML = "Filter: ";
 
-        filterInput= document.createElement("input");
-        filterInput.id = "filterInput";
-        filterInput.className = "filterInput";
-        filterInput.innerHTML = "";
+            filterInput = document.createElement("input");
+            filterInput.id = "filterInput";
+            filterInput.className = "filterInput";
+            filterInput.innerHTML = "";
+        }
 
         selectLabel= document.createElement("label");
         selectLabel.className="selectLabel";
@@ -3821,7 +3878,14 @@
         queryFomButton.id="queryFormButton";
         queryFomButton.innerHTML="Submit Query";
         queryFomButton.onclick = function () {
-            getSimpleQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
+            if(droptype=="squerydrop")
+            {
+                getSimpleQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
+            }
+            else if(droptype=="nElemdrop")
+            {
+                getPassThroughQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
+            }
         };
 
         queryFomCloseButton=document.createElement("button");
@@ -3862,16 +3926,18 @@
 
         //Row 3
 
-        var tr3 = document.createElement('tr');
-        var td5=document.createElement('td');
-        var td6=document.createElement('td');
+        if(droptype=="squerydrop") 
+        {
+            var tr3 = document.createElement('tr');
+            var td5 = document.createElement('td');
+            var td6 = document.createElement('td');
 
-        td5.appendChild(filterLabel);
-        tr3.appendChild(td5);
-        td6.appendChild(filterInput);
-        tr3.appendChild(td6);
-        tableQueryForm.appendChild(tr3);
-
+            td5.appendChild(filterLabel);
+            tr3.appendChild(td5);
+            td6.appendChild(filterInput);
+            tr3.appendChild(td6);
+            tableQueryForm.appendChild(tr3);
+        }
         //Row 4
 
         var tr4 = document.createElement('tr');
@@ -4077,6 +4143,63 @@
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function getPassThroughQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum)
+    {
+        var queryName = document.getElementById("queryNameInput").value;
+        //var Simplefilter = document.getElementById("filterInput").value;
+        createdPassThroughQueryArray[elementID][0] = elementID;
+        createdPassThroughQueryArray[elementID][1] = queryName;
+        createdPassThroughQueryArray[elementID][2][0] = fromStreamIndex;
+        createdPassThroughQueryArray[elementID][2][1] = fromNameSt;
+        createdPassThroughQueryArray[elementID][3] = "No filter Defined";
+        createdPassThroughQueryArray[elementID][4] = [];
+        var loopCount=0;
+        if(streamType=="import" || streamType=="export")
+        {
+            loopCount=attrNumber;
+        }
+        else
+        {
+            loopCount=defAttrNum;
+        }
+        for(var r=0; r<loopCount;r++)
+        {
+            createdPassThroughQueryArray[elementID][4][r] =[];
+            var inputTextBoxID = "input"+r;
+            var attrLabelID = "label" + r;
+            createdPassThroughQueryArray[elementID][4][r][0] = document.getElementById(inputTextBoxID).value;
+            createdPassThroughQueryArray[elementID][4][r][1] = document.getElementById(attrLabelID).innerHTML;
+        }
+
+        createdPassThroughQueryArray[elementID][5][0] = intoStreamIndex;
+        createdPassThroughQueryArray[elementID][5][1] = intoNameSt;
+
+        var elIdforNode =  elementID+"-nodeInitial";
+        document.getElementById(elIdforNode).remove();
+
+
+        var node = document.createElement("div");
+        node.id = elementID+"-nodeInitial";
+        var textnode = document.createTextNode(queryName);
+        node.appendChild(textnode);
+        document.getElementById(elementID).appendChild(node);
+
+        $("#container").removeClass("disabledbutton");
+        $("#toolbox").removeClass("disabledbutton");
+
+        var myNode = document.getElementById("lot");
+        var fc = myNode.firstChild;
+
+        while( fc ) {
+            myNode.removeChild( fc );
+            fc = myNode.firstChild;
+        }
+
+        $(".toolbox-titlex").hide();
+        $(".panel").hide();
+    }
+
 
     function closeForm()
     {
