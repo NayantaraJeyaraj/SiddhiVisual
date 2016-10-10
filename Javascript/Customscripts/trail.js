@@ -5174,14 +5174,7 @@
         //alert(createdJoinQueryArray[elementID][0]+"-"+createdJoinQueryArray[elementID][1]+"\nLeft\n"+createdJoinQueryArray[elementID][2][0]+"\n"+createdJoinQueryArray[elementID][2][1]+"\n"+createdJoinQueryArray[elementID][2][2]+"\n"+createdJoinQueryArray[elementID][2][3]+"\nRight\n"+createdJoinQueryArray[elementID][3][0]+"\n"+createdJoinQueryArray[elementID][3][1]+"\n"+createdJoinQueryArray[elementID][3][2]+"\n"+createdJoinQueryArray[elementID][3][3]+"\n"+createdJoinQueryArray[elementID][5]);
 
         var elIdforNode =  elementID+"-nodeInitial";
-        document.getElementById(elIdforNode).remove();
-
-
-        var node = document.createElement("div");
-        node.id = elementID+"-nodeInitial";
-        var textnode = document.createTextNode(queryName);
-        node.appendChild(textnode);
-        document.getElementById(elementID).appendChild(node);
+        document.getElementById(elIdforNode).innerHTML = queryName;
 
         $("#container").removeClass("disabledbutton");
         $("#toolbox").removeClass("disabledbutton");
@@ -6165,14 +6158,7 @@
         //alert(createdJoinQueryArray[elementID][0]+"-"+createdJoinQueryArray[elementID][1]+"\nLeft\n"+createdJoinQueryArray[elementID][2][0]+"\n"+createdJoinQueryArray[elementID][2][1]+"\n"+createdJoinQueryArray[elementID][2][2]+"\n"+createdJoinQueryArray[elementID][2][3]+"\nRight\n"+createdJoinQueryArray[elementID][3][0]+"\n"+createdJoinQueryArray[elementID][3][1]+"\n"+createdJoinQueryArray[elementID][3][2]+"\n"+createdJoinQueryArray[elementID][3][3]+"\n"+createdJoinQueryArray[elementID][5]);
 
         var elIdforNode =  elementID+"-nodeInitial";
-        document.getElementById(elIdforNode).remove();
-
-
-        var node = document.createElement("div");
-        node.id = elementID+"-nodeInitial";
-        var textnode = document.createTextNode(queryName);
-        node.appendChild(textnode);
-        document.getElementById(elementID).appendChild(node);
+        document.getElementById(elIdforNode).innerHTML = queryName;
 
         $("#container").removeClass("disabledbutton");
         $("#toolbox").removeClass("disabledbutton");
