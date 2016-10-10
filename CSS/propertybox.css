@@ -500,6 +500,7 @@ td {
     float: right;
     margin-right: 10px;
     margin-left: 10px;
+    margin-top: -5px;
 }
 
 .connectorStream{
