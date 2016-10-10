@@ -5358,7 +5358,10 @@
     {
         var fromNameSt1,fromNameSt2, intoNameSt, streamType, selctedSt;
         var elementID=clickedId.charAt(0);
-
+        
+        /*The following checks whether the source/ the from stream is a Parttion condition
+          This is done by pattern matching of the source's/from Stream's ID
+         */
         var elClickedId= clickedId.substr(0, clickedId.indexOf('-'));
         var subPcId= clickedId.substr(clickedId.indexOf("c") + 1);
         var idTest=/^\d+-pc\d+$/.test(clickedId);
@@ -5366,9 +5369,14 @@
 
         for(var x = 0; x<100; x++)
         {
+            /*
+                If the pattern doesn't match, the from stream is not a Partition Condition anchor
+                So can traverse through the Import, Export, Defined and Window Streams
+                @function : To retrieve the first 'from Stream' Name (Left/Right)
+             */
             if(idTest==false)
             {
-                //To retrieve the first 'from Stream' Name
+                
                 if (createdImportStreamArray[x][0] == jfromStreamId1) {
                     fromNameSt1 = createdImportStreamArray[x][2];
                     fromStreamIndex1 = x;
@@ -5386,18 +5394,27 @@
                     fromStreamIndex1 = x;
                 }
             }
+                
+            /*
+                If the source is a Partition condition anchor, can retrieve the Stream/Window's name that it is associated with
+                or inherits from
+             */
+                
             else
             {
-                if (createdPartitionConditionArray[x][0]==elClickedId && createdPartitionConditionArray[x][5]==subPcId)
+                if (createdPartitionConditionArray[x][0]==jfromStreamId1 && createdPartitionConditionArray[x][5]==subPcId)
                 {
                     fromNameSt1 = createdPartitionConditionArray[x][1];
                     fromStreamIndex1 = x;
                 }
             }
+            
+            /*
+                @function : To retrieve the second 'from Stream' Name (Left/Right)
+            */
 
             if(idTest==false)
             {
-                //To retrieve the first 'from Stream' Name
                 if (createdImportStreamArray[x][0] == jfromStreamId2) {
                     fromNameSt2 = createdImportStreamArray[x][2];
                     fromStreamIndex2 = x;
@@ -5417,7 +5434,7 @@
             }
             else
             {
-                if (createdPartitionConditionArray[x][0]==elClickedId && createdPartitionConditionArray[x][5]==subPcId)
+                if (createdPartitionConditionArray[x][0]==jfromStreamId2 && createdPartitionConditionArray[x][5]==subPcId)
                 {
                     fromNameSt2 = createdPartitionConditionArray[x][1];
                     fromStreamIndex2 = x;
