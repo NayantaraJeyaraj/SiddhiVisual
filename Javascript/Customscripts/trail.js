@@ -1372,94 +1372,90 @@
      */
     function doclick(sender)
     {
+        var arr = sender.id.match(/-prop(.*)/);
+        if (arr != null) {
+            droptype = arr[1];
+        }
+
         var clickedelemId=sender.id;
         clickedelemId = clickedelemId.charAt(0);
-        var selectedStreamim = createdImportStreamArray[clickedelemId-1][1];
-        var streamnam = createdImportStreamArray[clickedelemId-1][2];
-        var streamDefget;
-        if (selectedStreamim == "Stream1")
+        
+        if(droptype == "ImportStream")
         {
-            streamDefget=streamDef[0][3];
-            var res = streamDefget.replace("Stream1", streamnam);
-        }
-        else if(selectedStreamim=="Stream2")
-        {
-            streamDefget=streamDef[1][3];
-            var res = streamDefget.replace("Stream2", streamnam);
-        }
-        else
-        {
-            streamDefget=streamDef[2][3];
-            var res = streamDefget.replace("Stream3", streamnam);
-        }
-        alert("Stream ID: "+clickedelemId+"\nSelected stream: "+ createdImportStreamArray[clickedelemId-1][1]+"\nStream Type: Import Stream\nStream Definition: "+res);
-        clickedId= clickedelemId;
-        //createStreamForm();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function doclickExp(sender)
-    {
-        var clickedelemId=sender.id;
-        clickedelemId = clickedelemId.charAt(0);
-        var selectedStreamim = createdExportStreamArray[clickedelemId-1][1];
-        var streamnam = createdExportStreamArray[clickedelemId-1][2];
-        var streamDefy;
-        if (selectedStreamim == "Stream1")
-        {
-            streamDefy=streamDef[0][3];
-            var res = streamDefy.replace("Stream1", streamnam);
-        }
-        else if(selectedStreamim=="Stream2")
-        {
-            streamDefy=streamDef[1][3];
-            var res = streamDefy.replace("Stream2", streamnam);
-        }
-        else
-        {
-            streamDefy=streamDef[2][3];
-            var res = streamDefy.replace("Stream3", streamnam);
-        }
-        alert("Stream ID: "+clickedelemId+"\nSelected stream: "+ createdExportStreamArray[clickedelemId-1][1]+"\nStream Type: Export Stream\nStream Definition: "+res);
-        clickedId= clickedelemId;
-        //createStreamForm();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function doclickDefine(sender)
-    {
-        var clickedelemId=sender.id;
-        clickedelemId = clickedelemId.charAt(0);
-        var streamname = createdDefinedStreamArray[clickedelemId][1];
-        var attrnum = createdDefinedStreamArray[clickedelemId][4];
-        var tblerows = (table.rows.length)-1;
-        var res = "define stream "+ streamname + "(";
-
-        // createdDefinedStreamArray[i][2][r-1][0]=attrNm;
-        // createdDefinedStreamArray[i][2][r-1][1]=attrTp;
-
-        for( var t=0; t<tblerows; t++)
-        {
-            for (var y=0; y<2 ;y++)
+            var selectedStreamim = createdImportStreamArray[clickedelemId-1][1];
+            var streamnam = createdImportStreamArray[clickedelemId-1][2];
+            var streamDefget;
+            if (selectedStreamim == "Stream1")
             {
-                res=res+ createdDefinedStreamArray[clickedelemId][2][t][y] + " ";
+                streamDefget=streamDef[0][3];
+                var res = streamDefget.replace("Stream1", streamnam);
             }
-            if(t==tblerows-1)
+            else if(selectedStreamim=="Stream2")
             {
-                res=res+"";
+                streamDefget=streamDef[1][3];
+                var res = streamDefget.replace("Stream2", streamnam);
             }
             else
             {
-                res=res+", ";
+                streamDefget=streamDef[2][3];
+                var res = streamDefget.replace("Stream3", streamnam);
             }
-
+            alert("Stream ID: "+clickedelemId+"\nSelected stream: "+ createdImportStreamArray[clickedelemId-1][1]+"\nStream Type: Import Stream\nStream Definition: "+res);
+            clickedId= clickedelemId;
         }
-        res=res+")";
-        alert("Stream ID: "+clickedelemId+"\nCreated stream: "+ streamname+"\nStream Type: Defined Stream\nStream Definition: "+res);
-        clickedId= clickedelemId;
-        //createStreamForm();
+        else if (droptype == "ExportStream")
+        {
+            var selectedStreamim = createdExportStreamArray[clickedelemId-1][1];
+            var streamnam = createdExportStreamArray[clickedelemId-1][2];
+            var streamDefy;
+            if (selectedStreamim == "Stream1")
+            {
+                streamDefy=streamDef[0][3];
+                var res = streamDefy.replace("Stream1", streamnam);
+            }
+            else if(selectedStreamim=="Stream2")
+            {
+                streamDefy=streamDef[1][3];
+                var res = streamDefy.replace("Stream2", streamnam);
+            }
+            else
+            {
+                streamDefy=streamDef[2][3];
+                var res = streamDefy.replace("Stream3", streamnam);
+            }
+            alert("Stream ID: "+clickedelemId+"\nSelected stream: "+ createdExportStreamArray[clickedelemId-1][1]+"\nStream Type: Export Stream\nStream Definition: "+res);
+            clickedId= clickedelemId;
+        }
+        else if(droptype == "DefinedStream")
+        {
+            var streamname = createdDefinedStreamArray[clickedelemId][1];
+            var attrnum = createdDefinedStreamArray[clickedelemId][4];
+            var tblerows = (table.rows.length)-1;
+            var res = "define stream "+ streamname + "(";
+
+            // createdDefinedStreamArray[i][2][r-1][0]=attrNm;
+            // createdDefinedStreamArray[i][2][r-1][1]=attrTp;
+
+            for( var t=0; t<tblerows; t++)
+            {
+                for (var y=0; y<2 ;y++)
+                {
+                    res=res+ createdDefinedStreamArray[clickedelemId][2][t][y] + " ";
+                }
+                if(t==tblerows-1)
+                {
+                    res=res+"";
+                }
+                else
+                {
+                    res=res+", ";
+                }
+
+            }
+            res=res+")";
+            alert("Stream ID: "+clickedelemId+"\nCreated stream: "+ streamname+"\nStream Type: Defined Stream\nStream Definition: "+res);
+            clickedId= clickedelemId;
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1938,6 +1934,10 @@
 
     function storeImportStreamInfo(newAgent,i,e,kind,mouseTop,mouseLeft)
     {
+        var node = document.createElement("div");
+        node.id = i+"-nodeInitial";
+        node.className = "streamNameNode";
+
         var choice=document.getElementById("streamSelect");
         var selectedStream = choice.options[choice.selectedIndex].text;
         var asName= document.getElementById("istreamName").value;
@@ -1948,10 +1948,14 @@
         createdImportStreamArray[i-1][2]=asName;
         createdImportStreamArray[i-1][3]="Import";
 
-        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-prop'));
+        var textnode = document.createTextNode(asName);
+        textnode.id = i+"-textnodeInitial";
+        node.appendChild(textnode);
+
+        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-propImportStream'));
         var showIcon = $('<img src="../Images/Import.png" class="streamIconloc"></b></a> ').attr('id', (i));
         var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (i+'vis'));
-        newAgent.text(asName).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
+        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
         dropCompleteElement(newAgent,i,e,kind,mouseTop,mouseLeft);
 
     }
@@ -1963,6 +1967,10 @@
      */
     function storeExportStreamInfo(newAgent,i,e,kind,mouseTop,mouseLeft)
     {
+        var node = document.createElement("div");
+        node.id = i+"-nodeInitial";
+        node.className = "streamNameNode";
+
         var choice=document.getElementById("streamSelectExp");
         var selectedStream = choice.options[choice.selectedIndex].text;
         var asName= document.getElementById("estreamName").value;
@@ -1973,12 +1981,16 @@
         createdExportStreamArray[i-1][2]=asName;
         createdExportStreamArray[i-1][3]="Export";
 
+        var textnode = document.createTextNode(asName);
+        textnode.id = i+"-textnodeInitial";
+        node.appendChild(textnode);
+
         var element=document.getElementById(newAgent);
 
-        var prop = $('<a onclick="doclickExp(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-prop'));
+        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-propExportStream'));
         var showIcon = $('<img src="../Images/Export.png" class="streamIconloc"></b></a> ').attr('id', (i));
         var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (i+'vis'));
-        newAgent.text(asName).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
+        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
         dropCompleteElement(newAgent,i,e,kind,mouseTop,mouseLeft);
 
     }
@@ -1991,6 +2003,10 @@
 
     function storeDefinedStreamInfo(newAgent,i,e,kind,mouseTop,mouseLeft)
     {
+        var node = document.createElement("div");
+        node.id = i+"-nodeInitial";
+        node.className = "streamNameNode";
+
         var StrName= document.getElementById("StreamNameInput").value;
         var StreamElementID = i;
         var table = document.getElementById('attrtable');
@@ -2012,13 +2028,17 @@
         createdDefinedStreamArray[i][1]=StrName;
         createdDefinedStreamArray[i][3]="Defined Stream";
         createdDefinedStreamArray[i][4]= tblerows;
+
+        var textnode = document.createTextNode(StrName);
+        textnode.id = i+"-textnodeInitial";
+        node.appendChild(textnode);
         
         // console.log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
         // console.log(createdDefinedStreamArray);
 
-        var prop = $('<a onclick="doclickDefine(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-prop'));
+        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-propDefinedStream'));
         var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (i+'vis'));
-        newAgent.text(StrName).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
+        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
         dropCompleteElement(newAgent,i,e,kind,mouseTop,mouseLeft);
     }
 

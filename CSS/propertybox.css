@@ -573,6 +573,16 @@ td {
     margin-right:-3px;
 }
 
+.streamNameNode{
+    float:right;
+    width:inherit;
+    height:inherit;
+    background-color: transparent;
+    border: 1px solid transparent;
+    margin-top:-3px;
+    margin-right:-3px;
+}
+
 /* Import & Export Streams */
 
 .checkboxStyle{
