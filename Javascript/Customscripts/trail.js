@@ -57,7 +57,7 @@
         });
 
         /**
-         * @function draggable method for the 'simple query' tool
+         * @function draggable method for the 'Pass through query' tool
          * @helper clone
          */
 
@@ -70,11 +70,11 @@
         });
 
         /**
-         * @function draggable method for the 'simple query' tool
+         * @function draggable method for the 'Filter query' tool
          * @helper clone
          */
 
-        $(".nElem").draggable
+        $(".filter").draggable
         ({
             helper: 'clone',
             cursor: 'pointer',
@@ -98,7 +98,7 @@
 
 
         /**
-         * @function draggable method for the 'simple query' tool
+         * @function draggable method for the 'Join query' tool
          * @helper clone
          */
 
@@ -145,7 +145,7 @@
 
         $("#container").droppable
         ({
-            accept: '.stream, .wstream , .squery, .nElem, .wquery, .joquery, .stquery , .partition',
+            accept: '.stream, .wstream , .squery, .filter, .wquery, .joquery, .stquery , .partition',
             containment: 'container',
 
             /**
@@ -200,20 +200,20 @@
                     i++;
                     finalElementCount=i;
                 }
-
-                //If the dropped Element is a pass-through then->
-                else if (dropElem == "nElem ui-draggable") {
-                    var newAgent = $('<div>').attr('id', i).addClass('nElemdrop');
-                    droptype = "nElemdrop";
+                    
+                //If the dropped Element is a Pass through Query then->
+                else if (dropElem == "squery ui-draggable") {
+                    var newAgent = $('<div>').attr('id', i).addClass('squerydrop');
+                    droptype = "squerydrop";
                     dropQuery(newAgent, i, e,droptype,mouseTop,mouseLeft,"Empty Query");
                     i++;
                     finalElementCount=i;
                 }
-                    
-                //If the dropped Element is a Simple Query(Pass-through, filter) then->
-                else if (dropElem == "squery ui-draggable") {
-                    var newAgent = $('<div>').attr('id', i).addClass('squerydrop');
-                    droptype = "squerydrop";
+
+                //If the dropped Element is a Filter query then->
+                else if (dropElem == "filter ui-draggable") {
+                    var newAgent = $('<div>').attr('id', i).addClass('filterdrop');
+                    droptype = "filterdrop";
                     dropQuery(newAgent, i, e,droptype,mouseTop,mouseLeft,"Empty Query");
                     i++;
                     finalElementCount=i;
@@ -517,7 +517,7 @@
                     });
                 }
 
-                else if (dropElem=="nElemdrop ui-draggable")
+                else if (dropElem=="filterdrop ui-draggable")
                 {
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
@@ -2153,7 +2153,7 @@
         textnode.id = i+"-textnodeInitial";
         node.appendChild(textnode);
 
-        if(droptype=="squerydrop" || droptype=="wquerydrop" || droptype=="nElemdrop")
+        if(droptype=="squerydrop" || droptype=="wquerydrop" || droptype=="filterdrop")
         {
             var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-prop')));
             var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
@@ -2175,8 +2175,6 @@
             newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
             dropCompleteStateMQueryElement(newAgent,i,e,topP,left);
         }
-
-
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3029,6 +3027,7 @@
 
         function getConnectionDetails(element)
         {
+            alert(element.id);
             var clickedId =  element.id;
             var elementID=clickedId = clickedId.charAt(0);
             var from = clickedId+"-out";
@@ -3564,7 +3563,7 @@
         {
             createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum, "Filter Query");
         }
-        else if (droptype=="nElemdrop") 
+        else if (droptype=="filterdrop") 
         {
             createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum, "Pass-through Query");
         }
@@ -3882,7 +3881,7 @@
             {
                 getSimpleQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
             }
-            else if(droptype=="nElemdrop")
+            else if(droptype=="filterdrop")
             {
                 getPassThroughQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
             }

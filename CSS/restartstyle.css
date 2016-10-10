@@ -101,7 +101,7 @@
     transition: box-shadow 0.15s ease-in;
 }
 
-.nElem {
+.filter {
     border: 1px solid #346789;
     box-shadow: 2px 2px 19px #aaa;
     -o-box-shadow: 2px 2px 19px #aaa;
@@ -326,7 +326,7 @@
     transition: box-shadow 0.15s ease-in;
 }
 
-.nElemdrop {
+.filterdrop {
     border: 1px solid #346789;
     box-shadow: 2px 2px 19px #aaa;
     -o-box-shadow: 2px 2px 19px #aaa;
