@@ -477,7 +477,7 @@
                     }
                 }
 
-                else if (dropElem=="squerydrop ui-draggable")
+                else if (dropElem=="filterdrop ui-draggable")
                 {
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
@@ -517,17 +517,17 @@
                     });
                 }
 
-                else if (dropElem=="filterdrop ui-draggable")
+                else if (dropElem=="squerydrop ui-draggable")
                 {
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
                     // var arrlen = createdSimpleQueryArray[elId][4].length;
 
-                    for(var ct=0;ct<createdSimpleQueryArray[elId][4].length;ct++)
+                    for(var ct=0;ct<createdPassThroughQueryArray[elId][4].length;ct++)
                     {
                         attrArray.push({
-                            attrName:createdSimpleQueryArray[elId][4][ct][0],
-                            attrType:createdSimpleQueryArray[elId][4][ct][1]
+                            attrName:createdPassThroughQueryArray[elId][4][ct][0],
+                            attrType:createdPassThroughQueryArray[elId][4][ct][1]
                         });
                     }
 
@@ -792,7 +792,16 @@
             {
                 if(classes == "streamdrop ui-draggable")
                 {
+                    var node = document.createElement("div");
+                    node.id = id+"-nodeInitial";
+                    node.className = "streamNameNode";
+                    
                     var asName = elem.name;
+                    
+                    var textnode = document.createTextNode(asName);
+                    textnode.id = id+"-textnodeInitial";
+                    node.appendChild(textnode);
+                    
                     var selectedStream = elem.predefinedStream;
                     if(kind == "import")
                     {
@@ -801,23 +810,25 @@
                         createdImportStreamArray[id-1][2]=asName;
                         createdImportStreamArray[id-1][3]="Import";
                         var newAgent = $('<div style="top:'+top+';bottom:'+bottom+';left:'+left+';right:'+right+'">').attr('id', id).addClass('streamdrop');
-                        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id + '-prop'));
+                        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id + '-propImportStream'));
                         var showIcon = $('<img src="../Images/Import.png" class="streamIconloc"></b></a> ').attr('id', (id));
                         var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (id + 'vis'));
-                        newAgent.text(asName).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
+                        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
                         dropCompleteElement(newAgent, id, e, kind,top,left);
                     }
                     else if (kind == "export")
                     {
+                        
                         createdExportStreamArray[id-1][0]=id;
                         createdExportStreamArray[id-1][1]=selectedStream;
                         createdExportStreamArray[id-1][2]=asName;
                         createdExportStreamArray[id-1][3]="Export";
+                        
                         var newAgent = $('<div style="top:'+top+';bottom:'+bottom+';left:'+left+';right:'+right+'">').attr('id', id).addClass('streamdrop');
-                        var prop = $('<a onclick="doclickExp(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id+'-prop'));
+                        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id+'-propExportStream'));
                         var showIcon = $('<img src="../Images/Export.png" class="streamIconloc"></b></a> ').attr('id', (id));
                         var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (id+'vis'));
-                        newAgent.text(asName).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
+                        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
                         dropCompleteElement(newAgent,id,e,kind,top,left);
                         
                     }
@@ -844,9 +855,9 @@
                         }
                         
                         var newAgent = $('<div style="top:'+top+';bottom:'+bottom+';left:'+left+';right:'+right+'">').attr('id', id).addClass('streamdrop');
-                        var prop = $('<a onclick="doclickDefine(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id+'-prop'));
+                        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id+'-propDefinedStream'));
                         var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (id+'vis'));
-                        newAgent.text(asName).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
+                        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
                         dropCompleteElement(newAgent,id,e,kind,top,left);
                     }
                     
@@ -888,6 +899,29 @@
                     
                 else if(classes == "squerydrop ui-draggable")
                 {
+                    createdPassThroughQueryArray[id][0] = id;
+                    createdPassThroughQueryArray[id][1] = elem.name;
+                    createdPassThroughQueryArray[id][2][0] = elem.fromStream.index;
+                    createdPassThroughQueryArray[id][2][1] = elem.fromStream.name;
+                    createdPassThroughQueryArray[id][3] = elem.filter;
+                    createdPassThroughQueryArray[id][4] = [];
+                    // for(var r=0; r<loopCount;r++)
+                    // {
+                    //     createdPassThroughQueryArray[elementID][4][r] =[];
+                    //     var inputTextBoxID = "input"+r;
+                    //     var attrLabelID = "label" + r;
+                    //     createdPassThroughQueryArray[elementID][4][r][0] = document.getElementById(inputTextBoxID).value;
+                    //     createdPassThroughQueryArray[elementID][4][r][1] = document.getElementById(attrLabelID).innerHTML;
+                    // }
+                    createdPassThroughQueryArray[id][5][0] = elem.intoStream.index;
+                    createdPassThroughQueryArray[id][5][1] = elem.intoStream.name;
+
+                    var newAgent = $('<div>').attr('id', id).addClass('squerydrop');
+                    dropQuery(newAgent, id,e,"squerydrop",top,left,elem.name);
+                }
+                    
+                else if(classes == "filterdrop ui-draggable")
+                {
                     createdSimpleQueryArray[id][0] = id;
                     createdSimpleQueryArray[id][1] = elem.name;
                     createdSimpleQueryArray[id][2][0] = elem.fromStream.index;
@@ -905,9 +939,10 @@
                     createdSimpleQueryArray[id][5][0] = elem.intoStream.index;
                     createdSimpleQueryArray[id][5][1] = elem.intoStream.name;
 
-                    var newAgent = $('<div>').attr('id', id).addClass('squerydrop');
-                    dropQuery(newAgent, id,e,"squerydrop",top,left,elem.name);
+                    var newAgent = $('<div>').attr('id', id).addClass('filterdrop');
+                    dropQuery(newAgent, id,e,"filterdrop",top,left,elem.name);
                 }
+                    
                 else if(classes == "wquerydrop ui-draggable")
                 {
                     createdWindowQueryArray[id][0] = id;
@@ -2167,6 +2202,8 @@
 
     function dropQuery(newAgent, i,e,droptype,topP,left,text)
     {
+        /*A text node division will be appended to the newAgent element so that the element name can be changed in the text node and doesn't need to be appended...
+        ...to the newAgent Element everytime theuser changes it*/
         var node = document.createElement("div");
         node.id = i+"-nodeInitial";
         node.className = "queryNameNode";
@@ -2174,6 +2211,7 @@
         textnode.id = i+"-textnodeInitial";
         node.appendChild(textnode);
 
+        //For a pass through query
         if(droptype=="squerydrop")
         {
             var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propsquerydrop')));
@@ -2181,6 +2219,8 @@
             newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
             dropCompleteQueryElement(newAgent,i,e,topP,left);
         }
+            
+        //For a Window query    
         else if(droptype=="wquerydrop")
         {
             var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propwquerydrop')));
@@ -2188,9 +2228,11 @@
             newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
             dropCompleteQueryElement(newAgent,i,e,topP,left);
         }
+        
+        //For a filter query
         if(droptype=="filterdrop")
         {
-            var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propsfilterdrop')));
+            var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propfilterdrop')));
             var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
             newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
             dropCompleteQueryElement(newAgent,i,e,topP,left);
@@ -3592,11 +3634,11 @@
         //streamInd gives the index of the selected stream
         if(droptype=="squerydrop") 
         {
-            createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum, "Filter Query");
+            createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum, "Pass-through Query");
         }
         else if (droptype=="filterdrop") 
         {
-            createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum, "Pass-through Query");
+            createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum, "Filter Query");
         }
         else if(droptype=="wquerydrop")
         {
@@ -3867,7 +3909,7 @@
         fromStream.className = "fromStream";
         fromStream.innerHTML = fromNameSt;
 
-        if(droptype=="squerydrop")
+        if(formHeading=="Filter Query")
         {
             filterLabel = document.createElement("label");
             filterLabel.className = "filterLabel";
@@ -3901,13 +3943,13 @@
         queryFomButton.id="queryFormButton";
         queryFomButton.innerHTML="Submit Query";
         queryFomButton.onclick = function () {
-            if(droptype=="squerydrop")
-            {
-                getFilterQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
-            }
-            else if(droptype=="filterdrop")
+            if(formHeading == "Pass-through Query")
             {
                 getPassThroughQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
+            }
+            else if(formHeading == "Filter Query")
+            {
+                getFilterQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
             }
         };
 
@@ -3949,7 +3991,7 @@
 
         //Row 3
 
-        if(droptype=="squerydrop") 
+        if(formHeading == "Filter Query") 
         {
             var tr3 = document.createElement('tr');
             var td5 = document.createElement('td');
@@ -4171,7 +4213,7 @@
     function getPassThroughQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum)
     {
         var queryName = document.getElementById("queryNameInput").value;
-        //var Simplefilter = document.getElementById("filterInput").value;
+        
         createdPassThroughQueryArray[elementID][0] = elementID;
         createdPassThroughQueryArray[elementID][1] = queryName;
         createdPassThroughQueryArray[elementID][2][0] = fromStreamIndex;
@@ -4200,14 +4242,7 @@
         createdPassThroughQueryArray[elementID][5][1] = intoNameSt;
 
         var elIdforNode =  elementID+"-nodeInitial";
-        document.getElementById(elIdforNode).remove();
-
-
-        var node = document.createElement("div");
-        node.id = elementID+"-nodeInitial";
-        var textnode = document.createTextNode(queryName);
-        node.appendChild(textnode);
-        document.getElementById(elementID).appendChild(node);
+        document.getElementById(elIdforNode).innerHTML = queryName;
 
         $("#container").removeClass("disabledbutton");
         $("#toolbox").removeClass("disabledbutton");
@@ -4601,14 +4636,7 @@
         //alert(createdWindowQueryArray[elementID][0]+"\n"+createdWindowQueryArray[elementID][1]+"\n"+createdWindowQueryArray[elementID][2][0]+"\t"+createdWindowQueryArray[elementID][2][1]+"\n"+createdWindowQueryArray[elementID][3]+createdWindowQueryArray[elementID][4]+createdWindowQueryArray[elementID][5]+"\n"+createdWindowQueryArray[elementID][7][0]+"\t"+createdWindowQueryArray[elementID][7][1]);
 
         var elIdforNode =  elementID+"-nodeInitial";
-        document.getElementById(elIdforNode).remove();
-
-
-        var node = document.createElement("div");
-        node.id = elementID+"-nodeInitial";
-        var textnode = document.createTextNode(queryName);
-        node.appendChild(textnode);
-        document.getElementById(elementID).appendChild(node);
+        document.getElementById(elIdforNode).innerHTML = queryName;
 
         $("#container").removeClass("disabledbutton");
         $("#toolbox").removeClass("disabledbutton");
