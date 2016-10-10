@@ -2086,7 +2086,8 @@
         });
 
         jsPlumb.makeTarget(connection, {
-            anchor: 'Continuous'
+            anchor: 'Continuous',
+            parent: finalElement
         });
 
         jsPlumb.makeSource(connection, {
