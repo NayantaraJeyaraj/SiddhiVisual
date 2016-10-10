@@ -565,7 +565,8 @@ td {
 
 .queryNameNode{
     float:right;
-    width:100%;
+    width:inherit;
+    height:inherit;
     background-color: transparent;
     border: 1px solid transparent;
     margin-top:-3px;

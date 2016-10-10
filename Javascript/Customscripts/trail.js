@@ -2153,9 +2153,23 @@
         textnode.id = i+"-textnodeInitial";
         node.appendChild(textnode);
 
-        if(droptype=="squerydrop" || droptype=="wquerydrop" || droptype=="filterdrop")
+        if(droptype=="squerydrop")
         {
-            var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-prop')));
+            var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propsquerydrop')));
+            var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
+            newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
+            dropCompleteQueryElement(newAgent,i,e,topP,left);
+        }
+        else if(droptype=="wquerydrop")
+        {
+            var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propwquerydrop')));
+            var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
+            newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
+            dropCompleteQueryElement(newAgent,i,e,topP,left);
+        }
+        if(droptype=="filterdrop")
+        {
+            var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propsfilterdrop')));
             var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
             newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
             dropCompleteQueryElement(newAgent,i,e,topP,left);
@@ -2163,14 +2177,14 @@
             
         else if(droptype=="joquerydrop")
         {
-            var prop = $('<a onclick="getJoinConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a> ').attr('id', (i+('-prop')));
+            var prop = $('<a onclick="getJoinConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a> ').attr('id', (i+('-propjoquerydrop')));
             var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
             newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
             dropCompleteJoinQueryElement(newAgent,i,e,topP,left);
         }
-        else 
+        else if(droptype=="stquerydrop")
         {
-            var prop = $('<a onclick="getStateMachineConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a> ').attr('id', (i+('-prop')));
+            var prop = $('<a onclick="getStateMachineConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a> ').attr('id', (i+('-propstquerydrop')));
             var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
             newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
             dropCompleteStateMQueryElement(newAgent,i,e,topP,left);
@@ -2339,7 +2353,7 @@
     function dropPartition(newAgent, i, e, droptype) 
     {
 
-        var prop = $('<a><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-prop')));
+        var prop = $('<a><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propPartition')));
         newAgent.append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(prop);
         dropCompletePartitionElement(newAgent,i,e);
         
@@ -3027,7 +3041,10 @@
 
         function getConnectionDetails(element)
         {
-            alert(element.id);
+            var arr = element.id.match(/-prop(.*)/);
+            if (arr != null) {
+                droptype = arr[1];
+            }
             var clickedId =  element.id;
             var elementID=clickedId = clickedId.charAt(0);
             var from = clickedId+"-out";
@@ -3362,14 +3379,7 @@
 
 
         var elIdforNode =  elementID+"-windowNode";
-        document.getElementById(elIdforNode).remove();
-
-
-        var node = document.createElement("div");
-        node.id = elementID+"-windowNode";
-        var textnode = document.createTextNode(windowInput);
-        node.appendChild(textnode);
-        document.getElementById(elementID).appendChild(node);
+        document.getElementById(elIdforNode).innerHTML = windowInput;
 
         $("#container").removeClass("disabledbutton");
         $("#toolbox").removeClass("disabledbutton");
@@ -3772,14 +3782,7 @@
         }
 
         var elIdforNode =  elementID+"-windowNode";
-        document.getElementById(elIdforNode).remove();
-
-
-        var node = document.createElement("div");
-        node.id = elementID+"-windowNode";
-        var textnode = document.createTextNode(windowInput);
-        node.appendChild(textnode);
-        document.getElementById(elementID).appendChild(node);
+        document.getElementById(elIdforNode).innerHTML = windowInput;
 
         $("#container").removeClass("disabledbutton");
         $("#toolbox").removeClass("disabledbutton");
@@ -3879,7 +3882,7 @@
         queryFomButton.onclick = function () {
             if(droptype=="squerydrop")
             {
-                getSimpleQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
+                getFilterQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
             }
             else if(droptype=="filterdrop")
             {
@@ -4085,7 +4088,7 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function getSimpleQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum)
+    function getFilterQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum)
     {
         var queryName = document.getElementById("queryNameInput").value;
         var Simplefilter = document.getElementById("filterInput").value;
@@ -4117,14 +4120,15 @@
         createdSimpleQueryArray[elementID][5][1] = intoNameSt;
 
         var elIdforNode =  elementID+"-nodeInitial";
-        document.getElementById(elIdforNode).remove();
-
-
-        var node = document.createElement("div");
-        node.id = elementID+"-nodeInitial";
-        var textnode = document.createTextNode(queryName);
-        node.appendChild(textnode);
-        document.getElementById(elementID).appendChild(node);
+        document.getElementById(elIdforNode).innerHTML = queryName;
+        // document.getElementById(elIdforNode).remove();
+        //
+        //
+        // var node = document.createElement("div");
+        // node.id = elementID+"-nodeInitial";
+        // var textnode = document.createTextNode(queryName);
+        // node.appendChild(textnode);
+        // document.getElementById(elementID).appendChild(node);
 
         $("#container").removeClass("disabledbutton");
         $("#toolbox").removeClass("disabledbutton");
