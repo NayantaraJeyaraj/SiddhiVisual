@@ -2482,7 +2482,7 @@
 
     function setPartitionConditionform(clickedId,selctedSt,fromStreamName,streamType,fromStreamIndex, defAttrNum, type)
     {
-        alert("called");
+        // alert("called");
 
         $("#container").addClass("disabledbutton");
         $("#toolbox").addClass("disabledbutton");
@@ -2739,7 +2739,7 @@
                             }
                         }
 
-                        alert("Attr name: " + createdPartitionConditionArray[elClickedId][2][r - 1][0] + "\nAttr type: " + createdPartitionConditionArray[elClickedId][2][r - 1][1]);
+                        // alert("Attr name: " + createdPartitionConditionArray[elClickedId][2][r - 1][0] + "\nAttr type: " + createdPartitionConditionArray[elClickedId][2][r - 1][1]);
                     }
 
                 }
@@ -2756,7 +2756,7 @@
                         createdPartitionConditionArray[elClickedId][2][r - 1][0] = range;
                         createdPartitionConditionArray[elClickedId][2][r - 1][1] = null;
 
-                        alert("Attr name: " + createdPartitionConditionArray[elClickedId][2][r - 1][0] + "\nAttr type: " + createdPartitionConditionArray[elClickedId][2][r - 1][1]);
+                        // alert("Attr name: " + createdPartitionConditionArray[elClickedId][2][r - 1][0] + "\nAttr type: " + createdPartitionConditionArray[elClickedId][2][r - 1][1]);
                     }
                 }
                 createdPartitionConditionArray[elClickedId][4] = tblerowsRange - 1;
@@ -2794,7 +2794,7 @@
 
                         }
 
-                        alert("Attr name: " + createdPartitionConditionArray[elClickedId][2][r - 1][0] + "\nAttr type: " + createdPartitionConditionArray[elClickedId][2][r - 1][1]);
+                        // alert("Attr name: " + createdPartitionConditionArray[elClickedId][2][r - 1][0] + "\nAttr type: " + createdPartitionConditionArray[elClickedId][2][r - 1][1]);
                     }
 
                 }
@@ -2811,7 +2811,7 @@
                         createdPartitionConditionArray[elClickedId][2][r - 1][0] = range;
                         createdPartitionConditionArray[elClickedId][2][r - 1][1] = null;
 
-                        alert("Attr name: " + createdPartitionConditionArray[elClickedId][2][r - 1][0] + "\nAttr type: " + createdPartitionConditionArray[elClickedId][2][r - 1][1]);
+                        // alert("Attr name: " + createdPartitionConditionArray[elClickedId][2][r - 1][0] + "\nAttr type: " + createdPartitionConditionArray[elClickedId][2][r - 1][1]);
                     }
                 }
                 createdPartitionConditionArray[elClickedId][4] = tblerowsRange - 1;
@@ -2856,7 +2856,7 @@
     function partitiontypeGenerate(streamType,selctedSt,fromStreamIndex,defAttrNum, type)
     {
         var attributes = [];
-        alert("fromStreamIndex:"+fromStreamIndex);
+        // alert("fromStreamIndex:"+fromStreamIndex);
 
         if(streamType=="import" || streamType=="export")
         {
@@ -5573,7 +5573,7 @@
     {
         var intoNameSt, streamType, selctedSt, fromStreamIndex;
         var fromStreamName;
-        alert("getPartitionFromStreamName-connectedStream: "+connectedStream);
+        // alert("getPartitionFromStreamName-connectedStream: "+connectedStream);
         for(var x = 0; x<100; x++)
         {
             //To retrieve the 'from Stream' Names
