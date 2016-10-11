@@ -2600,7 +2600,7 @@
         btnPartitionCondition.id="btnPartitionCondition";
         btnPartitionCondition.innerHTML="Apply Partition Condition";
         btnPartitionCondition.onclick = function () {
-            savePartitionDetailsToStream(clickedId,streamType,fromStreamIndex);
+            savePartitionDetailsToStream(clickedId,streamType,fromStreamIndex,selctedSt);
         };
 
         partitionCloseButton=document.createElement("button");
@@ -2709,7 +2709,7 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function savePartitionDetailsToStream(clickedId,streamType,fromStreamIndex) 
+    function savePartitionDetailsToStream(clickedId,streamType,fromStreamIndex,selctedSt)
     {
         var partitionIdInput = document.getElementById("partitionIdInput").value;
         var partitionConditionElementID = clickedId;
@@ -2766,6 +2766,7 @@
             createdPartitionConditionArray[elClickedId][1] = partitionIdInput;
             createdPartitionConditionArray[elClickedId][3] = "Partition Condition";
             createdPartitionConditionArray[elClickedId][5] = subPcId;
+            createdPartitionConditionArray[elClickedId][6] = selctedSt;
 
 
         }
@@ -2823,6 +2824,7 @@
             createdPartitionConditionArray[elClickedId][3] = "Partition Condition";
             createdPartitionConditionArray[elClickedId][4] = createdDefinedStreamArray[fromStreamIndex][2].length;
             createdPartitionConditionArray[elClickedId][5] = subPcId;
+            createdPartitionConditionArray[elClickedId][6] = selctedSt;
 
 
 
@@ -3590,7 +3592,7 @@
                 {
                     if (createdPartitionConditionArray[x][0]==elClickedId && createdPartitionConditionArray[x][5]==subPcId)
                     {
-                        fromNameSt = createdPartitionConditionArray[x][1];
+                        fromNameSt = createdPartitionConditionArray[x][6];
                         fromStreamIndex = x;
                     }
                 }
@@ -5275,36 +5277,28 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var stintoStreamId;
-    var connectedStreamIdListArray = [];
-
     function getStateMachineConnectionDetails(element)
     {
+        var stintoStreamId;
+        var connectedStreamIdListArray = [];
+
         var clickedId =  element.id.charAt(0);
-        var idTest=/^\d+-pc\d+$/.test(element.id);
+        // var idTest=/^\d+-pc\d+$/.test(element.id);
 
         var from = clickedId+"-out";
         var from1 = clickedId;
         clickedId = clickedId+"-in";
         var con=jsPlumb.getAllConnections();
         var list=[];
-        var checkPoint=-1;
+        // var checkPoint=-1;
 
         for(var i=0;i<con.length;i++)
         {
-            if(idTest==false)
+            if (con[i].targetId == clickedId)
             {
-                if (con[i].targetId == clickedId) {
-                    connectedStreamIdListArray[i] = con[i].sourceId;
-                }
+                connectedStreamIdListArray[i] = con[i].sourceId;
             }
-            else
-            {
-                if (con[i].targetId == element.id) {
-                    connectedStreamIdListArray[i] = con[i].sourceId;
-                }
-            }
-
+            
             if(con[i].sourceId==from || con[i].sourceId==from1)
             {
                 list[i] = new Array(2);
@@ -5315,8 +5309,10 @@
         }
 
         stintoStreamId = stintoStreamId.charAt(0);
+        // alert(connectedStreamIdListArray);
         getStateMachineFromStreamName(connectedStreamIdListArray, stintoStreamId,element.id);
     }
+    //TODO connectedStreamIdListArray gets unwanted data for partition conditions
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -5362,9 +5358,13 @@
         /*The following checks whether the source/ the from stream is a Parttion condition
           This is done by pattern matching of the source's/from Stream's ID
          */
-        var elClickedId= clickedId.substr(0, clickedId.indexOf('-'));
-        var subPcId= clickedId.substr(clickedId.indexOf("c") + 1);
-        var idTest=/^\d+-pc\d+$/.test(clickedId);
+        var elClickedId1= jfromStreamId1.substr(0, jfromStreamId1.indexOf('-'));
+        var subPcId1= jfromStreamId1.substr(jfromStreamId1.indexOf("c") + 1);
+        var idTest1=/^\d+-pc\d+$/.test(jfromStreamId1);
+        
+        var elClickedId2= jfromStreamId2.substr(0, jfromStreamId2.indexOf('-'));
+        var subPcId2= jfromStreamId2.substr(jfromStreamId2.indexOf("c") + 1);
+        var idTest2=/^\d+-pc\d+$/.test(jfromStreamId2);
         var fromStreamIndex1,fromStreamIndex2,intoStreamIndex;
 
         for(var x = 0; x<100; x++)
@@ -5374,7 +5374,7 @@
                 So can traverse through the Import, Export, Defined and Window Streams
                 @function : To retrieve the first 'from Stream' Name (Left/Right)
              */
-            if(idTest==false)
+            if(idTest1==false)
             {
                 
                 if (createdImportStreamArray[x][0] == jfromStreamId1) {
@@ -5402,9 +5402,9 @@
                 
             else
             {
-                if (createdPartitionConditionArray[x][0]==jfromStreamId1 && createdPartitionConditionArray[x][5]==subPcId)
+                if (createdPartitionConditionArray[x][0]==elClickedId1 && createdPartitionConditionArray[x][5]==subPcId1)
                 {
-                    fromNameSt1 = createdPartitionConditionArray[x][1];
+                    fromNameSt1 = createdPartitionConditionArray[x][6];
                     fromStreamIndex1 = x;
                 }
             }
@@ -5413,7 +5413,7 @@
                 @function : To retrieve the second 'from Stream' Name (Left/Right)
             */
 
-            if(idTest==false)
+            if(idTest2==false)
             {
                 if (createdImportStreamArray[x][0] == jfromStreamId2) {
                     fromNameSt2 = createdImportStreamArray[x][2];
@@ -5434,7 +5434,7 @@
             }
             else
             {
-                if (createdPartitionConditionArray[x][0]==jfromStreamId2 && createdPartitionConditionArray[x][5]==subPcId)
+                if (createdPartitionConditionArray[x][0]==elClickedId2 && createdPartitionConditionArray[x][5]==subPcId2)
                 {
                     fromNameSt2 = createdPartitionConditionArray[x][1];
                     fromStreamIndex2 = x;
@@ -5482,79 +5482,92 @@
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    
     function getStateMachineFromStreamName(connectedStreamIdListArray, stintoStreamId,elementID)
     {
+        var elClickedIdPartitionCheck = [];
+        var subPcId = [];
+        var idTest = [];
         var intoNameSt, streamType, selctedSt, intoStreamIndex;
-        var elClickedId= elementID.substr(0, elementID.indexOf('-'));
-        var subPcId= elementID.substr(elementID.indexOf("c") + 1);
-        var idTest=/^\d+-pc\d+$/.test(elementID);
+        
         var fromStreamIndex1,fromStreamIndex2,intoStreamIndex;
         var fromStreamNameListArray = [];
         var fromStreamIndexListArray = [];
 
         for(var f=0; f<connectedStreamIdListArray.length;f++)
         {
-            for(var x = 0; x<100; x++)
+            alert("Say it: " +connectedStreamIdListArray.length);
+            if(connectedStreamIdListArray[f] == null || connectedStreamIdListArray[f] == undefined || connectedStreamIdListArray[f] == "")
+            {}
+            else 
             {
-                //To retrieve the 'from Stream' Names
-                if(idTest==false)
+                elClickedIdPartitionCheck[f]= connectedStreamIdListArray[f].substr(0, connectedStreamIdListArray[f].indexOf('-'));
+                subPcId[f]= connectedStreamIdListArray[f].substr(connectedStreamIdListArray[f].indexOf("c") + 1);
+                idTest[f]=/^\d+-pc\d+$/.test(connectedStreamIdListArray[f]);
+
+                for(var x = 0; x<100; x++)
                 {
-                    if (createdImportStreamArray[x][0] == connectedStreamIdListArray[f]) {
-                        fromStreamNameListArray.push(createdImportStreamArray[x][2]);
-                        fromStreamIndexListArray.push(x);
-                    }
-                    else if (createdExportStreamArray[x][0] == connectedStreamIdListArray[f]) {
-                        fromStreamNameListArray.push(createdExportStreamArray[x][2]);
-                        fromStreamIndexListArray.push(x);
-                    }
-                    else if (createdDefinedStreamArray[x][0] == connectedStreamIdListArray[f]) {
-                        fromStreamNameListArray.push(createdDefinedStreamArray[x][1]);
-                        fromStreamIndexListArray.push(x);
-                    }
-                    else if (createdWindowStreamArray[x][0] == connectedStreamIdListArray[f]) {
-                        fromStreamNameListArray.push(createdWindowStreamArray[x][1]);
-                        fromStreamIndexListArray.push(x);
-                    }
-                }
-                else
-                {
-                    if (createdPartitionConditionArray[x][0]==elClickedId && createdPartitionConditionArray[x][5]==subPcId)
+                    //To retrieve the 'from Stream' Names
+                    if(idTest[f]==false)
                     {
-                        fromStreamNameListArray.push(createdPartitionConditionArray[x][1]);
-                        fromStreamIndexListArray.push(x);
+                        if (createdImportStreamArray[x][0] == connectedStreamIdListArray[f]) {
+                            fromStreamNameListArray.push(createdImportStreamArray[x][2]);
+                            fromStreamIndexListArray.push(x);
+                        }
+                        else if (createdExportStreamArray[x][0] == connectedStreamIdListArray[f]) {
+                            fromStreamNameListArray.push(createdExportStreamArray[x][2]);
+                            fromStreamIndexListArray.push(x);
+                        }
+                        else if (createdDefinedStreamArray[x][0] == connectedStreamIdListArray[f]) {
+                            fromStreamNameListArray.push(createdDefinedStreamArray[x][1]);
+                            fromStreamIndexListArray.push(x);
+                        }
+                        else if (createdWindowStreamArray[x][0] == connectedStreamIdListArray[f]) {
+                            fromStreamNameListArray.push(createdWindowStreamArray[x][1]);
+                            fromStreamIndexListArray.push(x);
+                        }
+                    }
+                    else
+                    {
+                        if (createdPartitionConditionArray[x][0]==elClickedIdPartitionCheck[f] && createdPartitionConditionArray[x][5]==subPcId[f])
+                        {
+                            fromStreamNameListArray.push(createdPartitionConditionArray[x][6]);
+                            fromStreamIndexListArray.push(x);
+                        }
+
                     }
 
-                }
 
+                    //To retrieve the 'into Stream' Name
+                    if (createdImportStreamArray[x][0] == stintoStreamId) {
+                        intoNameSt = createdImportStreamArray[x][2];
+                        streamType = "import";
+                        selctedSt = createdImportStreamArray[x][1];
+                        intoStreamIndex = x;
+                    }
+                    else if (createdExportStreamArray[x][0] == stintoStreamId) {
+                        intoNameSt = createdExportStreamArray[x][2];
+                        streamType = "export";
+                        selctedSt = createdExportStreamArray[x][1];
+                        intoStreamIndex = x;
+                    }
+                    else if (createdDefinedStreamArray[x][0] == stintoStreamId) {
+                        intoNameSt = createdDefinedStreamArray[x][1];
+                        streamType = "defined";
+                        intoStreamIndex = x;
+                        var defAttrNum = createdDefinedStreamArray[x][2].length;
+                    }
+                    else if (createdWindowStreamArray[x][0] == stintoStreamId) {
+                        intoNameSt = createdWindowStreamArray[x][1];
+                        streamType = "window";
+                        intoStreamIndex = x;
+                        var defAttrNum = createdWindowStreamArray[x][4].length;
 
-                //To retrieve the 'into Stream' Name
-                if (createdImportStreamArray[x][0] == stintoStreamId) {
-                    intoNameSt = createdImportStreamArray[x][2];
-                    streamType = "import";
-                    selctedSt = createdImportStreamArray[x][1];
-                    intoStreamIndex = x;
-                }
-                else if (createdExportStreamArray[x][0] == stintoStreamId) {
-                    intoNameSt = createdExportStreamArray[x][2];
-                    streamType = "export";
-                    selctedSt = createdExportStreamArray[x][1];
-                    intoStreamIndex = x;
-                }
-                else if (createdDefinedStreamArray[x][0] == stintoStreamId) {
-                    intoNameSt = createdDefinedStreamArray[x][1];
-                    streamType = "defined";
-                    intoStreamIndex = x;
-                    var defAttrNum = createdDefinedStreamArray[x][2].length;
-                }
-                else if (createdWindowStreamArray[x][0] == stintoStreamId) {
-                    intoNameSt = createdWindowStreamArray[x][1];
-                    streamType = "window";
-                    intoStreamIndex = x;
-                    var defAttrNum = createdWindowStreamArray[x][4].length;
-
+                    }
                 }
             }
+
+            
 
         }
         elementID=elementID.charAt(0);
