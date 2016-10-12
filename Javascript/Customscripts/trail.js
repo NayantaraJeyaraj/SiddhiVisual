@@ -176,16 +176,21 @@
                 $(droppedElement).draggable({containment: "container"});
                 //Repaint to reposition all the elements that are on the canvas after the drop/addition of a new element on the canvas
                 jsPlumb.repaint(ui.helper);
+                
 
                 //If the dropped Element is a Stream then->
                 if (dropElem == "stream ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('streamdrop');
+                    
+                    //The container and the toolbox are disabled to prevent the user from dropping any elements before initializing a Stream Element
                     $("#container").addClass("disabledbutton");
                     $("#toolbox").addClass("disabledbutton");
 
-                    /*Create a stream form where the user can set whether the dropped element is an Import/Export/defined stream
+                    /*
+                      Create a stream form where the user can set whether the dropped element is an Import/Export/defined stream
                       Element is not dropped on the canvas before the data is entered in the form as the user shouldn't be able to manipulate the
-                    Stream element before it has been initialized*/
+                      Stream element before it has been initialized
+                    */
 
                     createStreamForm(newAgent, i, e,mouseTop,mouseLeft);
                     i++;
@@ -1411,167 +1416,6 @@
 
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     *
-     * @function detect the id of the element clicked
-     * @param sender
-     * @returns {*}
-     *
-     */
-    function doclick(sender)
-    {
-        var arr = sender.id.match(/-prop(.*)/);
-        if (arr != null) {
-            droptype = arr[1];
-        }
-
-        var clickedelemId=sender.id;
-        clickedelemId = clickedelemId.charAt(0);
-        
-        if(droptype == "ImportStream")
-        {
-            var selectedStreamim = createdImportStreamArray[clickedelemId-1][1];
-            var streamnam = createdImportStreamArray[clickedelemId-1][2];
-            var streamDefget;
-            if (selectedStreamim == "Stream1")
-            {
-                streamDefget=streamDef[0][3];
-                var res = streamDefget.replace("Stream1", streamnam);
-            }
-            else if(selectedStreamim=="Stream2")
-            {
-                streamDefget=streamDef[1][3];
-                var res = streamDefget.replace("Stream2", streamnam);
-            }
-            else
-            {
-                streamDefget=streamDef[2][3];
-                var res = streamDefget.replace("Stream3", streamnam);
-            }
-            alert("Stream ID: "+clickedelemId+"\nSelected stream: "+ createdImportStreamArray[clickedelemId-1][1]+"\nStream Type: Import Stream\nStream Definition: "+res);
-            clickedId= clickedelemId;
-        }
-        else if (droptype == "ExportStream")
-        {
-            var selectedStreamim = createdExportStreamArray[clickedelemId-1][1];
-            var streamnam = createdExportStreamArray[clickedelemId-1][2];
-            var streamDefy;
-            if (selectedStreamim == "Stream1")
-            {
-                streamDefy=streamDef[0][3];
-                var res = streamDefy.replace("Stream1", streamnam);
-            }
-            else if(selectedStreamim=="Stream2")
-            {
-                streamDefy=streamDef[1][3];
-                var res = streamDefy.replace("Stream2", streamnam);
-            }
-            else
-            {
-                streamDefy=streamDef[2][3];
-                var res = streamDefy.replace("Stream3", streamnam);
-            }
-            alert("Stream ID: "+clickedelemId+"\nSelected stream: "+ createdExportStreamArray[clickedelemId-1][1]+"\nStream Type: Export Stream\nStream Definition: "+res);
-            clickedId= clickedelemId;
-        }
-        else if(droptype == "DefinedStream")
-        {
-            var streamname = createdDefinedStreamArray[clickedelemId][1];
-            var attrnum = createdDefinedStreamArray[clickedelemId][4];
-            var tblerows = (table.rows.length)-1;
-            var res = "define stream "+ streamname + "(";
-
-            // createdDefinedStreamArray[i][2][r-1][0]=attrNm;
-            // createdDefinedStreamArray[i][2][r-1][1]=attrTp;
-
-            for( var t=0; t<tblerows; t++)
-            {
-                for (var y=0; y<2 ;y++)
-                {
-                    res=res+ createdDefinedStreamArray[clickedelemId][2][t][y] + " ";
-                }
-                if(t==tblerows-1)
-                {
-                    res=res+"";
-                }
-                else
-                {
-                    res=res+", ";
-                }
-
-            }
-            res=res+")";
-            alert("Stream ID: "+clickedelemId+"\nCreated stream: "+ streamname+"\nStream Type: Defined Stream\nStream Definition: "+res);
-            clickedId= clickedelemId;
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     *
-     * @function Create the combo box
-     * @description Stores the Predefined array data onto individual arrays
-     *
-     */
-
-    function createattr(strval)
-    {
-        if(strval=="import")
-        {
-            var streams = '<select id="streamSelect" onchange="showStreamDefLine()"><option value="voidopt">Select an option</option>', streamtypes = PredefinedStreams();
-        }
-        else
-        {
-            var streams = '<select id="streamSelectExp" onchange="showStreamDefLineExp()"><option value="voidopt">Select an option</option>', streamtypes = PredefinedStreams();
-        }
-        var PredefinedStreamComboDiv=document.createElement('div');
-        for (var q = 0; q < 3; q++)
-        {
-            streams += "<option value='"+streamtypes[q][0]+"'>"+streamtypes[q][0]+"</option>";
-            //streamDef = streamtypes[q][3];
-            for (var w=0; w<3; w++)
-            {
-                for(var r=0; r<5;r++)
-                {
-                    if(q==0 && w==1)
-                    {
-                        stream1_attr[r] = streamtypes[q][w][r];
-                    }
-                    if(q==0 && w==2)
-                    {
-                        stream1_type[r] = streamtypes[q][w][r];
-                    }
-
-                    if(q==1 && w==1)
-                    {
-                        stream2_attr[r]= streamtypes[q][w][r];
-                    }
-                    if(q==1 && w==2)
-                    {
-                        stream2_type [r]= streamtypes[q][w][r];
-                    }
-                    if(q==2 && w==1)
-                    {
-                        stream3_attr [r]= streamtypes[q][w][r];
-                    }
-                    if(q==2 && w==2)
-                    {
-                        stream3_type [r]= streamtypes[q][w][r];
-                    }
-                }
-            }
-
-
-        }
-        streams += '</select>';
-        PredefinedStreamComboDiv.className="attr-combobox-style";
-        PredefinedStreamComboDiv.innerHTML= streams;
-        return PredefinedStreamComboDiv;
-    }
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                          STREAM ELEMENT RELATED FUNCTIONALITIES
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1739,7 +1583,6 @@
         *
         * @description Defined Stream form elements are appended to their division only
         *              if the user chooses to create a defined stream
-        *
         * */
 
         /*-----------End of Export form elements definition-----------*/
@@ -1764,7 +1607,7 @@
         lot.appendChild(streamDiv);
         lot.appendChild(streamFomCloseButton);
 
-        $(".toolbox-titlex").show();
+        $(".toolbox-titlex").show();   /* Once the element has been dropped enable the toolbox*/
         $(".panel").show();
 
     }
@@ -1870,9 +1713,11 @@
 
         var StrName= document.getElementById("StreamNameInput").value;
         var StreamElementID = i;
+
+        //The attributes added to the table displayed in the Define Section of the Stream form will only be taken as the attributes for the Defined Stream
         var table = document.getElementById('attrtable');
         var tblerows = (table.rows.length);
-        createdDefinedStreamArray[i][2]=new Array(tblerows);
+        createdDefinedStreamArray[i][2]=new Array(tblerows);    //Create an array within the 2nd row of the createdDefinedStreamArray to store the attribute details
 
 
         for (r = 1; r < tblerows; r++) {
@@ -1894,15 +1739,106 @@
         textnode.id = i+"-textnodeInitial";
         node.appendChild(textnode);
 
-        // console.log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
-        // console.log(createdDefinedStreamArray);
-
         var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-propDefinedStream'));
         var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (i+'vis'));
         newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
         dropCompleteElement(newAgent,i,e,kind,mouseTop,mouseLeft);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     *
+     * @function detect the id of the element clicked
+     * @param sender
+     * @returns {*}
+     *
+     */
+    function doclick(sender)
+    {
+        var arr = sender.id.match(/-prop(.*)/);  //By matching with the following pattern, the Element Type(Import, Export/ Defined Stream) is extracted and stored in variable `arr`
+        if (arr != null) {
+            droptype = arr[1];
+        }
+
+        var clickedelemId=sender.id;
+        clickedelemId = clickedelemId.charAt(0);    //clickedelemId --> Gets the Element ID separately from the sender's ID as the `sender` will be the prop icon and not the element itself
+
+        if(droptype == "ImportStream")
+        {
+            var selectedStreamim = createdImportStreamArray[clickedelemId-1][1];
+            var streamnam = createdImportStreamArray[clickedelemId-1][2];
+            var streamDefget;
+            if (selectedStreamim == "Stream1")
+            {
+                streamDefget=streamDef[0][3];
+                var res = streamDefget.replace("Stream1", streamnam);
+            }
+            else if(selectedStreamim=="Stream2")
+            {
+                streamDefget=streamDef[1][3];
+                var res = streamDefget.replace("Stream2", streamnam);
+            }
+            else
+            {
+                streamDefget=streamDef[2][3];
+                var res = streamDefget.replace("Stream3", streamnam);
+            }
+            alert("Stream ID: "+clickedelemId+"\nSelected stream: "+ createdImportStreamArray[clickedelemId-1][1]+"\nStream Type: Import Stream\nStream Definition: "+res);
+            clickedId= clickedelemId;
+        }
+        else if (droptype == "ExportStream")
+        {
+            var selectedStreamim = createdExportStreamArray[clickedelemId-1][1];
+            var streamnam = createdExportStreamArray[clickedelemId-1][2];
+            var streamDefy;
+            if (selectedStreamim == "Stream1")
+            {
+                streamDefy=streamDef[0][3];
+                var res = streamDefy.replace("Stream1", streamnam);
+            }
+            else if(selectedStreamim=="Stream2")
+            {
+                streamDefy=streamDef[1][3];
+                var res = streamDefy.replace("Stream2", streamnam);
+            }
+            else
+            {
+                streamDefy=streamDef[2][3];
+                var res = streamDefy.replace("Stream3", streamnam);
+            }
+            alert("Stream ID: "+clickedelemId+"\nSelected stream: "+ createdExportStreamArray[clickedelemId-1][1]+"\nStream Type: Export Stream\nStream Definition: "+res);
+            clickedId= clickedelemId;
+        }
+        else if(droptype == "DefinedStream")
+        {
+            var streamname = createdDefinedStreamArray[clickedelemId][1];
+            var attrnum = createdDefinedStreamArray[clickedelemId][4];
+            var tblerows = (table.rows.length)-1;
+            var res = "define stream "+ streamname + "(";
+
+
+            for( var t=0; t<tblerows; t++)
+            {
+                for (var y=0; y<2 ;y++)
+                {
+                    res=res+ createdDefinedStreamArray[clickedelemId][2][t][y] + " ";
+                }
+                if(t==tblerows-1)
+                {
+                    res=res+"";
+                }
+                else
+                {
+                    res=res+", ";
+                }
+
+            }
+            res=res+")";
+            alert("Stream ID: "+clickedelemId+"\nCreated stream: "+ streamname+"\nStream Type: Defined Stream\nStream Definition: "+res);
+            clickedId= clickedelemId;
+        }
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1971,9 +1907,101 @@
         $("#attrtable tr").remove();
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     *
+     * @function Create the combo box by retrieving the Predefined Streams
+     * @description Stores the Predefined array data onto individual arrays
+     *
+     */
+
+    function createattr(strval)
+    {
+        if(strval=="import")
+        {
+            //showStreamDefLine() --> Displays a popup with the selected Import Stream's definition line for the user to get an idea about the structure of that import stream
+            var streams = '<select id="streamSelect" onchange="showStreamDefLine()"><option value="voidopt">Select an option</option>', streamtypes = PredefinedStreams();
+        }
+        else
+        {
+            //showStreamDefLineExp() --> Displays a popup with the selected Export Stream's definition line for the user to get an idea about the structure of that export stream
+            var streams = '<select id="streamSelectExp" onchange="showStreamDefLineExp()"><option value="voidopt">Select an option</option>', streamtypes = PredefinedStreams();
+        }
+
+        //Create a division to hold the combobox in the form
+        var PredefinedStreamComboDiv=document.createElement('div');
+
+        /*
+             variable q is checked against `q<3` as the Predefined array has only 3 streams.
+             The Predefined Array will be mapped to the Database with the Predefined Streams in the Server.
+
+             ***********Sample*************
+
+             StreamArray[0][0]="Stream1";
+             StreamArray[0][1][0]="1_attr1";
+             StreamArray[0][1][1]="1_attr2";
+             StreamArray[0][1][2]="1_attr3";
+             StreamArray[0][1][3]="1_attr4";
+             StreamArray[0][1][4]="1_attr5";
+             StreamArray[0][2][0]="1_type1";
+             StreamArray[0][2][1]="1_type2";
+             StreamArray[0][2][2]="1_type3";
+             StreamArray[0][2][3]="1_type4";
+             StreamArray[0][2][4]="1_type5";
+             StreamArray[0][3] = "define stream Stream1 (1_attr1 1_type1, 1_attr2 1_type2, 1_attr3 1_type3, 1_attr4 1_type4, 1_attr5 1_type5 );";
+         */
+
+        //`q<3` Since there are only 3 streams
+        for (var q = 0; q < 3; q++)
+        {
+            streams += "<option value='"+streamtypes[q][0]+"'>"+streamtypes[q][0]+"</option>";
+
+            //`w<3` as There are 3 rows for each Stream
+            for (var w=0; w<3; w++)
+            {
+                //`r<5` as there are only 5 attributes and corresponding types for each stream
+                for(var r=0; r<5;r++)
+                {
+                    if(q==0 && w==1)
+                    {
+                        stream1_attr[r] = streamtypes[q][w][r];     //Access the 1st Stream's Attribute
+                    }
+                    if(q==0 && w==2)
+                    {
+                        stream1_type[r] = streamtypes[q][w][r];     //Access the 1st Stream's type
+                    }
+
+                    if(q==1 && w==1)
+                    {
+                        stream2_attr[r]= streamtypes[q][w][r];      //Access the 2nd Stream's Attribute
+                    }
+                    if(q==1 && w==2)
+                    {
+                        stream2_type [r]= streamtypes[q][w][r];     //Access the 2nd Stream's type
+                    }
+                    if(q==2 && w==1)
+                    {
+                        stream3_attr [r]= streamtypes[q][w][r];     //Access the 3rd Stream's Attribute
+                    }
+                    if(q==2 && w==2)
+                    {
+                        stream3_type [r]= streamtypes[q][w][r];     //Access the 3rd Stream's type
+                    }
+                }
+            }
+
+
+        }
+        streams += '</select>';
+        PredefinedStreamComboDiv.className="attr-combobox-style";
+        PredefinedStreamComboDiv.innerHTML= streams;    //Set the combobox division to display the combobox(streams)
+        return PredefinedStreamComboDiv;    //The combobox is returned
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //                                                                          STREAM ELEMENT RELATED FUNCTIONALITIES
+    //                                                                            END STREAM ELEMENT RELATED FUNCTIONALITIES                                                                                  //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
