@@ -3375,6 +3375,19 @@
             CreateWindow(i);
         };
 
+        WindowStreamCloseButton=document.createElement("button");
+        WindowStreamCloseButton.type="button";
+        WindowStreamCloseButton.className="partitionCloseButton";
+        WindowStreamCloseButton.id="partitionCloseButton";
+        WindowStreamCloseButton.innerHTML="Cancel";
+        WindowStreamCloseButton.onclick = function()
+        {
+            $("#tableWindowStreamForm tr").remove();
+            $("#DefWindowAttrDiv").removeClass("disabledbutton");
+            closeForm();
+        };
+
+
         // Row 1
 
         var tr1 = document.createElement('tr');
@@ -3410,6 +3423,7 @@
 
         DefwindowStreamDiv.appendChild(tableWindowStreamForm);
         DefwindowStreamDiv.appendChild(DefWindowAttrTableDiv);
+        DefwindowStreamDiv.appendChild(WindowStreamCloseButton);
 
         lot.appendChild(DefwindowStreamDiv);
 
