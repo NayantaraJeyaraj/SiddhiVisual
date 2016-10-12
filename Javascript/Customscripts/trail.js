@@ -434,7 +434,7 @@
                     for (var f = 0; f < attrNum; f++) {
                         attrArray.push({
                                         attrname: createdWindowStreamArray[idOfEl][4][f][0],
-                                        attrType: createdWindowStreamArray[idOfEl][4][f][1]
+                                        as: createdWindowStreamArray[idOfEl][4][f][1]
                                });
                     }
                     //If the window is defined by the user and not derived from a stream
@@ -5286,9 +5286,7 @@
                 jintoStreamId =list[i][1];
             }
         }
-
-        jfromStreamId1 = jfromStreamId1.charAt(0);
-        jfromStreamId2 = jfromStreamId2.charAt(0);
+        
         jintoStreamId = jintoStreamId.charAt(0);
         getJoinFromStreamName(jfromStreamId1,jfromStreamId2,jintoStreamId,element.id);
     }
@@ -5356,10 +5354,13 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
     function getJoinFromStreamName(jfromStreamId1,jfromStreamId2,jintoStreamId,clickedId)
     {
         var fromNameSt1,fromNameSt2, intoNameSt, streamType, selctedSt;
         var elementID=clickedId.charAt(0);
+        
+        // alert("jfromStreamId1: "+jfromStreamId1+"\njfromStreamId2: "+jfromStreamId2);
         
         /*The following checks whether the source/ the from stream is a Parttion condition
           This is done by pattern matching of the source's/from Stream's ID
@@ -5373,16 +5374,19 @@
         var idTest2=/^\d+-pc\d+$/.test(jfromStreamId2);
         var fromStreamIndex1,fromStreamIndex2,intoStreamIndex;
 
-        for(var x = 0; x<100; x++)
+
+        // alert("elClickedId1: "+elClickedId1+"\nsubPcId1: "+subPcId1+"\nidTest1: "+idTest1+"\n--------------------------------"+"\nelClickedId2: "+elClickedId2+"\nsubPcId2: "+subPcId2+"\nidTest2: "+idTest2+"\n--------------------------------");
+        
+        /*
+            If the pattern doesn't match, the from stream is not a Partition Condition anchor
+            So can traverse through the Import, Export, Defined and Window Streams
+            @function : To retrieve the first 'from Stream' Name (Left/Right)
+         */
+        if(idTest1==false)
         {
-            /*
-                If the pattern doesn't match, the from stream is not a Partition Condition anchor
-                So can traverse through the Import, Export, Defined and Window Streams
-                @function : To retrieve the first 'from Stream' Name (Left/Right)
-             */
-            if(idTest1==false)
-            {
-                
+            jfromStreamId1 = jfromStreamId1.charAt(0);
+            for(var x = 0; x<100; x++) {
+
                 if (createdImportStreamArray[x][0] == jfromStreamId1) {
                     fromNameSt1 = createdImportStreamArray[x][2];
                     fromStreamIndex1 = x;
@@ -5400,26 +5404,34 @@
                     fromStreamIndex1 = x;
                 }
             }
-                
-            /*
-                If the source is a Partition condition anchor, can retrieve the Stream/Window's name that it is associated with
-                or inherits from
-             */
-                
-            else
+        }
+
+        /*
+            If the source is a Partition condition anchor, can retrieve the Stream/Window's name that it is associated with
+            or inherits from
+         */
+
+        else
+        {
+            for(var f=0;f<100;f++)
             {
-                if (createdPartitionConditionArray[x][0]==elClickedId1 && createdPartitionConditionArray[x][5]==subPcId1)
+                if(createdPartitionConditionArray[f][0]==elClickedId1 && createdPartitionConditionArray[f][5] == subPcId1)
                 {
-                    fromNameSt1 = createdPartitionConditionArray[x][6];
-                    fromStreamIndex1 = x;
+                    fromNameSt1 = createdPartitionConditionArray[f][1];
+                    fromStreamIndex1 = elClickedId1;
                 }
             }
             
-            /*
-                @function : To retrieve the second 'from Stream' Name (Left/Right)
-            */
+        }
 
-            if(idTest2==false)
+        /*
+            @function : To retrieve the second 'from Stream' Name (Left/Right)
+        */
+
+        if(idTest2==false)
+        {
+            jfromStreamId2 = jfromStreamId2.charAt(0);
+            for(var x = 0; x<100; x++)
             {
                 if (createdImportStreamArray[x][0] == jfromStreamId2) {
                     fromNameSt2 = createdImportStreamArray[x][2];
@@ -5438,48 +5450,50 @@
                     fromStreamIndex2 = x;
                 }
             }
-            else
+        }
+        else
+        {
+            for(var f=0;f<100;f++)
             {
-                if (createdPartitionConditionArray[x][0]==elClickedId2 && createdPartitionConditionArray[x][5]==subPcId2)
+                if(createdPartitionConditionArray[f][0]==elClickedId2 && createdPartitionConditionArray[f][5] == subPcId2)
                 {
-                    fromNameSt2 = createdPartitionConditionArray[x][1];
-                    fromStreamIndex2 = x;
+                    fromNameSt2 = createdPartitionConditionArray[f][1];
+                    fromStreamIndex2 = elClickedId2;
                 }
             }
+        }
 
-
+        for(var x = 0; x<100; x++)
+        {
             //To retrieve the 'into Stream' Name
-            if(createdImportStreamArray[x][0]==jintoStreamId)
-            {
+            if (createdImportStreamArray[x][0] == jintoStreamId) {
                 intoNameSt = createdImportStreamArray[x][2];
                 streamType = "import";
                 selctedSt = createdImportStreamArray[x][1];
                 intoStreamIndex = x;
             }
-            else if(createdExportStreamArray[x][0]==jintoStreamId)
-            {
+            else if (createdExportStreamArray[x][0] == jintoStreamId) {
                 intoNameSt = createdExportStreamArray[x][2];
                 streamType = "export";
                 selctedSt = createdExportStreamArray[x][1];
                 intoStreamIndex = x;
             }
-            else if(createdDefinedStreamArray[x][0]==jintoStreamId)
-            {
+            else if (createdDefinedStreamArray[x][0] == jintoStreamId) {
                 intoNameSt = createdDefinedStreamArray[x][1];
                 streamType = "defined";
                 intoStreamIndex = x;
                 var defAttrNum = createdDefinedStreamArray[x][2].length;
             }
-            else if(createdWindowStreamArray[x][0]==jintoStreamId)
-            {
+            else if (createdWindowStreamArray[x][0] == jintoStreamId) {
                 intoNameSt = createdWindowStreamArray[x][1];
                 streamType = "window";
                 intoStreamIndex = x;
                 var defAttrNum = createdDefinedStreamArray[x][4].length;
 
             }
-
         }
+
+      
         //To retrieve the number of attributes
         getAttributes(selctedSt);
         //attrNumber gives the number of attributes
@@ -5502,7 +5516,7 @@
         var fromStreamNameListArray = [];
         var fromStreamIndexListArray = [];
 
-        alert("Say it: " +connectedStreamIdListArray);
+        //alert("Say it: " +connectedStreamIdListArray);
 
         for(var f=0; f<connectedStreamIdListArray.length;f++)
         {
@@ -5529,7 +5543,7 @@
             }
         }
         
-        alert("connectionStreamArray: "+ connectionStreamArray +"\nconnectionPartitionArray: "+connectionPartitionArray);
+        //alert("connectionStreamArray: "+ connectionStreamArray +"\nconnectionPartitionArray: "+connectionPartitionArray);
 
         if(connectionStreamArray.length >0)
         {
@@ -5601,7 +5615,7 @@
         }
 
 
-        alert("Final fromNameLIstArray: "+fromStreamNameListArray);
+        //alert("Final fromNameLIstArray: "+fromStreamNameListArray);
         elementID=elementID.charAt(0);
         //To retrieve the number of attributes
         getAttributes(selctedSt);
