@@ -205,6 +205,7 @@
                 else if (dropElem == "squery ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('squerydrop');
                     droptype = "squerydrop";
+                    //Drop the element instantly since its attributes will be set only when the user requires it
                     dropQuery(newAgent, i, e,droptype,mouseTop,mouseLeft,"Empty Query");
                     i++;
                     finalElementCount=i;
@@ -214,6 +215,7 @@
                 else if (dropElem == "filter ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('filterdrop');
                     droptype = "filterdrop";
+                    //Drop the element instantly since its attributes will be set only when the user requires it
                     dropQuery(newAgent, i, e,droptype,mouseTop,mouseLeft,"Empty Query");
                     i++;
                     finalElementCount=i;
@@ -223,6 +225,7 @@
                 else if (dropElem == "wquery ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('wquerydrop');
                     droptype = "wquerydrop";
+                    //Drop the element instantly since its attributes will be set only when the user requires it
                     dropQuery(newAgent, i, e, droptype,mouseTop,mouseLeft,"Empty Query");
                     i++;
                     finalElementCount=i;
@@ -232,6 +235,7 @@
                 else if (dropElem == "joquery ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('joquerydrop');
                     droptype = "joquerydrop";
+                    //Drop the element instantly since its attributes will be set only when the user requires it
                     dropQuery(newAgent, i, e, droptype,mouseTop,mouseLeft,"Empty Query");
                     i++;
                     finalElementCount=i;
@@ -241,6 +245,7 @@
                 else if(dropElem == "stquery ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('stquerydrop');
                     droptype = "stquerydrop";
+                    //Drop the element instantly since its attributes will be set only when the user requires it
                     dropQuery(newAgent, i, e, droptype,mouseTop,mouseLeft,"Empty Query");
                     i++;
                     finalElementCount=i;
@@ -251,6 +256,7 @@
                     var newAgent = $('<div>').attr('id', i).addClass('partitiondrop');
                     droptype = "partitiondrop";
                     $(droppedElement).draggable({containment: "container"});
+                    //Drop the element instantly since its attributes will be set only when the user requires it
                     dropPartition(newAgent,i,e,droptype);
                     //Todo: Issues in dragging + resizing a partition at the same time.
                     /*Hence, for now, the partition can be dragged and dropped onto the canvas but after that it cannot be dragged within the canvas.
@@ -265,9 +271,14 @@
                     i++;
                     finalElementCount=i;
                 }
+
+
                 /*
-                @function Delete an element detaching all its connections when the 'boxclose' icon is clicked
+                    @function Delete an element detaching all its connections when the 'boxclose' icon is clicked
+                    @description Though the functionality of the 3 are the same, they are differenciated as their css positioning differs.
                  */
+
+                //Remove Element Icon for the stream elements
                 newAgent.on('click', '.boxclose', function (e) {
 
                     jsPlumb.detachAllConnections(newAgent.attr('id'));
@@ -275,6 +286,8 @@
                     jsPlumb.detach($(this));
                     $(newAgent).remove();
                 });
+
+                //Remove Element Icon for the Window stream element
                 newAgent.on('click', '.boxclosewindow', function (e) {
 
                     jsPlumb.detachAllConnections(newAgent.attr('id'));
@@ -282,6 +295,8 @@
                     jsPlumb.detach($(this));
                     $(newAgent).remove();
                 });
+
+                //Remove Element Icon for the query element
                 newAgent.on('click', '.boxclose1', function (e) {
 
                     jsPlumb.detachAllConnections(newAgent.attr('id'));
@@ -1557,11 +1572,16 @@
         return PredefinedStreamComboDiv;
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                          STREAM ELEMENT RELATED FUNCTIONALITIES
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * @function Create the Stream Property Form dynamically
+     * @description The Stream form is divided into 3 sections.
+     *      1. Import stream Form
+     *      2. Export Stream Form
+     *      3. Defined stream Form
      */
 
     var importDiv, iStreamtype,headingimport, br, istreamlbl, istreamtypelbl, iPredefStreamdiv, istreamDefLineDiv, istreamDefDivx, istreamName, importbtn;
@@ -1573,7 +1593,8 @@
 
     function createStreamForm(newAgent,i,e,mouseTop, mouseLeft)
     {
-        //For the Import Form
+        /*------------Start of Import form elements definition----------*/
+
         importDiv = document.createElement("div");
         iStreamtype = document.createElement("div");
         headingimport = document.createElement("h3");
@@ -1608,6 +1629,10 @@
             storeImportStreamInfo(newAgent,i,e,kind,mouseTop,mouseLeft);
         };
 
+        /*------------End of Import form elements definition----------*/
+
+        /*-----Appending Import form elements to the importDiv ----------*/
+
         importDiv.appendChild(headingimport);
         importDiv.appendChild(iStreamtype);
         importDiv.appendChild(istreamlbl);
@@ -1626,7 +1651,8 @@
         importDiv.appendChild(br);
 
 
-        //For the Export Form
+        /*------------Start of Export form elements definition----------*/
+
         exportDiv = document.createElement("div");
         eStreamtype = document.createElement("div");
         headingexport = document.createElement("h3");
@@ -1660,6 +1686,10 @@
             storeExportStreamInfo(newAgent,i,e,typek);
         };
 
+        /*-----------End of Export form elements definition-----------*/
+
+        /*-----Appending Export form elements to the importDiv ----------*/
+
         exportDiv.appendChild(headingexport);
         exportDiv.appendChild(estreamlbl);
         exportDiv.appendChild(estreamtypelbl);
@@ -1676,7 +1706,8 @@
         exportDiv.appendChild(exportbtn);
         exportDiv.appendChild(br);
 
-        //For the Defined Stream Form
+
+        /*----------Start of defined form elements definition---------*/
 
         streamDiv = document.createElement("div");
         streambtn =  document.createElement("button");
@@ -1703,6 +1734,17 @@
         endStreamDefBtn.onclick = function() {
             storeDefinedStreamInfo(newAgent,i,e,kindt);
         };
+
+        /*-----------End of Defined form elements definition-----------
+        *
+        * @description Defined Stream form elements are appended to their division only
+        *              if the user chooses to create a defined stream
+        *
+        * */
+
+        /*-----------End of Export form elements definition-----------*/
+
+
         streamFomCloseButton=document.createElement("button");
         streamFomCloseButton.type="button";
         streamFomCloseButton.className="streamFomCloseButton";
@@ -1728,6 +1770,212 @@
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @function Store Import Stream info to array
+     * @param i --> Element Id
+     */
+
+    function storeImportStreamInfo(newAgent,i,e,kind,mouseTop,mouseLeft)
+    {
+        /*
+            The node hosts a text node where the Stream's name input by the user will be held.
+            Rather than simply having a `newAgent.text(streamName)` statement, as the text function tends to
+            reposition the other appended elements with the length of the Stream name input by the user.
+         */
+        var node = document.createElement("div");
+        node.id = i+"-nodeInitial";
+        node.className = "streamNameNode";
+
+        //Retrieve the Predefined stream selected by the user from the combobox
+        var choice=document.getElementById("streamSelect");
+        var selectedStream = choice.options[choice.selectedIndex].text;
+
+        //Retrieve the Stream name input by the user
+        var asName= document.getElementById("istreamName").value;
+
+        var StreamElementID = i;
+
+        createdImportStreamArray[i-1][0]=StreamElementID;   //Element ID
+        createdImportStreamArray[i-1][1]=selectedStream;    //The Predefined Stream selected
+        createdImportStreamArray[i-1][2]=asName;            //The stream name provided by the user
+        createdImportStreamArray[i-1][3]="Import";          //Not mandatory
+
+        //Assign the Stream name input by the user to the textnode to be displayed on the dropped Stream
+        var textnode = document.createTextNode(asName);
+        textnode.id = i+"-textnodeInitial";
+        node.appendChild(textnode);
+
+        /*
+            prop --> When clicked on this icon, a definition and related information of the Stream Element will be displayed as an alert message
+            showIcon --> An icon that elucidates whether the dropped stream element is an Import/Export/Defined stream (In this case: an Import arrow icon)
+            conIcon --> Clicking this icon is supposed to toggle between showing and hiding the "Connection Anchor Points" (Not implemented)
+            boxclose --> Icon to remove/delete an element
+         */
+        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-propImportStream'));
+        var showIcon = $('<img src="../Images/Import.png" class="streamIconloc"></b></a> ').attr('id', (i));
+        var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (i+'vis'));
+        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
+
+        dropCompleteElement(newAgent,i,e,kind,mouseTop,mouseLeft);
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Store Export stream info to array
+     */
+    function storeExportStreamInfo(newAgent,i,e,kind,mouseTop,mouseLeft)
+    {
+        var node = document.createElement("div");
+        node.id = i+"-nodeInitial";
+        node.className = "streamNameNode";
+
+        var choice=document.getElementById("streamSelectExp");
+        var selectedStream = choice.options[choice.selectedIndex].text;
+        var asName= document.getElementById("estreamName").value;
+        var StreamElementID = i;
+
+        createdExportStreamArray[i-1][0]=StreamElementID;
+        createdExportStreamArray[i-1][1]=selectedStream;
+        createdExportStreamArray[i-1][2]=asName;
+        createdExportStreamArray[i-1][3]="Export";
+
+        var textnode = document.createTextNode(asName);
+        textnode.id = i+"-textnodeInitial";
+        node.appendChild(textnode);
+
+        var element=document.getElementById(newAgent);
+
+        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-propExportStream'));
+        var showIcon = $('<img src="../Images/Export.png" class="streamIconloc"></b></a> ').attr('id', (i));
+        var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (i+'vis'));
+        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
+        dropCompleteElement(newAgent,i,e,kind,mouseTop,mouseLeft);
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Store Defined stream info to array
+     */
+
+    function storeDefinedStreamInfo(newAgent,i,e,kind,mouseTop,mouseLeft)
+    {
+        var node = document.createElement("div");
+        node.id = i+"-nodeInitial";
+        node.className = "streamNameNode";
+
+        var StrName= document.getElementById("StreamNameInput").value;
+        var StreamElementID = i;
+        var table = document.getElementById('attrtable');
+        var tblerows = (table.rows.length);
+        createdDefinedStreamArray[i][2]=new Array(tblerows);
+
+
+        for (r = 1; r < tblerows; r++) {
+            for(var c=0; c<1;c++) {
+                var attrNm = table.rows[r].cells[c].innerHTML;
+                var attrTp = table.rows[r].cells[1].innerHTML;
+                createdDefinedStreamArray[i][2][r-1]= new Array(2);
+                createdDefinedStreamArray[i][2][r-1][0]=attrNm;
+                createdDefinedStreamArray[i][2][r-1][1]=attrTp;
+            }
+
+        }
+        createdDefinedStreamArray[i][0]=StreamElementID;
+        createdDefinedStreamArray[i][1]=StrName;
+        createdDefinedStreamArray[i][3]="Defined Stream";
+        createdDefinedStreamArray[i][4]= tblerows;
+
+        var textnode = document.createTextNode(StrName);
+        textnode.id = i+"-textnodeInitial";
+        node.appendChild(textnode);
+
+        // console.log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+        // console.log(createdDefinedStreamArray);
+
+        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-propDefinedStream'));
+        var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (i+'vis'));
+        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
+        dropCompleteElement(newAgent,i,e,kind,mouseTop,mouseLeft);
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function dropCompleteElement(newAgent,i,e,kind,ptop,left)
+    {
+        //Define the dropped element(stream) to be manipulated only within the container/canvas
+        $(droppedElement).draggable({containment: "container"});
+
+        var finalElement =  newAgent;
+
+        /*
+            connection --> The connection anchor point is appended to the element
+         */
+
+        if(kind=="import")
+        {
+            var connection = $('<div>').attr('id', i+"-import" ).addClass('connection');
+        }
+        else if (kind=="export")
+        {
+            var connection = $('<div>').attr('id', i+"-export" ).addClass('connection');
+        }
+        else
+        {
+            var connection = $('<div>').attr('id', i+"-defined" ).addClass('connection');
+        }
+
+
+        finalElement.css({
+            'top': ptop,
+            'left': left
+        });
+
+        // connection.hide();
+        finalElement.append(connection);
+
+        $('#container').append(finalElement);
+
+        jsPlumb.draggable(finalElement, {
+            containment: 'parent'
+        });
+
+        jsPlumb.makeTarget(connection, {
+            anchor: 'Continuous',
+            parent: finalElement
+        });
+
+        jsPlumb.makeSource(connection, {
+            parent:finalElement,
+            anchor: 'Continuous'
+        });
+
+        $("#container").removeClass("disabledbutton");
+        $("#toolbox").removeClass("disabledbutton");
+
+        var myNode = document.getElementById("lot");
+        var fc = myNode.firstChild;
+
+        while( fc ) {
+            myNode.removeChild( fc );
+            fc = myNode.firstChild;
+        }
+
+        $(".toolbox-titlex").hide();
+        $(".panel").hide();
+        $("#attrtable tr").remove();
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                          STREAM ELEMENT RELATED FUNCTIONALITIES
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
     /**
@@ -1961,191 +2209,6 @@
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * @function Store Import Stream info to array
-     */
-
-    function storeImportStreamInfo(newAgent,i,e,kind,mouseTop,mouseLeft)
-    {
-        var node = document.createElement("div");
-        node.id = i+"-nodeInitial";
-        node.className = "streamNameNode";
-
-        var choice=document.getElementById("streamSelect");
-        var selectedStream = choice.options[choice.selectedIndex].text;
-        var asName= document.getElementById("istreamName").value;
-        var StreamElementID = i;
-
-        createdImportStreamArray[i-1][0]=StreamElementID;
-        createdImportStreamArray[i-1][1]=selectedStream;
-        createdImportStreamArray[i-1][2]=asName;
-        createdImportStreamArray[i-1][3]="Import";
-
-        var textnode = document.createTextNode(asName);
-        textnode.id = i+"-textnodeInitial";
-        node.appendChild(textnode);
-
-        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-propImportStream'));
-        var showIcon = $('<img src="../Images/Import.png" class="streamIconloc"></b></a> ').attr('id', (i));
-        var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (i+'vis'));
-        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
-        dropCompleteElement(newAgent,i,e,kind,mouseTop,mouseLeft);
-
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Store Export stream info to array
-     */
-    function storeExportStreamInfo(newAgent,i,e,kind,mouseTop,mouseLeft)
-    {
-        var node = document.createElement("div");
-        node.id = i+"-nodeInitial";
-        node.className = "streamNameNode";
-
-        var choice=document.getElementById("streamSelectExp");
-        var selectedStream = choice.options[choice.selectedIndex].text;
-        var asName= document.getElementById("estreamName").value;
-        var StreamElementID = i;
-        
-        createdExportStreamArray[i-1][0]=StreamElementID;
-        createdExportStreamArray[i-1][1]=selectedStream;
-        createdExportStreamArray[i-1][2]=asName;
-        createdExportStreamArray[i-1][3]="Export";
-
-        var textnode = document.createTextNode(asName);
-        textnode.id = i+"-textnodeInitial";
-        node.appendChild(textnode);
-
-        var element=document.getElementById(newAgent);
-
-        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-propExportStream'));
-        var showIcon = $('<img src="../Images/Export.png" class="streamIconloc"></b></a> ').attr('id', (i));
-        var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (i+'vis'));
-        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
-        dropCompleteElement(newAgent,i,e,kind,mouseTop,mouseLeft);
-
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Store Defined stream info to array
-     */
-
-    function storeDefinedStreamInfo(newAgent,i,e,kind,mouseTop,mouseLeft)
-    {
-        var node = document.createElement("div");
-        node.id = i+"-nodeInitial";
-        node.className = "streamNameNode";
-
-        var StrName= document.getElementById("StreamNameInput").value;
-        var StreamElementID = i;
-        var table = document.getElementById('attrtable');
-        var tblerows = (table.rows.length);
-        createdDefinedStreamArray[i][2]=new Array(tblerows);
-
-
-        for (r = 1; r < tblerows; r++) {
-            for(var c=0; c<1;c++) {
-                var attrNm = table.rows[r].cells[c].innerHTML;
-                var attrTp = table.rows[r].cells[1].innerHTML;
-                createdDefinedStreamArray[i][2][r-1]= new Array(2);
-                createdDefinedStreamArray[i][2][r-1][0]=attrNm;
-                createdDefinedStreamArray[i][2][r-1][1]=attrTp;
-            }
-
-        }
-        createdDefinedStreamArray[i][0]=StreamElementID;
-        createdDefinedStreamArray[i][1]=StrName;
-        createdDefinedStreamArray[i][3]="Defined Stream";
-        createdDefinedStreamArray[i][4]= tblerows;
-
-        var textnode = document.createTextNode(StrName);
-        textnode.id = i+"-textnodeInitial";
-        node.appendChild(textnode);
-        
-        // console.log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
-        // console.log(createdDefinedStreamArray);
-
-        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-propDefinedStream'));
-        var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (i+'vis'));
-        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
-        dropCompleteElement(newAgent,i,e,kind,mouseTop,mouseLeft);
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var q=0;
-    var r=0;
-
-    function dropCompleteElement(newAgent,i,e,kind,ptop,left)
-    {
-        $(droppedElement).draggable({containment: "container"});
-
-        var finalElement =  newAgent;
-        r++; q++;
-
-        if(kind=="import")
-        {
-            var connection = $('<div>').attr('id', i+"-import" ).addClass('connection');
-            str = false;
-        }
-        else if (kind=="export")
-        {
-            var connection = $('<div>').attr('id', i+"-export" ).addClass('connection');
-            str = false;
-        }
-        else
-        {
-            var connection = $('<div>').attr('id', i+"-defined" ).addClass('connection');
-            str = false;
-        }
-
-
-        finalElement.css({
-            'top': ptop,
-            'left': left
-        });
-
-       // connection.hide();
-        finalElement.append(connection);
-
-        $('#container').append(finalElement);
-
-        jsPlumb.draggable(finalElement, {
-            containment: 'parent'
-        });
-
-        jsPlumb.makeTarget(connection, {
-            anchor: 'Continuous',
-            parent: finalElement
-        });
-
-        jsPlumb.makeSource(connection, {
-            parent:finalElement,
-            anchor: 'Continuous'
-        });
-
-        $("#container").removeClass("disabledbutton");
-        $("#toolbox").removeClass("disabledbutton");
-
-        var myNode = document.getElementById("lot");
-        var fc = myNode.firstChild;
-
-        while( fc ) {
-            myNode.removeChild( fc );
-            fc = myNode.firstChild;
-        }
-
-        $(".toolbox-titlex").hide();
-        $(".panel").hide();
-        $("#attrtable tr").remove();
-    }
-
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function dropWindowStream(newAgent, i, e,topP,left,asName)
@@ -2164,7 +2227,6 @@
         $(droppedElement).draggable({containment: "container"});
 
         var finalElement =  newAgent;
-        r++; q++;
 
         var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection').text("in");
         var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection').text('out');
@@ -2270,7 +2332,6 @@
         $(droppedElement).draggable({containment: "container"});
 
         var finalElement =  newAgent;
-        r++; q++;
 
         var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection').text("in");
         var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection').text('out');
@@ -3011,7 +3072,6 @@
         $(droppedElement).draggable({containment: "container"});
 
         var finalElement =  newAgent;
-        r++; q++;
 
         var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection').text("in");
         var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection').text('out');
@@ -3066,7 +3126,6 @@
         $(droppedElement).draggable({containment: "container"});
 
         var finalElement =  newAgent;
-        r++; q++;
 
         var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection').text("in");
         var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection').text('out');
