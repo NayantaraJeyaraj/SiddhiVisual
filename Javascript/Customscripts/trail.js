@@ -449,17 +449,20 @@
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
                     var fromStream = createdWindowStreamArray[idOfEl][2];
-
-                    var attrNum = createdDefinedStreamArray[idOfEl][4];
-                    for (var f = 0; f < attrNum; f++) {
-                        attrArray.push({
-                                attrname: createdWindowStreamArray[idOfEl][4][f][0],
-                                as: createdWindowStreamArray[idOfEl][4][f][1]
-                       });
-                    }
+                    
+                    
                     //If the window is defined by the user and not derived from a stream
                     if(fromStream == null)
                     {
+                        var attrNum = createdWindowStreamArray[idOfEl][4];
+                        for (var f = 0; f < attrNum-1; f++) 
+                        {
+                            attrArray.push({
+                                attrname: createdWindowStreamArray[idOfEl][4][f][0],
+                                as: createdWindowStreamArray[idOfEl][4][f][1]
+                            });
+                        }
+                        
                         node.push({
                             id: idOfEl,
                             class: dropElem,
@@ -894,19 +897,16 @@
                         createdWindowStreamArray[id][2] = null;
                         createdWindowStreamArray[id][3] = null;
                     }
-                    // createdWindowStreamArray[id][4] = new Array(tblerows);
-                    //
-                    // for (var r = 1; r < tblerows; r++)
-                    // {
-                    //     for (var c = 0; c < 1; c++)
-                    //     {
-                    //         var attrNm = table.rows[r].cells[c].innerHTML;
-                    //         var attrTp = table.rows[r].cells[1].innerHTML;
-                    //         createdWindowStreamArray[elementID][4][r-1] = [];
-                    //         createdWindowStreamArray[elementID][4][r-1][0] = attrNm;
-                    //         createdWindowStreamArray[elementID][4][r-1][1] = attrTp;
-                    //     }
-                    // }
+
+                    var attrArray = elem.attributes;
+
+                    var r = 1;
+                    $.each(attrArray, function (index, elem) {
+                        createdWindowStreamArray[id][4][r - 1] = new Array(2);
+                        createdWindowStreamArray[id][4][r - 1][0] = elem.attrname;
+                        createdWindowStreamArray[id][4][r - 1][1] = elem.as;
+                        r++;
+                    });
 
                     var newAgent = $('<div>').attr('id', id).addClass('wstreamdrop');
                     dropWindowStream(newAgent, id, e,top,left,asName);
@@ -920,14 +920,18 @@
                     createdPassThroughQueryArray[id][2][1] = elem.fromStream.name;
                     createdPassThroughQueryArray[id][3] = elem.filter;
                     createdPassThroughQueryArray[id][4] = [];
-                    // for(var r=0; r<loopCount;r++)
-                    // {
-                    //     createdPassThroughQueryArray[elementID][4][r] =[];
-                    //     var inputTextBoxID = "input"+r;
-                    //     var attrLabelID = "label" + r;
-                    //     createdPassThroughQueryArray[elementID][4][r][0] = document.getElementById(inputTextBoxID).value;
-                    //     createdPassThroughQueryArray[elementID][4][r][1] = document.getElementById(attrLabelID).innerHTML;
-                    // }
+
+                    var attrArray = elem.attributes;
+
+                    var r = 0;
+                    $.each(attrArray, function (index, elem) {
+                        alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
+                        createdPassThroughQueryArray[id][4][r] = new Array(2);
+                        createdPassThroughQueryArray[id][4][r][0] = elem.attrName;
+                        createdPassThroughQueryArray[id][4][r][1] = elem.attrType;
+                        r++;
+                    });
+                    
                     createdPassThroughQueryArray[id][5][0] = elem.intoStream.index;
                     createdPassThroughQueryArray[id][5][1] = elem.intoStream.name;
 
@@ -3664,7 +3668,7 @@
                 createdWindowStreamArray[elementID][4][r-1][1] = attrTp;
             }
         }
-        alert("Element ID:"+createdWindowStreamArray[elementID][0]+"\nElement Name:"+createdWindowStreamArray[elementID][1]+"\nSelected Stream Index:"+createdWindowStreamArray[elementID][2]+"\nSelected Stream:"+createdWindowStreamArray[elementID][3]);
+        alert("Element ID:"+createdWindowStreamArray[elementID][0]+"\nElement Name:"+createdWindowStreamArray[elementID][1]+"\nSelected Stream Index:"+createdWindowStreamArray[elementID][2]+"\nSelected Stream:"+createdWindowStreamArray[elementID][3]+"\nAttributes:"+createdWindowStreamArray[elementID][4]);
 
 
         var elIdforNode =  elementID+"-windowNode";
