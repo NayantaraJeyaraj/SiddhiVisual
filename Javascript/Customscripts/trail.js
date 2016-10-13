@@ -5545,7 +5545,7 @@
         /*
             @function : To retrieve the second 'from Stream' Name (Left/Right)
         */
-
+        
         if(idTest2==false)
         {
             jfromStreamId2 = jfromStreamId2.charAt(0);
@@ -5624,86 +5624,136 @@
     function getStateMachineFromStreamName(connectedStreamIdListArray, stintoStreamId,elementID)
     {
         var intoNameSt, streamType, selctedSt, intoStreamIndex;
-        var partitionId;
-        var subPcId = [];
-        var idTest = [];
+        var partitionId,elementID;
+        var subPcId;
+        var idTest;
         var connectionStreamArray = [];
         var connectionPartitionArray = [];
 
+        alert("connectedStreamIdListArray: "+connectedStreamIdListArray);
         var fromStreamIndex1,fromStreamIndex2,intoStreamIndex;
         var fromStreamNameListArray = [];
         var fromStreamIndexListArray = [];
 
-        //alert("Say it: " +connectedStreamIdListArray);
-
-        for(var f=0; f<connectedStreamIdListArray.length;f++)
+       
+        for(var m=0;m<connectedStreamIdListArray.length;m++)
         {
-            if (connectedStreamIdListArray[f] == null || connectedStreamIdListArray[f] == undefined || connectedStreamIdListArray[f] == "") 
+            partitionId= connectedStreamIdListArray[m].substr(0, connectedStreamIdListArray[m].indexOf('-'));
+            subPcId = connectedStreamIdListArray[m].substr(connectedStreamIdListArray[m].indexOf("c") + 1);
+            idTest = /^\d+-pc\d+$/.test(connectedStreamIdListArray[m]);
+            
+            if(idTest==false)
             {
-
-            }
-            else 
-            {
-                partitionId = connectedStreamIdListArray[f].substr(0, connectedStreamIdListArray[f].indexOf('-'));
-                //alert("partitionId: "+ partitionId);
-                //subPcId.push(connectedStreamIdListArray[f].substr(connectedStreamIdListArray[f].indexOf("c") + 1));
-                //alert("subPcId array:"+subPcId+"\nSub pc array length: "+subPcId.length);
-                idTest[f] = /^\d+-pc\d+$/.test(connectedStreamIdListArray[f]);
-
-                if (idTest[f] == false) 
+                elementID = connectedStreamIdListArray[m].charAt(0);
+                for(var x = 0; x<100; x++)
                 {
-                    connectionStreamArray.push(connectedStreamIdListArray[f]);
-                }
-                else 
-                {
-                    connectionPartitionArray.push(connectedStreamIdListArray[f].substr(connectedStreamIdListArray[f].indexOf("c") + 1));
-                }
-            }
-        }
-        
-        //alert("connectionStreamArray: "+ connectionStreamArray +"\nconnectionPartitionArray: "+connectionPartitionArray);
-
-        if(connectionStreamArray.length >0)
-        {
-            for(var d=0;d<connectionStreamArray.length;d++)
-            {
-                for (var x = 0; x < 100; x++) 
-                {
-                    //To retrieve the 'from Stream' Names
-                    
-                    if (createdImportStreamArray[x][0] == connectionStreamArray[d]) {
+                    if (createdImportStreamArray[x][0] == elementID) {
                         fromStreamNameListArray.push(createdImportStreamArray[x][2]);
                         fromStreamIndexListArray.push(x);
                     }
-                    else if (createdExportStreamArray[x][0] == connectionStreamArray[d]) {
+                    else if (createdExportStreamArray[x][0] == elementID) {
                         fromStreamNameListArray.push(createdExportStreamArray[x][2]);
                         fromStreamIndexListArray.push(x);
                     }
-                    else if (createdDefinedStreamArray[x][0] == connectionStreamArray[d]) {
+                    else if (createdDefinedStreamArray[x][0] == elementID) {
                         fromStreamNameListArray.push(createdDefinedStreamArray[x][1]);
                         fromStreamIndexListArray.push(x);
                     }
-                    else if (createdWindowStreamArray[x][0] == connectionStreamArray[d]) {
+                    else if (createdWindowStreamArray[x][0] == elementID) {
                         fromStreamNameListArray.push(createdWindowStreamArray[x][1]);
                         fromStreamIndexListArray.push(x);
                     }
                 }
             }
-        }
-        
-        if(connectionPartitionArray.length >0)
-        {
-            for(var q=0;q<connectionPartitionArray.length;q++) 
+            else
             {
-                if (createdPartitionConditionArray[partitionId][5] == connectionPartitionArray[q])
+                for(var f=0;f<100;f++)
                 {
-                    fromStreamNameListArray.push(createdPartitionConditionArray[partitionId][1]);
-                    fromStreamIndexListArray.push(x);
+                    if(createdPartitionConditionArray[f][0]==connectedStreamIdListArray[m].charAt(0))
+                    {
+                        if(createdPartitionConditionArray[f][5] == subPcId)
+                        {
+                            fromStreamNameListArray.push(createdPartitionConditionArray[f][6]);
+                            fromStreamIndexListArray.push(partitionId);   
+                        }
+                    }
                 }
             }
         }
         
-        for (var x = 0; x < 100; x++) {
+        
+
+        // //alert("Say it: " +connectedStreamIdListArray);
+        //
+        // for(var f=0; f<connectedStreamIdListArray.length;f++)
+        // {
+        //     if (connectedStreamIdListArray[f] == null || connectedStreamIdListArray[f] == undefined || connectedStreamIdListArray[f] == "") 
+        //     {
+        //
+        //     }
+        //     else 
+        //     {
+        //         partitionId = connectedStreamIdListArray[f].substr(0, connectedStreamIdListArray[f].indexOf('-'));
+        //         //alert("partitionId: "+ partitionId);
+        //         //subPcId.push(connectedStreamIdListArray[f].substr(connectedStreamIdListArray[f].indexOf("c") + 1));
+        //         //alert("subPcId array:"+subPcId+"\nSub pc array length: "+subPcId.length);
+        //         idTest[f] = /^\d+-pc\d+$/.test(connectedStreamIdListArray[f]);
+        //
+        //         if (idTest[f] == false) 
+        //         {
+        //             connectionStreamArray.push(connectedStreamIdListArray[f]);
+        //         }
+        //         else 
+        //         {
+        //             connectionPartitionArray.push(connectedStreamIdListArray[f].substr(connectedStreamIdListArray[f].indexOf("c") + 1));
+        //         }
+        //     }
+        // }
+        //
+        // //alert("connectionStreamArray: "+ connectionStreamArray +"\nconnectionPartitionArray: "+connectionPartitionArray);
+        //
+        // if(connectionStreamArray.length >0)
+        // {
+        //     for(var d=0;d<connectionStreamArray.length;d++)
+        //     {
+        //         for (var x = 0; x < 100; x++) 
+        //         {
+        //             //To retrieve the 'from Stream' Names
+        //            
+        //             if (createdImportStreamArray[x][0] == connectionStreamArray[d]) {
+        //                 fromStreamNameListArray.push(createdImportStreamArray[x][2]);
+        //                 fromStreamIndexListArray.push(x);
+        //             }
+        //             else if (createdExportStreamArray[x][0] == connectionStreamArray[d]) {
+        //                 fromStreamNameListArray.push(createdExportStreamArray[x][2]);
+        //                 fromStreamIndexListArray.push(x);
+        //             }
+        //             else if (createdDefinedStreamArray[x][0] == connectionStreamArray[d]) {
+        //                 fromStreamNameListArray.push(createdDefinedStreamArray[x][1]);
+        //                 fromStreamIndexListArray.push(x);
+        //             }
+        //             else if (createdWindowStreamArray[x][0] == connectionStreamArray[d]) {
+        //                 fromStreamNameListArray.push(createdWindowStreamArray[x][1]);
+        //                 fromStreamIndexListArray.push(x);
+        //             }
+        //         }
+        //     }
+        // }
+        //
+        // if(connectionPartitionArray.length >0)
+        // {
+        //     for(var q=0;q<connectionPartitionArray.length;q++) 
+        //     {
+        //         if (createdPartitionConditionArray[partitionId][5] == connectionPartitionArray[q])
+        //         {
+        //             fromStreamNameListArray.push(createdPartitionConditionArray[partitionId][1]);
+        //             fromStreamIndexListArray.push(x);
+        //         }
+        //     }
+        // }
+        //
+        for (var x = 0; x < 100; x++) 
+        {
             //To retrieve the 'into Stream' Name
             if (createdImportStreamArray[x][0] == stintoStreamId) {
                 intoNameSt = createdImportStreamArray[x][2];
@@ -5728,9 +5778,9 @@
                 streamType = "window";
                 intoStreamIndex = x;
                 var defAttrNum = createdWindowStreamArray[x][4].length;
-
+        
             }
-        }
+         }
 
 
         //alert("Final fromNameLIstArray: "+fromStreamNameListArray);
