@@ -453,9 +453,9 @@
                     var attrNum = createdDefinedStreamArray[idOfEl][4];
                     for (var f = 0; f < attrNum; f++) {
                         attrArray.push({
-                                        attrname: createdWindowStreamArray[idOfEl][4][f][0],
-                                        as: createdWindowStreamArray[idOfEl][4][f][1]
-                               });
+                                attrname: createdWindowStreamArray[idOfEl][4][f][0],
+                                as: createdWindowStreamArray[idOfEl][4][f][1]
+                       });
                     }
                     //If the window is defined by the user and not derived from a stream
                     if(fromStream == null)
@@ -810,78 +810,78 @@
             }
             else 
             {
-                if(classes == "streamdrop ui-draggable")
+                if(classes == "streamdrop ui-draggable") 
                 {
                     var node = document.createElement("div");
-                    node.id = id+"-nodeInitial";
+                    node.id = id + "-nodeInitial";
                     node.className = "streamNameNode";
-                    
+
                     var asName = elem.name;
-                    
+
                     var textnode = document.createTextNode(asName);
-                    textnode.id = id+"-textnodeInitial";
+                    textnode.id = id + "-textnodeInitial";
                     node.appendChild(textnode);
-                    
+
                     var selectedStream = elem.predefinedStream;
-                    if(kind == "import")
-                    {
-                        createdImportStreamArray[id-1][0]=id;
-                        createdImportStreamArray[id-1][1]=selectedStream;
-                        createdImportStreamArray[id-1][2]=asName;
-                        createdImportStreamArray[id-1][3]="Import";
-                        var newAgent = $('<div style="top:'+top+';bottom:'+bottom+';left:'+left+';right:'+right+'">').attr('id', id).addClass('streamdrop');
+                    if (kind == "import") {
+                        createdImportStreamArray[id - 1][0] = id;
+                        createdImportStreamArray[id - 1][1] = selectedStream;
+                        createdImportStreamArray[id - 1][2] = asName;
+                        createdImportStreamArray[id - 1][3] = "Import";
+                        var newAgent = $('<div style="top:' + top + ';bottom:' + bottom + ';left:' + left + ';right:' + right + '">').attr('id', id).addClass('streamdrop');
                         var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id + '-propImportStream'));
                         var showIcon = $('<img src="../Images/Import.png" class="streamIconloc"></b></a> ').attr('id', (id));
                         var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (id + 'vis'));
                         newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
-                        dropCompleteElement(newAgent, id, e, kind,top,left);
+                        dropCompleteElement(newAgent, id, e, kind, top, left);
                     }
-                    else if (kind == "export")
-                    {
-                        
-                        createdExportStreamArray[id-1][0]=id;
-                        createdExportStreamArray[id-1][1]=selectedStream;
-                        createdExportStreamArray[id-1][2]=asName;
-                        createdExportStreamArray[id-1][3]="Export";
-                        
-                        var newAgent = $('<div style="top:'+top+';bottom:'+bottom+';left:'+left+';right:'+right+'">').attr('id', id).addClass('streamdrop');
-                        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id+'-propExportStream'));
+                    else if (kind == "export") {
+
+                        createdExportStreamArray[id - 1][0] = id;
+                        createdExportStreamArray[id - 1][1] = selectedStream;
+                        createdExportStreamArray[id - 1][2] = asName;
+                        createdExportStreamArray[id - 1][3] = "Export";
+
+                        var newAgent = $('<div style="top:' + top + ';bottom:' + bottom + ';left:' + left + ';right:' + right + '">').attr('id', id).addClass('streamdrop');
+                        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id + '-propExportStream'));
                         var showIcon = $('<img src="../Images/Export.png" class="streamIconloc"></b></a> ').attr('id', (id));
-                        var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (id+'vis'));
+                        var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (id + 'vis'));
                         newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
-                        dropCompleteElement(newAgent,id,e,kind,top,left);
-                        
+                        dropCompleteElement(newAgent, id, e, kind, top, left);
+
                     }
-                    else if(kind == "defined")
+                    else if (kind == "defined") 
                     {
-                        var tblerows =elem.numberOfAttributes;
-                        createdDefinedStreamArray[id][0]=id;
-                        createdDefinedStreamArray[id][1]=asName;
-                        createdDefinedStreamArray[id][3]="Defined Stream";
-                        createdDefinedStreamArray[id][4]= tblerows;
-                        createdDefinedStreamArray[id][2]=new Array(tblerows);
+                        var tblerows = elem.numberOfAttributes;
+                        createdDefinedStreamArray[id][0] = id;
+                        createdDefinedStreamArray[id][1] = asName;
+                        createdDefinedStreamArray[id][3] = "Defined Stream";
+                        createdDefinedStreamArray[id][4] = tblerows;
+                        createdDefinedStreamArray[id][2] = new Array(tblerows);
+                        var attrArray = elem.attributes;
+                        $.each(attrArray, function (index, elem) {
+                            alert("attrName: " + elem.attributeName + "\nattrType: " + elem.attributeType);
+                        });
 
 
-                    
-                        for (r = 1; r < tblerows+1; r++)
-                        {
+                        for (r = 1; r < tblerows + 1; r++) {
                             var attributes = elem.attributes;
-                            for(var c=0; c<attributes.length;c++)
-                            {
-                                createdDefinedStreamArray[id][2][r-1]= new Array(2);
-                                createdDefinedStreamArray[id][2][r-1][0]=attributes.attrArray[c].attributeName;
-                                createdDefinedStreamArray[id][2][r-1][1]=attributes.attrArray[c].attributeType;
+                            for (var c = 0; c < attributes.length; c++) {
+                                createdDefinedStreamArray[id][2][r - 1] = new Array(2);
+                                createdDefinedStreamArray[id][2][r - 1][0] = attributes.attrArray[c].attributeName;
+                                createdDefinedStreamArray[id][2][r - 1][1] = attributes.attrArray[c].attributeType;
                             }
                         }
-                        
-                        var newAgent = $('<div style="top:'+top+';bottom:'+bottom+';left:'+left+';right:'+right+'">').attr('id', id).addClass('streamdrop');
-                        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id+'-propDefinedStream'));
-                        var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (id+'vis'));
+
+                        var newAgent = $('<div style="top:' + top + ';bottom:' + bottom + ';left:' + left + ';right:' + right + '">').attr('id', id).addClass('streamdrop');
+                        var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id + '-propDefinedStream'));
+                        var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (id + 'vis'));
                         newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
-                        dropCompleteElement(newAgent,id,e,kind,top,left);
+                        dropCompleteElement(newAgent, id, e, kind, top, left);
                     }
-                    
                 }
+                    
+                
                     
                 else if(classes == "wstreamdrop ui-draggable")
                 {
