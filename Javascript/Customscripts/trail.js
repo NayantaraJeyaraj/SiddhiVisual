@@ -857,21 +857,16 @@
                         createdDefinedStreamArray[id][1] = asName;
                         createdDefinedStreamArray[id][3] = "Defined Stream";
                         createdDefinedStreamArray[id][4] = tblerows;
-                        createdDefinedStreamArray[id][2] = new Array(tblerows);
                         var attrArray = elem.attributes;
+                        
+                        var r = 1;
                         $.each(attrArray, function (index, elem) {
                             alert("attrName: " + elem.attributeName + "\nattrType: " + elem.attributeType);
+                            createdDefinedStreamArray[id][2][r - 1] = new Array(2);
+                            createdDefinedStreamArray[id][2][r - 1][0] = elem.attributeName;
+                            createdDefinedStreamArray[id][2][r - 1][1] = elem.attributeType;
+                            r++;
                         });
-
-
-                        for (r = 1; r < tblerows + 1; r++) {
-                            var attributes = elem.attributes;
-                            for (var c = 0; c < attributes.length; c++) {
-                                createdDefinedStreamArray[id][2][r - 1] = new Array(2);
-                                createdDefinedStreamArray[id][2][r - 1][0] = attributes.attrArray[c].attributeName;
-                                createdDefinedStreamArray[id][2][r - 1][1] = attributes.attrArray[c].attributeType;
-                            }
-                        }
 
                         var newAgent = $('<div style="top:' + top + ';bottom:' + bottom + ';left:' + left + ';right:' + right + '">').attr('id', id).addClass('streamdrop');
                         var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id + '-propDefinedStream'));
