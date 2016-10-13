@@ -2894,16 +2894,13 @@
         });
 
         $('#container').append(finalElement);
+        
         $(finalElement).resizable({
             resize: function (e, ui) {
                 jsPlumb.repaint(ui.helper);
             }
         });
-        // jsPlumb.draggable(finalElement, {
-        //     containment: 'parent'
-        // });
-
-        
+      
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3034,7 +3031,7 @@
         btnPartitionCondition.id="btnPartitionCondition";
         btnPartitionCondition.innerHTML="Apply Partition Condition";
         btnPartitionCondition.onclick = function () {
-            savePartitionDetailsToStream(clickedId,streamType,fromStreamIndex,selctedSt);
+            savePartitionDetailsToStream(clickedId,streamType,fromStreamIndex,fromStreamName);
         };
 
         partitionCloseButton=document.createElement("button");
@@ -3143,7 +3140,7 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function savePartitionDetailsToStream(clickedId,streamType,fromStreamIndex,selctedSt)
+    function savePartitionDetailsToStream(clickedId,streamType,fromStreamIndex,fromStreamName)
     {
         var partitionIdInput = document.getElementById("partitionIdInput").value;
         var partitionConditionElementID = clickedId;
@@ -3200,7 +3197,7 @@
             createdPartitionConditionArray[elClickedId][1] = partitionIdInput;
             createdPartitionConditionArray[elClickedId][3] = "Partition Condition";
             createdPartitionConditionArray[elClickedId][5] = subPcId;
-            createdPartitionConditionArray[elClickedId][6] = selctedSt;
+            createdPartitionConditionArray[elClickedId][6] = fromStreamName;
 
 
         }
@@ -3260,7 +3257,7 @@
             createdPartitionConditionArray[elClickedId][3] = "Partition Condition";
             createdPartitionConditionArray[elClickedId][4] = createdDefinedStreamArray[fromStreamIndex][2].length;
             createdPartitionConditionArray[elClickedId][5] = subPcId;
-            createdPartitionConditionArray[elClickedId][6] = selctedSt;
+            createdPartitionConditionArray[elClickedId][6] = fromStreamName;
 
 
 
@@ -5453,14 +5450,11 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var partitionintoId;
-    var connectedStreamIdListArray = [];
-    var connectedStream;
-
     function getPartitionConnectionDetails(element)
     {
         var clickedId =  element.id;
         var con=jsPlumb.getAllConnections();
+        var connectedStream, selectedStreamName;
         var list=[];
         var checkPoint=-1;
 
@@ -5473,7 +5467,7 @@
         }
 
         //partitionintoId = partitionintoId.charAt(0);
-        getPartitionFromStreamName(clickedId,connectedStream/*, partitionintoId*/);
+        getPartitionFromStreamName(clickedId,connectedStream);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -5541,7 +5535,7 @@
             {
                 if(createdPartitionConditionArray[f][0]==elClickedId1 && createdPartitionConditionArray[f][5] == subPcId1)
                 {
-                    fromNameSt1 = createdPartitionConditionArray[f][1];
+                    fromNameSt1 = createdPartitionConditionArray[f][6];
                     fromStreamIndex1 = elClickedId1;
                 }
             }
@@ -5581,7 +5575,7 @@
             {
                 if(createdPartitionConditionArray[f][0]==elClickedId2 && createdPartitionConditionArray[f][5] == subPcId2)
                 {
-                    fromNameSt2 = createdPartitionConditionArray[f][1];
+                    fromNameSt2 = createdPartitionConditionArray[f][6];
                     fromStreamIndex2 = elClickedId2;
                 }
             }
@@ -5751,13 +5745,11 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var attributelist = [];
-
-    function getPartitionFromStreamName(clickedId, connectedStream/*,partitionintoId*/)
+    function getPartitionFromStreamName(clickedId, connectedStream)
     {
-        var intoNameSt, streamType, selctedSt, fromStreamIndex;
+        var streamType, selctedSt, fromStreamIndex;
         var fromStreamName;
-        // alert("getPartitionFromStreamName-connectedStream: "+connectedStream);
+         alert("getPartitionFromStreamName-connectedStream: "+connectedStream);
         for(var x = 0; x<100; x++)
         {
             //To retrieve the 'from Stream' Names
