@@ -925,7 +925,7 @@
 
                     var r = 0;
                     $.each(attrArray, function (index, elem) {
-                        alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
+                        //alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
                         createdPassThroughQueryArray[id][4][r] = new Array(2);
                         createdPassThroughQueryArray[id][4][r][0] = elem.attrName;
                         createdPassThroughQueryArray[id][4][r][1] = elem.attrType;
@@ -947,14 +947,16 @@
                     createdSimpleQueryArray[id][2][1] = elem.fromStream.name;
                     createdSimpleQueryArray[id][3] = elem.filter;
                     createdSimpleQueryArray[id][4] = [];
-                    // for(var r=0; r<loopCount;r++)
-                    // {
-                    //     createdSimpleQueryArray[elementID][4][r] =[];
-                    //     var inputTextBoxID = "input"+r;
-                    //     var attrLabelID = "label" + r;
-                    //     createdSimpleQueryArray[elementID][4][r][0] = document.getElementById(inputTextBoxID).value;
-                    //     createdSimpleQueryArray[elementID][4][r][1] = document.getElementById(attrLabelID).innerHTML;
-                    // }
+                    var attrArray = elem.attributes;
+
+                    var r = 0;
+                    $.each(attrArray, function (index, elem) {
+                        alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
+                        createdSimpleQueryArray[id][4][r] = new Array(2);
+                        createdSimpleQueryArray[id][4][r][0] = elem.attrName;
+                        createdSimpleQueryArray[id][4][r][1] = elem.attrType;
+                        r++;
+                    });
                     createdSimpleQueryArray[id][5][0] = elem.intoStream.index;
                     createdSimpleQueryArray[id][5][1] = elem.intoStream.name;
 
@@ -5445,8 +5447,7 @@
 
         getStateMachineFromStreamName(connectedStreamIdListArray, stintoStreamId,element.id);
     }
-    //TODO connectedStreamIdListArray gets unwanted data for partition conditions
-
+    
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function getPartitionConnectionDetails(element)
