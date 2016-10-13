@@ -193,7 +193,7 @@
                     */
 
                     createStreamForm(newAgent, i, e,mouseTop,mouseLeft);
-                    i++;
+                    i++;    //Increment the Element ID for the next dropped Element
                     finalElementCount=i;
                 }
 
@@ -2001,11 +2001,332 @@
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //                                                                            END STREAM ELEMENT RELATED FUNCTIONALITIES                                                                                  //
+    //                                                                            WINDOW(STREAM) ELEMENT RELATED FUNCTIONALITIES                                                                                  //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * @function Drop a window stream on the canvas
+     * @param newAgent
+     * @param i
+     * @param e
+     * @param topP
+     * @param left
+     * @param asName
+     */
+
+    function dropWindowStream(newAgent, i, e,topP,left,asName)
+    {
+        /*
+         The node hosts a text node where the Window's name, input by the user will be held.
+         Rather than simply having a `newAgent.text(windowName)` statement, as the text function tends to
+         reposition the other appended elements with the length of the Stream name input by the user.
+         */
+        var windowNode = document.createElement("div");
+        windowNode.id = i+"-windowNode";
+        windowNode.className = "windowNameNode";
+        var windowTextnode = document.createTextNode(asName);   //Initially the asName will be "Window" as the has not yet initialized the window
+        windowTextnode.id = i+"-windowTextnode";
+        windowNode.appendChild(windowTextnode);
+
+        var prop = $('<a onclick="getConnectionDetailsForWindow(this)"><b><img src="../Images/settings.png" class="windowSettingIconLoc"></b></a> ').attr('id', (i+('-prop')));
+        var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefinedwindow"></b></a> ').attr('id', (i+'vis'));
+        newAgent.append(windowNode).append('<a class="boxclosewindow" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
+
+        $(droppedElement).draggable({containment: "container"});
+
+        var finalElement =  newAgent;
+
+        var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection').text("in");
+        var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection').text('out');
+
+        finalElement.css({
+            'top': topP,
+            'left': left
+        });
+
+        finalElement.append(connectionIn);
+        finalElement.append(connectionOut);
+
+        $('#container').append(finalElement);
+
+        jsPlumb.draggable(finalElement, {
+            containment: 'parent'
+        });
+
+        jsPlumb.makeTarget(connectionIn, {
+            anchor: 'Continuous',
+            maxConnections:1
+        });
+        // jsPlumb.makeTarget(connectionOut, {
+        //     anchor: 'Continuous'
+        // });
+
+        jsPlumb.makeSource(connectionOut, {
+            anchor: 'Continuous'
+        });
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+    function getConnectionDetailsForWindow(element)
+    {
+        var fromStreamIdForWindow;
+        var clickedId =  element.id;
+        var elementIdentity= element.id;
+        var elementID=clickedId = clickedId.charAt(0); //Extract the window element's ID from the prop's ID
+
+        /*
+            The window has two connection achor points
+                1. in
+                2. out
+            - If the Window is not connected(i.e. derived from a stream that has already been dropped on the container,
+              a form to define the window will be shown.
+            - If the Window is connected to a stream, the connected stream details will be gathered and only a name for the window
+              needs to be specified.
+         */
+        clickedId = clickedId+"-in";
+        var con=jsPlumb.getAllConnections();
+        var list=[];
+        for(var i=0;i<con.length;i++)
+        {
+            if(con[i].targetId==clickedId)
+            {
+                list[i] = new Array(2);
+                list[i][0] = con[i].sourceId;
+                fromStreamIdForWindow =list[i][0];
+                list[i][1] = con[i].targetId;
+            }
+        }
+        if(fromStreamIdForWindow==undefined || fromStreamIdForWindow==null) /* No streams are connected to the in-connector anchor point of the window*/
+        {
+            createWindowDefinitionForm(elementIdentity);
+        }
+        else
+        {
+            fromStreamIdForWindow = fromStreamIdForWindow.charAt(0);
+            getFromStreamNameForWindow(fromStreamIdForWindow,elementID);
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    function createWindowDefinitionForm(i)
+    {
+        $("#container").addClass("disabledbutton");
+        $("#toolbox").addClass("disabledbutton");
+
+        var tableWindowStreamForm = document.createElement('table');    //To display the attributes defined for the window
+        tableWindowStreamForm.id = "tableWindowStreamForm";
+        tableWindowStreamForm.className = "tableWindowStreamForm";
+
+        /*---------Window Form Element Definitions-----------*/
+
+        DefwindowStreamDiv=document.createElement("div");
+        DefwindowStreamDiv.className="DefwindowStreamDiv";
+        DefwindowStreamDiv.id="DefwindowStreamDiv";
+
+        DefWindowAttrTableDiv=document.createElement("div");
+        DefWindowAttrTableDiv.className="DefWindowAttrTableDiv";
+        DefWindowAttrTableDiv.id="DefWindowAttrTableDiv";
+
+        DefWindowAttrDiv=document.createElement("div");
+        DefWindowAttrDiv.className="DefWindowAttrDiv";
+        DefWindowAttrDiv.id="DefWindowAttrDiv";
+
+        DefwindowStreamLabel= document.createElement("label");
+        DefwindowStreamLabel.className="DefwindowStreamLabel";
+        DefwindowStreamLabel.id="DefwindowStreamLabel";
+        DefwindowStreamLabel.innerHTML='Define Window';
+
+        EmptyLabel= document.createElement("label");
+        EmptyLabel.id ="EmptyLabel";
+        EmptyLabel.className ="EmptyLabel";
+        EmptyLabel.innerHTML = "";
+
+        DefForWindowLabel= document.createElement("label");
+        DefForWindowLabel.id ="DefForWindowLabel";
+        DefForWindowLabel.className ="DefForWindowLabel";
+        DefForWindowLabel.innerHTML = "Window Name: ";
+
+        DefNameForWindow= document.createElement("input");
+        DefNameForWindow.id ="DefNameForWindow";
+        DefNameForWindow.className ="DefNameForWindow";
+
+        DefAddAttributes=document.createElement("button");
+        DefAddAttributes.type="button";
+        DefAddAttributes.className="DefAddAttributes";
+        DefAddAttributes.id="DefAddAttributes";
+        DefAddAttributes.innerHTML="Add Atribute";
+        DefAddAttributes.onclick = function () {
+            addAttributeForWindow();    /* Open the form to add attributes to the Window */
+        };
+
+        DefCreateWindow=document.createElement("button");
+        DefCreateWindow.type="button";
+        DefCreateWindow.className="DefCreateWindow";
+        DefCreateWindow.id="DefCreateWindow";
+        DefCreateWindow.innerHTML="Create Window";
+        DefCreateWindow.onclick = function () {
+            CreateWindow(i);
+        };
+
+        WindowStreamCloseButton=document.createElement("button");
+        WindowStreamCloseButton.type="button";
+        WindowStreamCloseButton.className="partitionCloseButton";
+        WindowStreamCloseButton.id="partitionCloseButton";
+        WindowStreamCloseButton.innerHTML="Cancel";
+        WindowStreamCloseButton.onclick = function()
+        {
+            $("#tableWindowStreamForm tr").remove();
+            $("#DefWindowAttrDiv").removeClass("disabledbutton");
+            closeForm();
+        };
+
+
+        // Row 1
+
+        var tr1 = document.createElement('tr');
+        var td1=document.createElement('td');
+
+        td1.appendChild(DefwindowStreamLabel);
+        tr1.appendChild(td1);
+        tableWindowStreamForm.appendChild(tr1);
+
+        // Row 2
+
+        var tr2 = document.createElement('tr');
+        var td2=document.createElement('td');
+        var td3=document.createElement('td');
+
+        td2.appendChild(DefForWindowLabel);
+        tr2.appendChild(td2);
+        td3.appendChild(DefNameForWindow);
+        tr2.appendChild(td3);
+        tableWindowStreamForm.appendChild(tr2);
+
+        // Row 3
+
+        var tr3 = document.createElement('tr');
+        var td4=document.createElement('td');
+        var td5=document.createElement('td');
+
+        td4.appendChild(EmptyLabel);
+        tr3.appendChild(td4);
+        td5.appendChild(DefAddAttributes);
+        tr3.appendChild(td5);
+        tableWindowStreamForm.appendChild(tr3);
+
+        DefwindowStreamDiv.appendChild(tableWindowStreamForm);
+        DefwindowStreamDiv.appendChild(DefWindowAttrTableDiv);
+        DefwindowStreamDiv.appendChild(WindowStreamCloseButton);
+
+        lot.appendChild(DefwindowStreamDiv);
+
+        $(".toolbox-titlex").show();
+        $(".panel").show();
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function addAttributeForWindow()
+    {
+        DefWindowAttrDiv=document.createElement("div");
+        DefWindowAttrDiv.className="DefWindowAttrDiv";
+        DefWindowAttrDiv.id="DefWindowAttrDiv";
+
+        var tableWindowStreamForm = document.createElement('table');
+        tableWindowStreamForm.id = "tableWindowStreamForm";
+        tableWindowStreamForm.className = "tableWindowStreamForm";
+
+        DefWindowAttrTypeComboDiv=document.createElement("div");
+        DefWindowAttrTypeComboDiv.className="DefWindowAttrTypeComboDiv";
+        DefWindowAttrTypeComboDiv.id="DefWindowAttrTypeComboDiv";
+
+        DefForWindowAttrLabel= document.createElement("label");
+        DefForWindowAttrLabel.id ="DefForWindowAttrLabel";
+        DefForWindowAttrLabel.className ="DefForWindowAttrLabel";
+        DefForWindowAttrLabel.innerHTML = "Attribute Name: ";
+
+        EmptyLabel= document.createElement("label");
+        EmptyLabel.id ="EmptyLabel";
+        EmptyLabel.className ="EmptyLabel";
+        EmptyLabel.innerHTML = "";
+
+        DefForWindowAttrInput= document.createElement("input");
+        DefForWindowAttrInput.id ="DefForWindowAttrInput";
+        DefForWindowAttrInput.className ="DefForWindowAttrInput";
+
+        DefForWindowAttrTypeLabel= document.createElement("label");
+        DefForWindowAttrTypeLabel.id ="DefForWindowAttrTypeLabel";
+        DefForWindowAttrTypeLabel.className ="DefForWindowAttrTypeLabel";
+        DefForWindowAttrTypeLabel.innerHTML = "Attribute Type: ";
+
+        
+        //Generate a combo box to display the attribute types
+        var html = '<select id="attrTypeComboForWindow">', attrtypes = typeGenerate(), i;
+        for(i = 0; i < attrtypes.length; i++) {
+            html += "<option value='"+attrtypes[i]+"'>"+attrtypes[i]+"</option>";
+        }
+        html += '</select>';
+
+        DefWindowAttrTypeComboDiv.innerHTML = html;
+
+        DefAddAttributesToTablebtn=document.createElement("button");
+        DefAddAttributesToTablebtn.type="button";
+        DefAddAttributesToTablebtn.className="DefAddAttributesToTablebtn";
+        DefAddAttributesToTablebtn.id="DefAddAttributesToTablebtn";
+        DefAddAttributesToTablebtn.innerHTML="Add";
+        DefAddAttributesToTablebtn.onclick = function () {
+            showAttributesForWindowInTable();
+        };
+
+        // Row 1
+
+        var tr1 = document.createElement('tr');
+        var td1=document.createElement('td');
+        var td2=document.createElement('td');
+
+        td1.appendChild(DefForWindowAttrLabel);
+        tr1.appendChild(td1);
+        td2.appendChild(DefForWindowAttrInput);
+        tr1.appendChild(td2);
+        tableWindowStreamForm.appendChild(tr1);
+
+        // Row 2
+
+        var tr2 = document.createElement('tr');
+        var td3=document.createElement('td');
+        var td4=document.createElement('td');
+
+        td3.appendChild(DefForWindowAttrTypeLabel);
+        tr2.appendChild(td3);
+        td4.appendChild(DefWindowAttrTypeComboDiv);
+        tr2.appendChild(td4);
+        tableWindowStreamForm.appendChild(tr2);
+
+        // Row 3
+
+        var tr3 = document.createElement('tr');
+        var td5=document.createElement('td');
+        var td6=document.createElement('td');
+
+        td5.appendChild(EmptyLabel);
+        tr3.appendChild(td5);
+        td6.appendChild(DefAddAttributesToTablebtn);
+        tr3.appendChild(td6);
+        tableWindowStreamForm.appendChild(tr3);
+
+        DefWindowAttrDiv.appendChild(tableWindowStreamForm);
+        DefwindowStreamDiv.appendChild(DefWindowAttrDiv);
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     /**
      * @function Generate attribute types for the combobox
      * @returns {Array}
@@ -2021,6 +2342,92 @@
         typeArray[5] = "bool";
         return typeArray;
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /*--------------------Global Variables needed for the Window Attributes Table--------------------------------*/
+    var attrName1 = document.createElement("label");
+    var attrType1= document.createElement("label");
+    var closeattr1= document.createElement("button");
+
+    var table1 = document.createElement('table');
+    table1.id = "attrtableForWindow";
+    table1.className = "attrtableForWindow";
+    var tr = document.createElement('tr');
+    var attrNameHeader= document.createElement('td');
+    var attrtypeHeader = document.createElement('td');
+    var attrDeleteHeader   = document.createElement('td');
+    attrNameHeader.innerHTML = "Attribute Name";
+    attrtypeHeader.innerHTML = "Attribute Type";
+    attrDeleteHeader.innerHTML = "Delete Row";
+    tr.appendChild(attrNameHeader);
+    tr.appendChild(attrtypeHeader);
+    tr.appendChild(attrDeleteHeader);
+    table1.appendChild(tr);
+
+    /*--------------------End of Global Variable declaration for Window Attributes Table--------------------------------*/
+
+    /**
+     * @function Append Added attributes to the display table
+     */
+
+    function showAttributesForWindowInTable()
+    {
+        var tr = document.createElement('tr');
+        var attributeName = document.getElementById("DefForWindowAttrInput").value;
+        var choice=document.getElementById("attrTypeComboForWindow");
+        var attrTypeCombo = choice.options[choice.selectedIndex].text;
+
+        DefWindowAttrTableDiv.appendChild(attrName1);
+        DefWindowAttrTableDiv.appendChild(attrType1);
+        DefWindowAttrTableDiv.appendChild(closeattr1);
+
+        var tdAttrName = document.createElement('td');
+        var tdAttrType = document.createElement('td');
+        var tdDelete   = document.createElement('td');
+
+        var text1 = document.createTextNode(attributeName);
+        var text2 = document.createTextNode(attrTypeCombo);
+        var deletebtn =  document.createElement("button");
+        deletebtn.type="button";
+        deletebtn.id ="deletebtn";
+        var text3= "<img src='../Images/Delete.png'>";
+        deletebtn.innerHTML = text3;
+        deletebtn.onclick = function() {
+            deleteRowForWindow(this);
+        };
+
+        tdAttrName.appendChild(text1);
+        tdAttrType.appendChild(text2);
+        tdDelete.appendChild(deletebtn);
+        tr.appendChild(tdAttrName);
+        tr.appendChild(tdAttrType);
+        tr.appendChild(tdDelete);
+        table1.appendChild(tr);
+        DefWindowAttrTableDiv.appendChild(table1);
+
+        DefwindowStreamDiv.appendChild(DefCreateWindow);
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @function Delete a row from the table
+     * @param row
+     */
+    function deleteRowForWindow(row)
+    {
+        var i=row.parentNode.parentNode.rowIndex;
+        document.getElementById('attrtableForWindow').deleteRow(i);
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                            END OF WINDOW(STREAM) ELEMENT RELATED FUNCTIONALITIES                                                                       //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2097,18 +2504,6 @@
     {
         var i=row.parentNode.parentNode.rowIndex;
         document.getElementById('attrtable').deleteRow(i);
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * @function Delete a row from the table
-     * @param row
-     */
-    function deleteRowForWindow(row)
-    {
-        var i=row.parentNode.parentNode.rowIndex;
-        document.getElementById('attrtableForWindow').deleteRow(i);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2235,56 +2630,6 @@
             }
 
         }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function dropWindowStream(newAgent, i, e,topP,left,asName)
-    {
-        var windowNode = document.createElement("div");
-        windowNode.id = i+"-windowNode";
-        windowNode.className = "windowNameNode";
-        var windowTextnode = document.createTextNode(asName);
-        windowTextnode.id = i+"-windowTextnode";
-        windowNode.appendChild(windowTextnode);
-
-        var prop = $('<a onclick="getConnectionDetailsForWindow(this)"><b><img src="../Images/settings.png" class="windowSettingIconLoc"></b></a> ').attr('id', (i+('-prop')));
-        var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefinedwindow"></b></a> ').attr('id', (i+'vis'));
-        newAgent.append(windowNode).append('<a class="boxclosewindow" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
-
-        $(droppedElement).draggable({containment: "container"});
-
-        var finalElement =  newAgent;
-
-        var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection').text("in");
-        var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection').text('out');
-
-        finalElement.css({
-            'top': topP,
-            'left': left
-        });
-
-        finalElement.append(connectionIn);
-        finalElement.append(connectionOut);
-
-        $('#container').append(finalElement);
-
-        jsPlumb.draggable(finalElement, {
-            containment: 'parent'
-        });
-
-        jsPlumb.makeTarget(connectionIn, {
-            anchor: 'Continuous',
-            maxConnections:1
-        });
-        // jsPlumb.makeTarget(connectionOut, {
-        //     anchor: 'Continuous'
-        // });
-
-        jsPlumb.makeSource(connectionOut, {
-            anchor: 'Continuous'
-        });
-
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3230,105 +3575,7 @@
             getFromStreamName(fromStreamId,intoStreamId,elementID);
         }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-    function getConnectionDetailsForWindow(element)
-    {
-        var fromStreamIdForWindow;
-        var clickedId =  element.id;
-        var elementIdentity= element.id;
-        var elementID=clickedId = clickedId.charAt(0);
-        clickedId = clickedId+"-in";
-        var con=jsPlumb.getAllConnections();
-        var list=[];
-        for(var i=0;i<con.length;i++)
-        {
-            if(con[i].targetId==clickedId)
-            {
-                list[i] = new Array(2);
-                list[i][0] = con[i].sourceId;
-                fromStreamIdForWindow =list[i][0];
-                list[i][1] = con[i].targetId;
-            }
-        }
-        if(fromStreamIdForWindow==undefined || fromStreamIdForWindow==null)
-        {
-            createWindowDefinitionForm(elementIdentity);
-        }
-        else
-        {
-            // alert(fromStreamIdForWindow);
-            fromStreamIdForWindow = fromStreamIdForWindow.charAt(0);
-            getFromStreamNameForWindow(fromStreamIdForWindow,elementID);
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var attrName1 = document.createElement("label");
-    var attrType1= document.createElement("label");
-    var closeattr1= document.createElement("button");
-
-    var table1 = document.createElement('table');
-    table1.id = "attrtableForWindow";
-    table1.className = "attrtableForWindow";
-    var tr = document.createElement('tr');
-    var attrNameHeader= document.createElement('td');
-    var attrtypeHeader = document.createElement('td');
-    var attrDeleteHeader   = document.createElement('td');
-    attrNameHeader.innerHTML = "Attribute Name";
-    attrtypeHeader.innerHTML = "Attribute Type";
-    attrDeleteHeader.innerHTML = "Delete Row";
-    tr.appendChild(attrNameHeader);
-    tr.appendChild(attrtypeHeader);
-    tr.appendChild(attrDeleteHeader);
-    table1.appendChild(tr);
-
-    /**
-     * @function Append Added attributes to the display table
-     */
-
-    function showAttributesForWindowInTable()
-    {
-        var tr = document.createElement('tr');
-        var attributeName = document.getElementById("DefForWindowAttrInput").value;
-        var choice=document.getElementById("attrTypeComboForWindow");
-        var attrTypeCombo = choice.options[choice.selectedIndex].text;
-
-        DefWindowAttrTableDiv.appendChild(attrName1);
-        DefWindowAttrTableDiv.appendChild(attrType1);
-        DefWindowAttrTableDiv.appendChild(closeattr1);
-
-        var tdAttrName = document.createElement('td');
-        var tdAttrType = document.createElement('td');
-        var tdDelete   = document.createElement('td');
-
-        var text1 = document.createTextNode(attributeName);
-        var text2 = document.createTextNode(attrTypeCombo);
-        var deletebtn =  document.createElement("button");
-        deletebtn.type="button";
-        deletebtn.id ="deletebtn";
-        var text3= "<img src='../Images/Delete.png'>";
-        deletebtn.innerHTML = text3;
-        deletebtn.onclick = function() {
-            deleteRowForWindow(this);
-        };
-
-        tdAttrName.appendChild(text1);
-        tdAttrType.appendChild(text2);
-        tdDelete.appendChild(deletebtn);
-        tr.appendChild(tdAttrName);
-        tr.appendChild(tdAttrType);
-        tr.appendChild(tdDelete);
-        table1.appendChild(tr);
-        DefWindowAttrTableDiv.appendChild(table1);
-
-        DefwindowStreamDiv.appendChild(DefCreateWindow);
-
-    }
-
+    
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -3398,126 +3645,6 @@
         definestreamdiv.appendChild(endStreamDefBtn);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    function createWindowDefinitionForm(i)
-    {
-        $("#container").addClass("disabledbutton");
-        $("#toolbox").addClass("disabledbutton");
-
-        var tableWindowStreamForm = document.createElement('table');
-        tableWindowStreamForm.id = "tableWindowStreamForm";
-        tableWindowStreamForm.className = "tableWindowStreamForm";
-
-        var predefarr = PredefinedStreams();
-
-        DefwindowStreamDiv=document.createElement("div");
-        DefwindowStreamDiv.className="DefwindowStreamDiv";
-        DefwindowStreamDiv.id="DefwindowStreamDiv";
-
-        DefWindowAttrTableDiv=document.createElement("div");
-        DefWindowAttrTableDiv.className="DefWindowAttrTableDiv";
-        DefWindowAttrTableDiv.id="DefWindowAttrTableDiv";
-
-        DefWindowAttrDiv=document.createElement("div");
-        DefWindowAttrDiv.className="DefWindowAttrDiv";
-        DefWindowAttrDiv.id="DefWindowAttrDiv";
-
-        DefwindowStreamLabel= document.createElement("label");
-        DefwindowStreamLabel.className="DefwindowStreamLabel";
-        DefwindowStreamLabel.id="DefwindowStreamLabel";
-        DefwindowStreamLabel.innerHTML='Define Window';
-
-        EmptyLabel= document.createElement("label");
-        EmptyLabel.id ="EmptyLabel";
-        EmptyLabel.className ="EmptyLabel";
-        EmptyLabel.innerHTML = "";
-
-
-        DefForWindowLabel= document.createElement("label");
-        DefForWindowLabel.id ="DefForWindowLabel";
-        DefForWindowLabel.className ="DefForWindowLabel";
-        DefForWindowLabel.innerHTML = "Window Name: ";
-
-        DefNameForWindow= document.createElement("input");
-        DefNameForWindow.id ="DefNameForWindow";
-        DefNameForWindow.className ="DefNameForWindow";
-
-        DefAddAttributes=document.createElement("button");
-        DefAddAttributes.type="button";
-        DefAddAttributes.className="DefAddAttributes";
-        DefAddAttributes.id="DefAddAttributes";
-        DefAddAttributes.innerHTML="Add Atribute";
-        DefAddAttributes.onclick = function () {
-            addAttributeForWindow();
-        };
-
-        DefCreateWindow=document.createElement("button");
-        DefCreateWindow.type="button";
-        DefCreateWindow.className="DefCreateWindow";
-        DefCreateWindow.id="DefCreateWindow";
-        DefCreateWindow.innerHTML="Create Window";
-        DefCreateWindow.onclick = function () {
-            CreateWindow(i);
-        };
-
-        WindowStreamCloseButton=document.createElement("button");
-        WindowStreamCloseButton.type="button";
-        WindowStreamCloseButton.className="partitionCloseButton";
-        WindowStreamCloseButton.id="partitionCloseButton";
-        WindowStreamCloseButton.innerHTML="Cancel";
-        WindowStreamCloseButton.onclick = function()
-        {
-            $("#tableWindowStreamForm tr").remove();
-            $("#DefWindowAttrDiv").removeClass("disabledbutton");
-            closeForm();
-        };
-
-
-        // Row 1
-
-        var tr1 = document.createElement('tr');
-        var td1=document.createElement('td');
-
-        td1.appendChild(DefwindowStreamLabel);
-        tr1.appendChild(td1);
-        tableWindowStreamForm.appendChild(tr1);
-
-        // Row 2
-
-        var tr2 = document.createElement('tr');
-        var td2=document.createElement('td');
-        var td3=document.createElement('td');
-
-        td2.appendChild(DefForWindowLabel);
-        tr2.appendChild(td2);
-        td3.appendChild(DefNameForWindow);
-        tr2.appendChild(td3);
-        tableWindowStreamForm.appendChild(tr2);
-
-        // Row 3
-
-        var tr3 = document.createElement('tr');
-        var td4=document.createElement('td');
-        var td5=document.createElement('td');
-
-        td4.appendChild(EmptyLabel);
-        tr3.appendChild(td4);
-        td5.appendChild(DefAddAttributes);
-        tr3.appendChild(td5);
-        tableWindowStreamForm.appendChild(tr3);
-
-        DefwindowStreamDiv.appendChild(tableWindowStreamForm);
-        DefwindowStreamDiv.appendChild(DefWindowAttrTableDiv);
-        DefwindowStreamDiv.appendChild(WindowStreamCloseButton);
-
-        lot.appendChild(DefwindowStreamDiv);
-
-        $(".toolbox-titlex").show();
-        $(".panel").show();
-
-    }
 
 
     function CreateWindow(elementID)
@@ -3567,96 +3694,6 @@
     }
 
 
-    function addAttributeForWindow()
-    {
-        DefWindowAttrDiv=document.createElement("div");
-        DefWindowAttrDiv.className="DefWindowAttrDiv";
-        DefWindowAttrDiv.id="DefWindowAttrDiv";
-
-        var tableWindowStreamForm = document.createElement('table');
-        tableWindowStreamForm.id = "tableWindowStreamForm";
-        tableWindowStreamForm.className = "tableWindowStreamForm";
-
-        DefWindowAttrTypeComboDiv=document.createElement("div");
-        DefWindowAttrTypeComboDiv.className="DefWindowAttrTypeComboDiv";
-        DefWindowAttrTypeComboDiv.id="DefWindowAttrTypeComboDiv";
-
-        DefForWindowAttrLabel= document.createElement("label");
-        DefForWindowAttrLabel.id ="DefForWindowAttrLabel";
-        DefForWindowAttrLabel.className ="DefForWindowAttrLabel";
-        DefForWindowAttrLabel.innerHTML = "Attribute Name: ";
-
-        EmptyLabel= document.createElement("label");
-        EmptyLabel.id ="EmptyLabel";
-        EmptyLabel.className ="EmptyLabel";
-        EmptyLabel.innerHTML = "";
-
-        DefForWindowAttrInput= document.createElement("input");
-        DefForWindowAttrInput.id ="DefForWindowAttrInput";
-        DefForWindowAttrInput.className ="DefForWindowAttrInput";
-
-        DefForWindowAttrTypeLabel= document.createElement("label");
-        DefForWindowAttrTypeLabel.id ="DefForWindowAttrTypeLabel";
-        DefForWindowAttrTypeLabel.className ="DefForWindowAttrTypeLabel";
-        DefForWindowAttrTypeLabel.innerHTML = "Attribute Type: ";
-
-        var html = '<select id="attrTypeComboForWindow">', attrtypes = typeGenerate(), i;
-        for(i = 0; i < attrtypes.length; i++) {
-            html += "<option value='"+attrtypes[i]+"'>"+attrtypes[i]+"</option>";
-        }
-        html += '</select>';
-
-        DefWindowAttrTypeComboDiv.innerHTML = html;
-
-        DefAddAttributesToTablebtn=document.createElement("button");
-        DefAddAttributesToTablebtn.type="button";
-        DefAddAttributesToTablebtn.className="DefAddAttributesToTablebtn";
-        DefAddAttributesToTablebtn.id="DefAddAttributesToTablebtn";
-        DefAddAttributesToTablebtn.innerHTML="Add";
-        DefAddAttributesToTablebtn.onclick = function () {
-            showAttributesForWindowInTable();
-        };
-
-        // Row 1
-
-        var tr1 = document.createElement('tr');
-        var td1=document.createElement('td');
-        var td2=document.createElement('td');
-
-        td1.appendChild(DefForWindowAttrLabel);
-        tr1.appendChild(td1);
-        td2.appendChild(DefForWindowAttrInput);
-        tr1.appendChild(td2);
-        tableWindowStreamForm.appendChild(tr1);
-
-        // Row 2
-
-        var tr2 = document.createElement('tr');
-        var td3=document.createElement('td');
-        var td4=document.createElement('td');
-
-        td3.appendChild(DefForWindowAttrTypeLabel);
-        tr2.appendChild(td3);
-        td4.appendChild(DefWindowAttrTypeComboDiv);
-        tr2.appendChild(td4);
-        tableWindowStreamForm.appendChild(tr2);
-
-        // Row 3
-
-        var tr3 = document.createElement('tr');
-        var td5=document.createElement('td');
-        var td6=document.createElement('td');
-
-        td5.appendChild(EmptyLabel);
-        tr3.appendChild(td5);
-        td6.appendChild(DefAddAttributesToTablebtn);
-        tr3.appendChild(td6);
-        tableWindowStreamForm.appendChild(tr3);
-
-        DefWindowAttrDiv.appendChild(tableWindowStreamForm);
-        DefwindowStreamDiv.appendChild(DefWindowAttrDiv);
-
-    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
