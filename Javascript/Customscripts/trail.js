@@ -3779,7 +3779,6 @@
 
     function getFromStreamName(fromId,intoId,elementID)
     {
-
         var fromNameSt, intoNameSt, streamType, selctedSt;
         var fromStreamIndex,intoStreamIndex;
         var attrList = [];
