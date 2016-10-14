@@ -861,6 +861,7 @@
                         createdDefinedStreamArray[id][3] = "Defined Stream";
                         createdDefinedStreamArray[id][4] = tblerows;
                         var attrArray = elem.attributes;
+                        createdDefinedStreamArray[id][2] =[];
                         
                         var r = 1;
                         $.each(attrArray, function (index, elem) {
@@ -886,6 +887,7 @@
                     var asName = elem.name;
                     createdWindowStreamArray[id][0] = id;
                     createdWindowStreamArray[id][1] = asName;
+                    createdWindowStreamArray[id][4] = [];
 
                     if(kind == "derived window")
                     {
@@ -3148,7 +3150,8 @@
         var elClickedId= clickedId.substr(0, clickedId.indexOf('-')); //1-pc1
         var subPcId= clickedId.substr(clickedId.indexOf("c") + 1);
 
-        if (streamType == "import" || streamType == "export") {
+        if (streamType == "import" || streamType == "export") 
+        {
             var tablevar = document.getElementById('tableVariablePartitionConditionDisplay');
             var tableran = document.getElementById('tableRangePartitionConditionDisplay');
 
@@ -5789,7 +5792,7 @@
         getAttributes(selctedSt);
         //attrNumber gives the number of attributes
         //streamInd gives the index of the selected stream
-        createStateMachineQueryForm(elementID, fromStreamNameListArray, intoNameSt, fromStreamIndexListArray, intoStreamIndex, streamType, defAttrNum);
+        createStateMachineQueryForm(elementID, fromStreamNameListArray, intoNameSt, intoStreamIndex, streamType, defAttrNum);
     }
 
 
@@ -5856,7 +5859,7 @@
 
     var stqueryDiv, stqueryDivState, stMultipleStateDiv, stqueryDivLogic, stqueryDivAttrMap;
 
-    function createStateMachineQueryForm(elementID, fromStreamNameListArray, intoNameSt, fromStreamIndexListArray, intoStreamIndex, streamType, defAttrNum)
+    function createStateMachineQueryForm(elementID, fromStreamNameListArray, intoNameSt, intoStreamIndex, streamType, defAttrNum)
     {
         $("#container").addClass("disabledbutton");
         $("#toolbox").addClass("disabledbutton");
@@ -6003,8 +6006,8 @@
 
         stqueryFomButton=document.createElement("button");
         stqueryFomButton.type="button";
-        stqueryFomButton.className="jqueryFomButton";
-        stqueryFomButton.id="jqueryFomButton";
+        stqueryFomButton.className="stqueryFomButton";
+        stqueryFomButton.id="stqueryFomButton";
         stqueryFomButton.innerHTML="Submit Query";
         stqueryFomButton.onclick = function () {
             getStateMachineQueryData(elementID, streamType, defAttrNum);
@@ -6421,13 +6424,15 @@
             createdStateMachineQueryArray[elementID][4][r][0] = document.getElementById(inputTextBoxID).value;
             createdStateMachineQueryArray[elementID][4][r][1] = document.getElementById(attrLabelID).innerHTML;
 
-            //alert(createdJoinQueryArray[elementID][4][r][0]+" as "+createdJoinQueryArray[elementID][4][r][1]);
+            //alert(createdStateMachineQueryArray[elementID][4][r][0]+" as "+createdStateMachineQueryArray[elementID][4][r][1]);
         }
 
         createdStateMachineQueryArray[elementID][5]= insertIntoStream;
 
-        //alert(createdJoinQueryArray[elementID][0]+"-"+createdJoinQueryArray[elementID][1]+"\nLeft\n"+createdJoinQueryArray[elementID][2][0]+"\n"+createdJoinQueryArray[elementID][2][1]+"\n"+createdJoinQueryArray[elementID][2][2]+"\n"+createdJoinQueryArray[elementID][2][3]+"\nRight\n"+createdJoinQueryArray[elementID][3][0]+"\n"+createdJoinQueryArray[elementID][3][1]+"\n"+createdJoinQueryArray[elementID][3][2]+"\n"+createdJoinQueryArray[elementID][3][3]+"\n"+createdJoinQueryArray[elementID][5]);
+        // alert(createdStateMachineQueryArray[elementID][0]+"-"+createdStateMachineQueryArray[elementID][1]+"\nLeft\n"+createdStateMachineQueryArray[elementID][2][0]+"\n"+createdStateMachineQueryArray[elementID][2][1]+"\n"+createdStateMachineQueryArray[elementID][2][2]+"\n"+createdStateMachineQueryArray[elementID][2][3]+"\nRight\n"+createdStateMachineQueryArray[elementID][3][0]+"\n"+createdStateMachineQueryArray[elementID][3][1]+"\n"+createdStateMachineQueryArray[elementID][3][2]+"\n"+createdStateMachineQueryArray[elementID][3][3]+"\n"+createdStateMachineQueryArray[elementID][5]);
 
+        //alert("ElementID: "+createdStateMachineQueryArray[elementID][0]+"\nName: "+createdStateMachineQueryArray[elementID][1]+"\nStates: "+createdStateMachineQueryArray[elementID][2]+"\nprocess Logic: "+createdStateMachineQueryArray[elementID][3]+"Attributes: "+createdStateMachineQueryArray[elementID][4]+"Insert into: "+createdStateMachineQueryArray[elementID][5]);
+        
         var elIdforNode =  elementID+"-nodeInitial";
         document.getElementById(elIdforNode).innerHTML = queryName;
 
