@@ -997,7 +997,7 @@
                     createdSimpleQueryArray[id][2][0] = elem.fromStream.index;
                     createdSimpleQueryArray[id][2][1] = elem.fromStream.name;
                     createdSimpleQueryArray[id][3] = elem.filter;
-                    createdPassThroughQueryArray[id][4] = [];
+                    createdSimpleQueryArray[id][4] = [];
                     var attrArray = elem.attributes;
 
                     var r = 0;
@@ -1024,7 +1024,7 @@
                     createdWindowQueryArray[id][3] = elem.filter1;
                     createdWindowQueryArray[id][4] = elem.window;
                     createdWindowQueryArray[id][5] = elem.filter2;
-                    createdPassThroughQueryArray[id][6] = [];
+                    createdWindowQueryArray[id][6] = [];
 
                     var attrArray = elem.attributes;
 
@@ -1055,7 +1055,7 @@
                     createdJoinQueryArray[id][3][1] = elem.rightStream.filter1;
                     createdJoinQueryArray[id][3][2] = elem.rightStream.window;
                     createdJoinQueryArray[id][3][3] = elem.rightStream.filter2;
-                    createdPassThroughQueryArray[id][4] = [];
+                    createdJoinQueryArray[id][4] = [];
 
                     var attrArray = elem.attributes;
 
@@ -5545,7 +5545,7 @@
         var fromNameSt1,fromNameSt2, intoNameSt, streamType, selctedSt;
         var elementID=clickedId.charAt(0);
         
-        // alert("jfromStreamId1: "+jfromStreamId1+"\njfromStreamId2: "+jfromStreamId2);
+        //alert("jfromStreamId1: "+jfromStreamId1+"\njfromStreamId2: "+jfromStreamId2);
         
         /*The following checks whether the source/ the from stream is a Parttion condition
           This is done by pattern matching of the source's/from Stream's ID
