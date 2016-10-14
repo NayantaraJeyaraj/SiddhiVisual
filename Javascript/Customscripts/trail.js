@@ -449,11 +449,11 @@
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
                     var fromStream = createdWindowStreamArray[idOfEl][2];
-
-                    var attrArray = [];
+                    
                     //If the window is defined by the user and not derived from a stream
                     if(fromStream == null)
                     {
+                        var attrArray = [];
                         var attrNum = createdWindowStreamArray[idOfEl][4].length;
                         for (var f = 0; f < attrNum-1; f++) 
                         {
@@ -865,7 +865,7 @@
                         
                         var r = 0;
                         $.each(attrArray, function (index, elem) {
-                            alert("attrName: " + elem.attributeName + "\nattrType: " + elem.attributeType+"\nr:"+r);
+                            //alert("attrName: " + elem.attributeName + "\nattrType: " + elem.attributeType+"\nr:"+r);
                             createdDefinedStreamArray[id][2][r] = new Array(2);
                             createdDefinedStreamArray[id][2][r][0] = elem.attributeName;
                             createdDefinedStreamArray[id][2][r][1] = elem.attributeType;
@@ -892,23 +892,81 @@
                     {
                         createdWindowStreamArray[id][2] = elem.fromStreamIndex;
                         createdWindowStreamArray[id][3] = elem.fromStreamName;
+                        createdWindowStreamArray[id][4] = [];
+                        
+                        for(var t=0;t<100;t++)
+                        {
+                            if(createdImportStreamArray[t][0]==createdWindowStreamArray[id][2])
+                            {
+                                for(var f=0;f<predefarr.length;f++)
+                                {
+                                    if(predefarr[f][0]==selectedPredefStream)
+                                    {
+                                        for(var r=0;r<predefarr[f][1].length;r++)
+                                        {
+                                            createdWindowStreamArray[id][4][r] = new Array(2);
+                                            createdWindowStreamArray[id][4][r][0] = predefarr[f][1][r];
+                                            createdWindowStreamArray[id][4][r][1] = predefarr[f][2][r];
+                                            //alert("from predefarrName: "+ createdWindowStreamArray[id][4][r][0]+"\nfrom predefarrName: "+ createdWindowStreamArray[id][4][r][1]);
+                                        }
+                                    }
+                                    
+                                }
+                            }
+
+                            else if(createdExportStreamArray[t][0]==createdWindowStreamArray[id][2])
+                            {
+                                for(var f=0;f<predefarr.length;f++)
+                                {
+                                    if(predefarr[f][0]==selectedPredefStream)
+                                    {
+                                        for(var r=0;r<predefarr[f][1].length;r++)
+                                        {
+                                            createdWindowStreamArray[id][4][r] = new Array(2);
+                                            createdWindowStreamArray[id][4][r][0] = predefarr[f][1][r];
+                                            createdWindowStreamArray[id][4][r][1] = predefarr[f][2][r];
+                                            //alert("from predefarrName: "+ createdWindowStreamArray[id][4][r][0]+"\nfrom predefarrName: "+ createdWindowStreamArray[id][4][r][1]);
+                                        }
+                                    }
+
+                                }
+                            }
+
+                            else if(createdDefinedStreamArray[t][0]==createdWindowStreamArray[id][2])
+                            {
+                                for(var f=0;f<createdDefinedStreamArray[t][2].length;f++)
+                                {
+                                    createdWindowStreamArray[id][4][r] = new Array(2);
+                                    createdWindowStreamArray[id][4][r][0] = createdDefinedStreamArray[t][2][f][0];
+                                    createdWindowStreamArray[id][4][r][1] = createdDefinedStreamArray[t][2][f][1];
+                                    //alert("from predefarrName: "+ createdWindowStreamArray[id][4][r][0]+"\nfrom predefarrName: "+ createdWindowStreamArray[id][4][r][1]);
+                                }
+                            }
+                            else if(createdExportStreamArray[t][0] == createdWindowStreamArray[id][2])
+                            {
+                                var selectedPredefStream = createdExportStreamArray[t][1];
+                                alert("selected Predef stream: "+ selectedPredefStream);
+                                var predefarr = PredefinedStreams();
+                            }
+                        }
                     }
-                    else
+                    else if(kind == "defined window")
                     {
                         createdWindowStreamArray[id][2] = null;
                         createdWindowStreamArray[id][3] = null;
+                        createdWindowStreamArray[id][4] = [];
+                        var attrArray = elem.attributes;
+
+                        var r = 0;
+                        $.each(attrArray, function (index, elem) {
+                            createdWindowStreamArray[id][4][r] = new Array(2);
+                            createdWindowStreamArray[id][4][r][0] = elem.attributeName;
+                            createdWindowStreamArray[id][4][r][1] = elem.attributeType;
+                            r++;
+                        });
                     }
 
-                    var attrArray = elem.attributes;
-                    createdWindowStreamArray[id][4] = [];
-
-                    var r = 0;
-                    $.each(attrArray, function (index, elem) {
-                        createdWindowStreamArray[id][4][r] = new Array(2);
-                        createdWindowStreamArray[id][4][r][0] = elem.attributeName;
-                        createdWindowStreamArray[id][4][r][1] = elem.attributeType;
-                        r++;
-                    });
+                    
 
                     var newAgent = $('<div>').attr('id', id).addClass('wstreamdrop');
                     dropWindowStream(newAgent, id, e,top,left,asName);
