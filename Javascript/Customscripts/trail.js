@@ -668,6 +668,7 @@
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
                     var attrArray = [];
+                    var states = [];
                     for(var rec=0;rec<createdStateMachineQueryArray[elId][2].length;rec++)
                     {
                         states.push({
@@ -1067,16 +1068,6 @@
                         createdJoinQueryArray[id][4][r][1] = elem.attrType;
                         r++;
                     });
-                    
-                    // for(var r=0; r<loopCount;r++)
-                    // {
-                    //     createdJoinQueryArray[elementID][4][r] =[];
-                    //     var inputTextBoxID = "jinput"+r;
-                    //     var attrLabelID = "jlabel" + r;
-                    //     createdJoinQueryArray[elementID][4][r][0] = document.getElementById(inputTextBoxID).value;
-                    //     createdJoinQueryArray[elementID][4][r][1] = document.getElementById(attrLabelID).innerHTML;
-                    //     //alert(createdJoinQueryArray[elementID][4][r][0]+" as "+createdJoinQueryArray[elementID][4][r][1]);
-                    // }
 
                     createdJoinQueryArray[id][5]= elem.intoStreamName;
 
@@ -1087,7 +1078,31 @@
                 {
                     createdStateMachineQueryArray[id][0] = id;
                     createdStateMachineQueryArray[id][1] = elem.name;
+                    createdStateMachineQueryArray[id][2] = [];
+                    createdStateMachineQueryArray[id][4] = [];
+                    var attrArray = elem.attributes;
 
+                    var r = 0;
+                    $.each(attrArray, function (index, elem) {
+                        alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
+                        createdStateMachineQueryArray[id][4][r] = new Array(2);
+                        createdStateMachineQueryArray[id][4][r][0] = elem.attrName;
+                        createdStateMachineQueryArray[id][4][r][1] = elem.attrType;
+                        r++;
+                    });
+
+                    var states = elem.state;
+
+                    var q = 0;
+                    $.each(attrArray, function (index, elem) {
+                        alert("State ID: " + elem.stateId + "\nSelected Stream: " + elem.stateSelectedStream+ "\nState Filter: " + elem.stateFilter);
+                        createdStateMachineQueryArray[id][2][q] = new Array(2);
+                        createdStateMachineQueryArray[id][2][q][0] = elem.stateId;
+                        createdStateMachineQueryArray[id][2][q][1] = elem.stateSelectedStream;
+                        createdStateMachineQueryArray[id][2][q][2] = elem.stateFilter;
+                        q++;
+                    });
+                    
                     //Multiple State Info
                     // for(var m = 0; m<=numberOfStateDivs ; m++)
                     // {
@@ -5694,6 +5709,7 @@
         var partitionId,elementID;
         var subPcId;
         var idTest;
+        var elID = elementID;
         var connectionStreamArray = [];
         var connectionPartitionArray = [];
 
@@ -5708,6 +5724,7 @@
             partitionId= connectedStreamIdListArray[m].substr(0, connectedStreamIdListArray[m].indexOf('-'));
             subPcId = connectedStreamIdListArray[m].substr(connectedStreamIdListArray[m].indexOf("c") + 1);
             idTest = /^\d+-pc\d+$/.test(connectedStreamIdListArray[m]);
+            //alert("status for connection "+connectedStreamIdListArray[m]+"\npartitionId: "+partitionId+"\nsubPcId: "+subPcId+"\nidTest: "+idTest);
             
             if(idTest==false)
             {
@@ -5851,7 +5868,7 @@
 
 
         //alert("Final fromNameLIstArray: "+fromStreamNameListArray);
-        elementID=elementID.charAt(0);
+        elementID=elID.charAt(0);
         //To retrieve the number of attributes
         getAttributes(selctedSt);
         //attrNumber gives the number of attributes
@@ -6491,7 +6508,10 @@
             //alert(createdStateMachineQueryArray[elementID][4][r][0]+" as "+createdStateMachineQueryArray[elementID][4][r][1]);
         }
 
+        alert("element ID: "+elementID);
         createdStateMachineQueryArray[elementID][5]= insertIntoStream;
+        
+        //alert(createdStateMachineQueryArray[elementID]);
 
         // alert(createdStateMachineQueryArray[elementID][0]+"-"+createdStateMachineQueryArray[elementID][1]+"\nLeft\n"+createdStateMachineQueryArray[elementID][2][0]+"\n"+createdStateMachineQueryArray[elementID][2][1]+"\n"+createdStateMachineQueryArray[elementID][2][2]+"\n"+createdStateMachineQueryArray[elementID][2][3]+"\nRight\n"+createdStateMachineQueryArray[elementID][3][0]+"\n"+createdStateMachineQueryArray[elementID][3][1]+"\n"+createdStateMachineQueryArray[elementID][3][2]+"\n"+createdStateMachineQueryArray[elementID][3][3]+"\n"+createdStateMachineQueryArray[elementID][5]);
 
