@@ -3854,6 +3854,7 @@
 
         //To retrieve the number of attributes
         getAttributes(selctedSt);
+        alert("element ID: "+ elementID);
         //attrNumber gives the number of attributes
         //streamInd gives the index of the selected stream
         if(droptype=="squerydrop") 
@@ -4405,7 +4406,7 @@
 
         createdSimpleQueryArray[elementID][5][0] = intoStreamIndex;
         createdSimpleQueryArray[elementID][5][1] = intoNameSt;
-
+        alert("element ID inside Filter query save method: "+ elementID);
         var elIdforNode =  elementID+"-nodeInitial";
         document.getElementById(elIdforNode).innerHTML = queryName;
         // document.getElementById(elIdforNode).remove();
@@ -4464,6 +4465,8 @@
 
         createdPassThroughQueryArray[elementID][5][0] = intoStreamIndex;
         createdPassThroughQueryArray[elementID][5][1] = intoNameSt;
+
+        alert("element ID inside Pass through save method: "+ elementID);
 
         var elIdforNode =  elementID+"-nodeInitial";
         document.getElementById(elIdforNode).innerHTML = queryName;
