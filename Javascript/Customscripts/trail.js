@@ -1094,7 +1094,7 @@
                     var states = elem.state;
 
                     var q = 0;
-                    $.each(attrArray, function (index, elem) {
+                    $.each(states, function (index, elem) {
                         alert("State ID: " + elem.stateId + "\nSelected Stream: " + elem.stateSelectedStream+ "\nState Filter: " + elem.stateFilter);
                         createdStateMachineQueryArray[id][2][q] = new Array(2);
                         createdStateMachineQueryArray[id][2][q][0] = elem.stateId;
