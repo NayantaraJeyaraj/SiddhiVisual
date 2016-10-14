@@ -942,12 +942,6 @@
                                     //alert("from predefarrName: "+ createdWindowStreamArray[id][4][r][0]+"\nfrom predefarrName: "+ createdWindowStreamArray[id][4][r][1]);
                                 }
                             }
-                            else if(createdExportStreamArray[t][0] == createdWindowStreamArray[id][2])
-                            {
-                                var selectedPredefStream = createdExportStreamArray[t][1];
-                                alert("selected Predef stream: "+ selectedPredefStream);
-                                var predefarr = PredefinedStreams();
-                            }
                         }
                     }
                     else if(kind == "defined window")
@@ -965,9 +959,7 @@
                             r++;
                         });
                     }
-
                     
-
                     var newAgent = $('<div>').attr('id', id).addClass('wstreamdrop');
                     dropWindowStream(newAgent, id, e,top,left,asName);
                 }
@@ -979,7 +971,7 @@
                     createdPassThroughQueryArray[id][2][0] = elem.fromStream.index;
                     createdPassThroughQueryArray[id][2][1] = elem.fromStream.name;
                     createdPassThroughQueryArray[id][3] = elem.filter;
-
+                    createdPassThroughQueryArray[id][4] = [];
                     var attrArray = elem.attributes;
 
                     var r = 0;
@@ -1005,6 +997,7 @@
                     createdSimpleQueryArray[id][2][0] = elem.fromStream.index;
                     createdSimpleQueryArray[id][2][1] = elem.fromStream.name;
                     createdSimpleQueryArray[id][3] = elem.filter;
+                    createdPassThroughQueryArray[id][4] = [];
                     var attrArray = elem.attributes;
 
                     var r = 0;
@@ -1031,6 +1024,7 @@
                     createdWindowQueryArray[id][3] = elem.filter1;
                     createdWindowQueryArray[id][4] = elem.window;
                     createdWindowQueryArray[id][5] = elem.filter2;
+                    createdPassThroughQueryArray[id][6] = [];
 
                     var attrArray = elem.attributes;
 
@@ -1061,6 +1055,7 @@
                     createdJoinQueryArray[id][3][1] = elem.rightStream.filter1;
                     createdJoinQueryArray[id][3][2] = elem.rightStream.window;
                     createdJoinQueryArray[id][3][3] = elem.rightStream.filter2;
+                    createdPassThroughQueryArray[id][4] = [];
 
                     var attrArray = elem.attributes;
 
