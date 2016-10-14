@@ -379,7 +379,8 @@
                       Since these were intermediate storage points, objects werent created and arrays were used instead.
                      */
                     for (var count = 0; count < 100; count++) {
-                        if (createdImportStreamArray[count][0] == idOfEl) {
+                        if (createdImportStreamArray[count][0] == idOfEl) 
+                        {
                             node.push({
                                 id: idOfEl,
                                 class: dropElem,
@@ -396,7 +397,8 @@
                             });
 
                         }
-                        else if (createdExportStreamArray[count][0] == idOfEl) {
+                        else if (createdExportStreamArray[count][0] == idOfEl) 
+                        {
                             node.push({
                                 id: idOfEl,
                                 class: dropElem,
@@ -412,7 +414,8 @@
                                 kind: "export"
                             });
                         }
-                        else if (createdDefinedStreamArray[count][0] == idOfEl) {
+                        else if (createdDefinedStreamArray[count][0] == idOfEl) 
+                        {
                             var attrNum = createdDefinedStreamArray[count][2].length;
                             var attrArray = [];
                             for (var f = 0; f < attrNum-1; f++) {
@@ -433,11 +436,10 @@
                                     right: position.right
                                 },
                                 name: createdDefinedStreamArray[count][1],
-                                numberOfAttributes: createdDefinedStreamArray[count][4] - 1,
+                                numberOfAttributes: createdDefinedStreamArray[count][4],
                                 kind: "defined",
                                 attributes:attrArray
                             });
-                            // console.log(node);
                         }
                     }
                 }
@@ -452,12 +454,12 @@
                     //If the window is defined by the user and not derived from a stream
                     if(fromStream == null)
                     {
-                        var attrNum = createdWindowStreamArray[idOfEl][4];
+                        var attrNum = createdWindowStreamArray[idOfEl][4].length;
                         for (var f = 0; f < attrNum-1; f++) 
                         {
                             attrArray.push({
-                                attrname: createdWindowStreamArray[idOfEl][4][f][0],
-                                as: createdWindowStreamArray[idOfEl][4][f][1]
+                                attributeName: createdWindowStreamArray[idOfEl][4][f][0],
+                                atrributeType: createdWindowStreamArray[idOfEl][4][f][1]
                             });
                         }
                         
@@ -858,15 +860,15 @@
                         createdDefinedStreamArray[id][1] = asName;
                         createdDefinedStreamArray[id][3] = "Defined Stream";
                         createdDefinedStreamArray[id][4] = tblerows;
+                        createdDefinedStreamArray[id][2] = [];
                         var attrArray = elem.attributes;
-                        createdDefinedStreamArray[id][2] =[];
                         
-                        var r = 1;
+                        var r = 0;
                         $.each(attrArray, function (index, elem) {
-                            alert("attrName: " + elem.attributeName + "\nattrType: " + elem.attributeType);
-                            createdDefinedStreamArray[id][2][r - 1] = new Array(2);
-                            createdDefinedStreamArray[id][2][r - 1][0] = elem.attributeName;
-                            createdDefinedStreamArray[id][2][r - 1][1] = elem.attributeType;
+                            alert("attrName: " + elem.attributeName + "\nattrType: " + elem.attributeType+"\nr:"+r);
+                            createdDefinedStreamArray[id][2][r] = new Array(2);
+                            createdDefinedStreamArray[id][2][r][0] = elem.attributeName;
+                            createdDefinedStreamArray[id][2][r][1] = elem.attributeType;
                             r++;
                         });
 
@@ -885,7 +887,6 @@
                     var asName = elem.name;
                     createdWindowStreamArray[id][0] = id;
                     createdWindowStreamArray[id][1] = asName;
-                    createdWindowStreamArray[id][4] = [];
 
                     if(kind == "derived window")
                     {
@@ -899,12 +900,13 @@
                     }
 
                     var attrArray = elem.attributes;
+                    createdWindowStreamArray[id][4] = [];
 
-                    var r = 1;
+                    var r = 0;
                     $.each(attrArray, function (index, elem) {
-                        createdWindowStreamArray[id][4][r - 1] = new Array(2);
-                        createdWindowStreamArray[id][4][r - 1][0] = elem.attrname;
-                        createdWindowStreamArray[id][4][r - 1][1] = elem.as;
+                        createdWindowStreamArray[id][4][r] = new Array(2);
+                        createdWindowStreamArray[id][4][r][0] = elem.attributeName;
+                        createdWindowStreamArray[id][4][r][1] = elem.attributeType;
                         r++;
                     });
 
@@ -919,7 +921,6 @@
                     createdPassThroughQueryArray[id][2][0] = elem.fromStream.index;
                     createdPassThroughQueryArray[id][2][1] = elem.fromStream.name;
                     createdPassThroughQueryArray[id][3] = elem.filter;
-                    createdPassThroughQueryArray[id][4] = [];
 
                     var attrArray = elem.attributes;
 
@@ -946,7 +947,6 @@
                     createdSimpleQueryArray[id][2][0] = elem.fromStream.index;
                     createdSimpleQueryArray[id][2][1] = elem.fromStream.name;
                     createdSimpleQueryArray[id][3] = elem.filter;
-                    createdSimpleQueryArray[id][4] = [];
                     var attrArray = elem.attributes;
 
                     var r = 0;
@@ -973,7 +973,6 @@
                     createdWindowQueryArray[id][3] = elem.filter1;
                     createdWindowQueryArray[id][4] = elem.window;
                     createdWindowQueryArray[id][5] = elem.filter2;
-                    createdWindowQueryArray[id][6] = [];
 
                     var attrArray = elem.attributes;
 
@@ -1004,7 +1003,6 @@
                     createdJoinQueryArray[id][3][1] = elem.rightStream.filter1;
                     createdJoinQueryArray[id][3][2] = elem.rightStream.window;
                     createdJoinQueryArray[id][3][3] = elem.rightStream.filter2;
-                    createdJoinQueryArray[id][4] = [];
 
                     var attrArray = elem.attributes;
 
@@ -1830,7 +1828,7 @@
         {
             var streamname = createdDefinedStreamArray[clickedelemId][1];
             var attrnum = createdDefinedStreamArray[clickedelemId][4];
-            var tblerows = (table.rows.length)-1;
+            var tblerows = attrnum-1;
             var res = "define stream "+ streamname + "(";
 
 
