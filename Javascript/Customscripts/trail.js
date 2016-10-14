@@ -976,6 +976,18 @@
                     createdWindowQueryArray[id][4] = elem.window;
                     createdWindowQueryArray[id][5] = elem.filter2;
                     createdWindowQueryArray[id][6] = [];
+
+                    var attrArray = elem.attributes;
+
+                    var r = 0;
+                    $.each(attrArray, function (index, elem) {
+                        alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
+                        createdWindowQueryArray[id][6][r] = new Array(2);
+                        createdWindowQueryArray[id][6][r][0] = elem.attrName;
+                        createdWindowQueryArray[id][6][r][1] = elem.attrType;
+                        r++;
+                    });
+                    
                     // for(var r=0; r<loopCount;r++)
                     // {
                     //     createdWindowQueryArray[elementID][6][r] =[];
