@@ -413,11 +413,9 @@
                             });
                         }
                         else if (createdDefinedStreamArray[count][0] == idOfEl) {
-                            var attrNum = createdDefinedStreamArray[count][4];
-
+                            var attrNum = createdDefinedStreamArray[count][2].length;
+                            var attrArray = [];
                             for (var f = 0; f < attrNum-1; f++) {
-
-                                //Loop through the attribute list to retrieve them and store them in attrArray
                                 attrArray.push({
                                         attributeName: createdDefinedStreamArray[count][2][f][0],
                                         attributeType: createdDefinedStreamArray[count][2][f][1]
@@ -449,8 +447,8 @@
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
                     var fromStream = createdWindowStreamArray[idOfEl][2];
-                    
-                    
+
+                    var attrArray = [];
                     //If the window is defined by the user and not derived from a stream
                     if(fromStream == null)
                     {
@@ -505,7 +503,7 @@
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
                     // var arrlen = createdSimpleQueryArray[elId][4].length;
-
+                    var attrArray = [];
                     for(var ct=0;ct<createdSimpleQueryArray[elId][4].length;ct++)
                     {
                         attrArray.push({
@@ -545,7 +543,7 @@
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
                     // var arrlen = createdSimpleQueryArray[elId][4].length;
-
+                    var attrArray = [];
                     for(var ct=0;ct<createdPassThroughQueryArray[elId][4].length;ct++)
                     {
                         attrArray.push({
@@ -583,7 +581,7 @@
                 {
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
-
+                    var attrArray = [];
                     for(var ct=0;ct<createdWindowQueryArray[elId][6].length;ct++)
                     {
                         attrArray.push({
@@ -626,7 +624,7 @@
                 {
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
-
+                    var attrArray = [];
                     for(var ct=0;ct<createdJoinQueryArray[elId][4].length;ct++)
                     {
                         attrArray.push({
@@ -667,7 +665,7 @@
                 {
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
-
+                    var attrArray = [];
                     for(var rec=0;rec<createdStateMachineQueryArray[elId][2].length;rec++)
                     {
                         states.push({
@@ -706,7 +704,7 @@
                 {
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
-
+                    var attrArray = [];
                     for(var rec=0;rec<createdPartitionConditionArray[elId][2].length;rec++)
                     {
                         attrArray.push({
@@ -988,15 +986,6 @@
                         r++;
                     });
                     
-                    // for(var r=0; r<loopCount;r++)
-                    // {
-                    //     createdWindowQueryArray[elementID][6][r] =[];
-                    //     var inputTextBoxID = "winput"+r;
-                    //     var attrLabelID = "wlabel" + r;
-                    //     createdWindowQueryArray[elementID][6][r][0] = document.getElementById(inputTextBoxID).value;
-                    //     createdWindowQueryArray[elementID][6][r][1] = document.getElementById(attrLabelID).innerHTML;
-                    //     alert(createdWindowQueryArray[elementID][6][r][0]+"\t"+createdWindowQueryArray[elementID][6][r][1]);
-                    // }
                     createdWindowQueryArray[id][7][0] = elem.intoStream.index;
                     createdWindowQueryArray[id][7][1] = elem.intoStream.name;
                     
@@ -1016,6 +1005,18 @@
                     createdJoinQueryArray[id][3][2] = elem.rightStream.window;
                     createdJoinQueryArray[id][3][3] = elem.rightStream.filter2;
                     createdJoinQueryArray[id][4] = [];
+
+                    var attrArray = elem.attributes;
+
+                    var r = 0;
+                    $.each(attrArray, function (index, elem) {
+                        alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
+                        createdJoinQueryArray[id][4][r] = new Array(2);
+                        createdJoinQueryArray[id][4][r][0] = elem.attrName;
+                        createdJoinQueryArray[id][4][r][1] = elem.attrType;
+                        r++;
+                    });
+                    
                     // for(var r=0; r<loopCount;r++)
                     // {
                     //     createdJoinQueryArray[elementID][4][r] =[];
