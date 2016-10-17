@@ -20,7 +20,7 @@
     /**
      * @description jsPlumb function opened
      */
-
+   
     jsPlumb.ready(function() {
         
         // jsPlumb.Defaults.Container = $("#container");
@@ -28,6 +28,7 @@
         jsPlumb.Defaults.EndpointStyle = {radius: 7, fillStyle: "palevioletred"}; //Connector endpoint/anchor style
         jsPlumb.importDefaults({Connector: ["Bezier", {curviness: 50}]}); //Connector line style
         jsPlumb.setContainer($('#container'));
+
 
         /**
          * @function draggable method for the 'import stream' tool
@@ -198,6 +199,7 @@
                 }
 
                 //If the dropped Element is a Window(not window query) then->
+                // Todo - Dependency: where the stream from which the window derives needs to be dropped before the window when creating a model
                 else if (dropElem == "wstream ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('wstreamdrop');
                     //Drop the element instantly since its attributes will be set only when the user requires it
