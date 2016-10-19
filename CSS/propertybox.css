@@ -484,6 +484,31 @@ td {
     border-style: none;
 }
 
+.connectorInStream{
+    float: left;
+    margin-top: -33%;
+    margin-left: 0%;
+}
+
+.connectorOutStream{
+    float: right;
+    margin-top: -33%;
+    /*margin-right: -110%;*/
+}
+
+.connectorInWindow{
+    float: left;
+    margin-top: -37%;
+    margin-left: -13px;
+}
+
+.connectorOutWindow{
+    float: right;
+    margin-top: -37%;
+    margin-right: -13px;
+}
+
+
 .connectorIn{
     float: left;
     margin-top: 25%;
@@ -493,7 +518,7 @@ td {
 .connectorOut{
     float: right;
     margin-top: 25%;
-    margin-right: -10%;
+    margin-right: -110%;
 }
 
 .connectorInPart{
@@ -570,8 +595,15 @@ td {
     height:inherit;
     background-color: transparent;
     border: 1px solid transparent;
-    margin-top:-3px;
+    margin-top:40px;
     margin-right:-3px;
+    font-weight:bolder;
+}
+
+.windowNameNode{
+    /*margin-top:40px;*/
+    /*margin-right:-3px;*/
+    font-weight:bolder;
 }
 
 .streamNameNode{
@@ -580,8 +612,9 @@ td {
     height:inherit;
     background-color: transparent;
     border: 1px solid transparent;
-    margin-top:-3px;
+    margin-top:-10px;
     margin-right:-3px;
+    font-weight:bolder;
 }
 
 /* Import & Export Streams */
