@@ -20,15 +20,14 @@
     /**
      * @description jsPlumb function opened
      */
-   
+
     jsPlumb.ready(function() {
         
         // jsPlumb.Defaults.Container = $("#container");
-        jsPlumb.Defaults.PaintStyle = {strokeStyle: "palevioletred", lineWidth: 2, dashstyle: '3 3'}; //Connector line style
-        jsPlumb.Defaults.EndpointStyle = {radius: 7, fillStyle: "palevioletred"}; //Connector endpoint/anchor style
+        jsPlumb.Defaults.PaintStyle = {strokeStyle: "darkblue", lineWidth: 2, dashstyle: '3 3'}; //Connector line style
+        jsPlumb.Defaults.EndpointStyle = {radius: 7, fillStyle: "darkblue"}; //Connector endpoint/anchor style
         jsPlumb.importDefaults({Connector: ["Bezier", {curviness: 50}]}); //Connector line style
         jsPlumb.setContainer($('#container'));
-
 
         /**
          * @function draggable method for the 'import stream' tool
@@ -160,13 +159,17 @@
                 // 1. js-tooling-framework  
                 // 2. All elements on the canvas should be of the same type(.svg/html5)    
                 // 3. Angular schema forms for the form designs    
-                // 4. Disable a stream as soon as it's dropped
+                // 4. Disable a stream as soon as it's dropped - But can't decide on what type of stream to be sroppe as a single Stream Element represents the Import, export and defined streams
+                      //So before initializing the element, it's hard to decide which element needs to be dropped and disable till its nitialization.
             
             drop: function (e, ui) {
                 
                 //mouseTop, mouseLeft - To retrieve the mouse position at the time of drop so that the elements can be placed at the same spot
-                var mouseTop = e.pageX;
-                var mouseLeft = e.pageY;
+                //TODO retrieve offset with regard to the container and not the page
+                var mouseTop = e.clientY;
+                var mouseLeft = e.clientX;
+                // var coords = "X coords: " + mouseTop + ", Y coords: " + mouseLeft;
+                // document.getElementById("container").innerHTML = coords;
 
                 var dropElem = ui.draggable.attr('class');
                 //Clone the element in the toolbox in order to drop the clone on the canvas
@@ -199,7 +202,6 @@
                 }
 
                 //If the dropped Element is a Window(not window query) then->
-                // Todo - Dependency: where the stream from which the window derives needs to be dropped before the window when creating a model
                 else if (dropElem == "wstream ui-draggable") {
                     var newAgent = $('<div>').attr('id', i).addClass('wstreamdrop');
                     //Drop the element instantly since its attributes will be set only when the user requires it
@@ -265,16 +267,6 @@
                     $(droppedElement).draggable({containment: "container"});
                     //Drop the element instantly since its attributes will be set only when the user requires it
                     dropPartition(newAgent,i,e,droptype);
-                    //Todo: Issues in dragging + resizing a partition at the same time.
-                    /*Hence, for now, the partition can be dragged and dropped onto the canvas but after that it cannot be dragged within the canvas.
-                     It can only be resized and the other elements need to be repositioned as desired
-                     Solutions:
-                            1. JsPlumb library's Drag + Resize
-                            2. Interact.js Drag + Resize
-                      But, these implement either one functionality and not both, simultaneously*/
-
-                    // resizePartition(newAgent);
-                    // enableDrag(newAgent);
                     i++;
                     finalElementCount=i;
                 }
@@ -705,26 +697,40 @@
                     });
                 }
     
-                else if(dropElem=="partitiondrop ui-draggable")
+                else if(dropElem=="partitiondrop ui-draggable ui-resizable")
                 {
                     position.bottom = position.top + $element.height();
                     position.right = position.left + $element.width();
                     var attrArray = [];
-                    for(var rec=0;rec<createdPartitionConditionArray[elId][2].length;rec++)
+                    for(var d=0; d<100;d++)
                     {
-                        attrArray.push({
-                            attrName:createdPartitionConditionArray[elId][2][rec][0],
-                            attrType:createdPartitionConditionArray[elId][2][rec][1]
-                        });
+                        if(createdPartitionConditionArray[d][0]== idOfEl)
+                        {
+                            //alert("almost there!\nd: "+ d+"\nidOfEl: "+idOfEl+"\nsubPcId: "+createdPartitionConditionArray[d][5]);
+                        }
                     }
+                    // for(var rec=0;rec<createdPartitionConditionArray[elId][2].length;rec++)
+                    // {
+                    //     attrArray.push({
+                    //         attrName:createdPartitionConditionArray[elId][2][rec][0],
+                    //         attrType:createdPartitionConditionArray[elId][2][rec][1]
+                    //     });
+                    // }
 
                     node.push({
-                        id: createdPartitionConditionArray[elId][0],
+                        id: idOfEl,
+                        class: dropElem,
+                        position: {
+                            top: position.top,
+                            left: position.left,
+                            bottom: position.bottom,
+                            right: position.right
+                        },
                         partitionName: createdPartitionConditionArray[elId][1],
                         type: createdPartitionConditionArray[elId][3],
-                        numberOfConditions: createdPartitionConditionArray[elId][4],
+                        numberOfAttributes: createdPartitionConditionArray[elId][4],
                         subPartitionConditionId: createdPartitionConditionArray[elId][5],
-                        attributes:attrArray
+                        //attributes:attrArray
                     });
                     
                     
@@ -838,7 +844,7 @@
                         var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id + '-propImportStream'));
                         var showIcon = $('<img src="../Images/Import.png" class="streamIconloc"></b></a> ').attr('id', (id));
                         var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (id + 'vis'));
-                        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
+                        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
                         dropCompleteElement(newAgent, id, e, kind, top, left);
                     }
                     else if (kind == "export") {
@@ -852,7 +858,7 @@
                         var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (id + '-propExportStream'));
                         var showIcon = $('<img src="../Images/Export.png" class="streamIconloc"></b></a> ').attr('id', (id));
                         var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (id + 'vis'));
-                        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
+                        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
                         dropCompleteElement(newAgent, id, e, kind, top, left);
 
                     }
@@ -890,11 +896,13 @@
                     var asName = elem.name;
                     createdWindowStreamArray[id][0] = id;
                     createdWindowStreamArray[id][1] = asName;
+                    var predefarr = PredefinedStreams();
 
                     if(kind == "derived window")
                     {
                         createdWindowStreamArray[id][2] = elem.fromStreamIndex;
                         createdWindowStreamArray[id][3] = elem.fromStreamName;
+                        var selectedPredefStream= elem.fromStreamName;
                         createdWindowStreamArray[id][4] = [];
                         
                         for(var t=0;t<100;t++)
@@ -1742,7 +1750,7 @@
         var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-propImportStream'));
         var showIcon = $('<img src="../Images/Import.png" class="streamIconloc"></b></a> ').attr('id', (i));
         var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (i+'vis'));
-        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
+        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
 
         dropCompleteElement(newAgent,i,e,kind,mouseTop,mouseLeft);
 
@@ -1778,7 +1786,7 @@
         var prop = $('<a onclick="doclick(this)"><b><img src="../Images/settings.png" class="settingsIconLoc"></b></a> ').attr('id', (i+'-propExportStream'));
         var showIcon = $('<img src="../Images/Export.png" class="streamIconloc"></b></a> ').attr('id', (i));
         var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined"></b></a> ').attr('id', (i+'vis'));
-        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(showIcon).append(conIcon).append(prop);
+        newAgent.append(node).append('<a class="boxclose" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
         dropCompleteElement(newAgent,i,e,kind,mouseTop,mouseLeft);
 
     }
@@ -1930,8 +1938,8 @@
     {
         //Define the dropped element(stream) to be manipulated only within the container/canvas
         $(droppedElement).draggable({containment: "container"});
-
-        var finalElement =  newAgent;
+        
+        var finalElement = newAgent; 
 
         /*
             connection --> The connection anchor point is appended to the element
@@ -1939,15 +1947,18 @@
 
         if(kind=="import")
         {
-            var connection = $('<div>').attr('id', i+"-import" ).addClass('connection');
+            var connection1 = $('<div class="connectorInStream">').attr('id', i+"-Inimport" ).addClass('connection');
+            var connection2 = $('<div class="connectorOutStream">').attr('id', i+"-Outimport" ).addClass('connection');
         }
         else if (kind=="export")
         {
-            var connection = $('<div>').attr('id', i+"-export" ).addClass('connection');
+            var connection1 = $('<div class="connectorInStream">').attr('id', i+"-Inexport" ).addClass('connection');
+            var connection2 = $('<div class="connectorOutStream">').attr('id', i+"-Outexport" ).addClass('connection');
         }
         else
         {
-            var connection = $('<div>').attr('id', i+"-defined" ).addClass('connection');
+            var connection1 = $('<div class="connectorInStream">').attr('id', i+"-Indefined" ).addClass('connection');
+            var connection2 = $('<div class="connectorOutStream">').attr('id', i+"-Outdefined" ).addClass('connection');
         }
 
 
@@ -1957,7 +1968,8 @@
         });
 
         // connection.hide();
-        finalElement.append(connection);
+        finalElement.append(connection1);
+        finalElement.append(connection2);
 
         $('#container').append(finalElement);
 
@@ -1965,13 +1977,13 @@
             containment: 'parent'
         });
 
-        jsPlumb.makeTarget(connection, {
-            anchor: 'Continuous',
-            parent: finalElement
+        jsPlumb.makeTarget(connection1, {
+            anchor: 'Continuous'
+            // parent: finalElement
         });
 
-        jsPlumb.makeSource(connection, {
-            parent:finalElement,
+        jsPlumb.makeSource(connection2, {
+            // parent:finalElement,
             anchor: 'Continuous'
         });
 
@@ -2120,8 +2132,8 @@
 
         var finalElement =  newAgent;
 
-        var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection').text("in");
-        var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection').text('out');
+        var connectionIn = $('<div class="connectorInWindow">').attr('id', i + '-in').addClass('connection');
+        var connectionOut = $('<div class="connectorOutWindow">').attr('id', i + '-out').addClass('connection');
 
         finalElement.css({
             'top': topP,
@@ -2664,18 +2676,24 @@
     {
         var clickedId =  element.id;
         var elementID=clickedId = clickedId.charAt(0);
-        var ImportCon = elementID+"-import";
-        var ExportCon = elementID+"-export";
-        var DefinedCon = elementID+"-defined";
+        var ImportCon = elementID+"-Inimport";
+        var ImportCon1 = elementID+"-Outimport";
+        var ExportCon = elementID+"-Inexport";
+        var ExportCon1 = elementID+"-Outexport";
+        var DefinedCon = elementID+"-Indefined";
+        var DefinedCon1 = elementID+"-Outdefined";
 
         var importConExists = document.getElementById(ImportCon);
+        var importConExists1 = document.getElementById(ImportCon1);
         //alert(importConExists);
         var exportConExists = document.getElementById(ExportCon);
+        var exportConExists1 = document.getElementById(ExportCon1);
         //alert(exportConExists);
         var definedConExists = document.getElementById(DefinedCon);
+        var definedConExists1 = document.getElementById(DefinedCon1);
         //alert(definedConExists);
 
-        if(importConExists != null)
+        if(importConExists != null || importConExists1 !=null)
         {
             if(importConExists+ $(':visible').length)
             {
@@ -2688,7 +2706,7 @@
 
         }
 
-        else if(exportConExists != null)
+        else if(exportConExists != null || exportConExists1 != null)
         {
             if(exportConExists+ $(':visible').length)
             {
@@ -2701,7 +2719,7 @@
 
         }
 
-        else if(definedConExists != null)
+        else if(definedConExists != null || definedConExists1 != null)
         {
             if(definedConExists+ $(':visible').length)
             {
@@ -2790,8 +2808,8 @@
 
         var finalElement =  newAgent;
 
-        var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection').text("in");
-        var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection').text('out');
+        var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection');
+        var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection');
 
         finalElement.css({
             'top': topP,
@@ -2953,7 +2971,7 @@
     function dropCompletePartitionElement(newAgent,i,e)
     {
 
-        $(droppedElement).draggable({containment: "container"});
+        // $(droppedElement).draggable({containment: "container"});
 
         var finalElement =  newAgent;
 
@@ -2977,14 +2995,15 @@
             'left': e.pageX
         });
 
+        $(function() { $(finalElement).draggable().resizable(); });
         $('#container').append(finalElement);
-        
-        $(finalElement).resizable({
-            resize: function (e, ui) {
-                jsPlumb.repaint(ui.helper);
-            }
-        });
-      
+
+        // $(finalElement).resizable({
+        //     resize: function (e, ui) {
+        //         jsPlumb.repaint(ui.helper);
+        //     }
+        // });
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3231,7 +3250,8 @@
         var elClickedId= clickedId.substr(0, clickedId.indexOf('-')); //1-pc1
         var subPcId= clickedId.substr(clickedId.indexOf("c") + 1);
 
-        if (streamType == "import" || streamType == "export") 
+
+        if (streamType == "import" || streamType == "export")
         {
             var tablevar = document.getElementById('tableVariablePartitionConditionDisplay');
             var tableran = document.getElementById('tableRangePartitionConditionDisplay');
@@ -3286,7 +3306,7 @@
 
 
         }
-            
+
         //Todo display all connected partitions
 
         else if (streamType == "defined") {
@@ -3306,7 +3326,7 @@
                         createdPartitionConditionArray[elClickedId][2][r - 1] = new Array(2);
                         createdPartitionConditionArray[elClickedId][2][r - 1][0] = attrNm;
 
-                        for (var x = 0; x < createdDefinedStreamArray[fromStreamIndex][2].length; x++) {
+                        for (var x = 0; x < createdDefinedStreamArray[fromStreamIndex][2].length-1; x++) {
                             if (createdDefinedStreamArray[fromStreamIndex][2][x][0] == attrNm) {
                                 createdPartitionConditionArray[elClickedId][2][r - 1][1] = createdDefinedStreamArray[fromStreamIndex][2][x][1];
                             }
@@ -3354,9 +3374,14 @@
             alert("This type of element cannot be connected to a partition condition");
         }
         
-        alert("clicked ID: "+createdPartitionConditionArray[elClickedId][0]+"partition name: "+createdPartitionConditionArray[elClickedId][1]+"what: "+createdPartitionConditionArray[elClickedId][2]+"len: "+createdPartitionConditionArray[elClickedId][4]+"subpc: "+createdPartitionConditionArray[elClickedId][5]+"selectedStream: "+createdPartitionConditionArray[elClickedId][6])
-
-        alert("Element Id: " + createdPartitionConditionArray[elClickedId][0] + "\nName: " + createdPartitionConditionArray[elClickedId][1] + "\nDef: " + createdPartitionConditionArray[elClickedId][3] + "\ntable Rows: " + createdPartitionConditionArray[elClickedId][4]+ "\nSub pc id: " + createdPartitionConditionArray[elClickedId][5]);
+        // alert("experimental size : "+ createdPartitionConditionArray[elClickedId][7].length);
+        
+        
+        // alert("clicked ID: "+createdPartitionConditionArray[elClickedId][0]+"partition name: "+createdPartitionConditionArray[elClickedId][1]+"what: "+createdPartitionConditionArray[elClickedId][2]+"len: "+createdPartitionConditionArray[elClickedId][4]+"subpc: "+createdPartitionConditionArray[elClickedId][5]+"selectedStream: "+createdPartitionConditionArray[elClickedId][6])
+        //
+        // alert("Element Id: " + createdPartitionConditionArray[elClickedId][0] + "\nName: " + createdPartitionConditionArray[elClickedId][1] + "\nDef: " + createdPartitionConditionArray[elClickedId][3] + "\ntable Rows: " + createdPartitionConditionArray[elClickedId][4]+ "\nSub pc id: " + createdPartitionConditionArray[elClickedId][5]);
+        
+        
         $("#container").removeClass("disabledbutton");
         $("#toolbox").removeClass("disabledbutton");
         document.getElementById(clickedId).innerHTML=partitionIdInput;
@@ -3528,8 +3553,8 @@
 
         var finalElement =  newAgent;
 
-        var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection').text("in");
-        var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection').text('out');
+        var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection');
+        var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection');
 
         finalElement.css({
             'top': topP,
@@ -3582,8 +3607,8 @@
 
         var finalElement =  newAgent;
 
-        var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection').text("in");
-        var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection').text('out');
+        var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection');
+        var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection');
 
         finalElement.css({
             'top': topP,
@@ -4395,7 +4420,7 @@
         }
         else
         {
-            loopCount=defAttrNum;
+            loopCount=defAttrNum-1;
         }
         for(var r=0; r<loopCount;r++)
         {
