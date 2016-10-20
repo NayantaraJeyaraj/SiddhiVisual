@@ -1013,7 +1013,7 @@
 
                     var r = 0;
                     $.each(attrArray, function (index, elem) {
-                        alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
+                        // alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
                         createdSimpleQueryArray[id][4][r] = new Array(2);
                         createdSimpleQueryArray[id][4][r][0] = elem.attrName;
                         createdSimpleQueryArray[id][4][r][1] = elem.attrType;
@@ -1041,7 +1041,7 @@
 
                     var r = 0;
                     $.each(attrArray, function (index, elem) {
-                        alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
+                        // alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
                         createdWindowQueryArray[id][6][r] = new Array(2);
                         createdWindowQueryArray[id][6][r][0] = elem.attrName;
                         createdWindowQueryArray[id][6][r][1] = elem.attrType;
@@ -1072,7 +1072,7 @@
 
                     var r = 0;
                     $.each(attrArray, function (index, elem) {
-                        alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
+                        // alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
                         createdJoinQueryArray[id][4][r] = new Array(2);
                         createdJoinQueryArray[id][4][r][0] = elem.attrName;
                         createdJoinQueryArray[id][4][r][1] = elem.attrType;
@@ -1094,7 +1094,7 @@
 
                     var r = 0;
                     $.each(attrArray, function (index, elem) {
-                        alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
+                        // alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
                         createdStateMachineQueryArray[id][4][r] = new Array(2);
                         createdStateMachineQueryArray[id][4][r][0] = elem.attrName;
                         createdStateMachineQueryArray[id][4][r][1] = elem.attrType;
@@ -1105,7 +1105,7 @@
 
                     var q = 0;
                     $.each(states, function (index, elem) {
-                        alert("State ID: " + elem.stateId + "\nSelected Stream: " + elem.stateSelectedStream+ "\nState Filter: " + elem.stateFilter);
+                        // alert("State ID: " + elem.stateId + "\nSelected Stream: " + elem.stateSelectedStream+ "\nState Filter: " + elem.stateFilter);
                         createdStateMachineQueryArray[id][2][q] = new Array(2);
                         createdStateMachineQueryArray[id][2][q][0] = elem.stateId;
                         createdStateMachineQueryArray[id][2][q][1] = elem.stateSelectedStream;
@@ -3779,7 +3779,7 @@
                 createdWindowStreamArray[elementID][4][r-1][1] = attrTp;
             }
         }
-        alert("Element ID:"+createdWindowStreamArray[elementID][0]+"\nElement Name:"+createdWindowStreamArray[elementID][1]+"\nSelected Stream Index:"+createdWindowStreamArray[elementID][2]+"\nSelected Stream:"+createdWindowStreamArray[elementID][3]+"\nAttributes:"+createdWindowStreamArray[elementID][4]);
+        // alert("Element ID:"+createdWindowStreamArray[elementID][0]+"\nElement Name:"+createdWindowStreamArray[elementID][1]+"\nSelected Stream Index:"+createdWindowStreamArray[elementID][2]+"\nSelected Stream:"+createdWindowStreamArray[elementID][3]+"\nAttributes:"+createdWindowStreamArray[elementID][4]);
 
 
         var elIdforNode =  elementID+"-windowNode";
@@ -3881,7 +3881,7 @@
 
         //To retrieve the number of attributes
         getAttributes(selctedSt);
-        alert("element ID: "+ elementID);
+        // alert("element ID: "+ elementID);
         //attrNumber gives the number of attributes
         //streamInd gives the index of the selected stream
         if(droptype=="squerydrop") 
@@ -4119,7 +4119,7 @@
     var queryDiv;
     var simpleQueryLabel, simpleQueryName,queryNameInput, fromStreamLabel, fromStream, filterLabel,filterInput, selectLabel, insertIntoLabel, insertIntoStream;
     var inputtxtName;
-    var inputlblName
+    var inputlblName;
     var queryFomButton;
 
 
@@ -4433,7 +4433,7 @@
 
         createdSimpleQueryArray[elementID][5][0] = intoStreamIndex;
         createdSimpleQueryArray[elementID][5][1] = intoNameSt;
-        alert("element ID inside Filter query save method: "+ elementID);
+        // alert("element ID inside Filter query save method: "+ elementID);
         var elIdforNode =  elementID+"-nodeInitial";
         document.getElementById(elIdforNode).innerHTML = queryName;
         // document.getElementById(elIdforNode).remove();
@@ -4479,7 +4479,7 @@
         }
         else
         {
-            loopCount=defAttrNum;
+            loopCount=defAttrNum-1;
         }
         for(var r=0; r<loopCount;r++)
         {
@@ -4493,7 +4493,7 @@
         createdPassThroughQueryArray[elementID][5][0] = intoStreamIndex;
         createdPassThroughQueryArray[elementID][5][1] = intoNameSt;
 
-        alert("element ID inside Pass through save method: "+ elementID);
+        // alert("element ID inside Pass through save method: "+ elementID);
 
         var elIdforNode =  elementID+"-nodeInitial";
         document.getElementById(elIdforNode).innerHTML = queryName;
@@ -5565,6 +5565,7 @@
     function getPartitionConnectionDetails(element)
     {
         var clickedId =  element.id;
+        
         var con=jsPlumb.getAllConnections();
         var connectedStream, selectedStreamName;
         var list=[];
@@ -5743,7 +5744,7 @@
         var connectionStreamArray = [];
         var connectionPartitionArray = [];
 
-        alert("connectedStreamIdListArray: "+connectedStreamIdListArray);
+        // alert("connectedStreamIdListArray: "+connectedStreamIdListArray);
         var fromStreamIndex1,fromStreamIndex2,intoStreamIndex;
         var fromStreamNameListArray = [];
         var fromStreamIndexListArray = [];
@@ -5913,7 +5914,8 @@
     {
         var streamType, selctedSt, fromStreamIndex;
         var fromStreamName;
-         alert("getPartitionFromStreamName-connectedStream: "+connectedStream);
+        var connectedStream =  connectedStream.charAt(0);
+        // alert("getPartitionFromStreamName-connectedStream: "+connectedStream);
         for(var x = 0; x<100; x++)
         {
             //To retrieve the 'from Stream' Names
@@ -6538,7 +6540,7 @@
             //alert(createdStateMachineQueryArray[elementID][4][r][0]+" as "+createdStateMachineQueryArray[elementID][4][r][1]);
         }
 
-        alert("element ID: "+elementID);
+        // alert("element ID: "+elementID);
         createdStateMachineQueryArray[elementID][5]= insertIntoStream;
         
         //alert(createdStateMachineQueryArray[elementID]);
