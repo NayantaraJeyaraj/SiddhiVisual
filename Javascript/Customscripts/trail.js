@@ -266,7 +266,7 @@
                     droptype = "partitiondrop";
                     $(droppedElement).draggable({containment: "container"});
                     //Drop the element instantly since its attributes will be set only when the user requires it
-                    dropPartition(newAgent,i,e,droptype);
+                    dropPartition(newAgent,i,e,droptype,mouseTop,mouseLeft);
                     i++;
                     finalElementCount=i;
                 }
@@ -709,13 +709,13 @@
                             //alert("almost there!\nd: "+ d+"\nidOfEl: "+idOfEl+"\nsubPcId: "+createdPartitionConditionArray[d][5]);
                         }
                     }
-                    // for(var rec=0;rec<createdPartitionConditionArray[elId][2].length;rec++)
-                    // {
-                    //     attrArray.push({
-                    //         attrName:createdPartitionConditionArray[elId][2][rec][0],
-                    //         attrType:createdPartitionConditionArray[elId][2][rec][1]
-                    //     });
-                    // }
+                    for(var rec=0;rec<createdPartitionConditionArray[elId][2].length-1;rec++)
+                    {
+                        attrArray.push({
+                            attrName:createdPartitionConditionArray[elId][2][rec][0],
+                            attrType:createdPartitionConditionArray[elId][2][rec][1]
+                        });
+                    }
 
                     node.push({
                         id: idOfEl,
@@ -730,10 +730,8 @@
                         type: createdPartitionConditionArray[elId][3],
                         numberOfAttributes: createdPartitionConditionArray[elId][4],
                         subPartitionConditionId: createdPartitionConditionArray[elId][5],
-                        //attributes:attrArray
+                        attributes:attrArray
                     });
-                    
-                    
                 }
             }
 
@@ -1138,6 +1136,77 @@
 
                     var newAgent = $('<div>').attr('id', id).addClass('stquerydrop');
                     dropQuery(newAgent, id,e,"stquerydrop",top,left,elem.name);
+                }
+
+                else if(classes == "partitiondrop ui-draggable ui-resizable")
+                {
+                    createdPartitionConditionArray[id][0]== id;
+                    createdPartitionConditionArray[id][1]== elem.partitionName;
+                    createdPartitionConditionArray[id][2] = [];
+                    createdPartitionConditionArray[id][3]== elem.type;
+                    createdPartitionConditionArray[id][4]== elem.numberOfAttributes;
+                    createdPartitionConditionArray[id][4]== elem.subPartitionConditionId;
+                    
+                    var attrArray = elem.attributes;
+
+                    var r = 0;
+                    $.each(attrArray, function (index, elem) {
+                        //alert("attrName: " + elem.attrName + "\nattrType: " + elem.attrType);
+                        createdPartitionConditionArray[id][2][r] = new Array(2);
+                        createdPartitionConditionArray[id][2][r][0] = elem.attrName;
+                        createdPartitionConditionArray[id][2][r][1] = elem.attrType;
+                        r++;
+                    });
+                    
+                    var width = right-left;
+                    var height = bottom-top;
+                    //alert("width: "+width +"\nHeight: "+height);
+                    var newAgent = $('<div style="width:'+width+'px;height:'+height+'px">').attr('id', id).addClass('partitiondrop');
+                    droptype = "partitiondrop";
+                    $(droppedElement).draggable({containment: "container"});
+                    //Drop the element instantly since its attributes will be set only when the user requires it
+                    // dropPartition(newAgent,id,e,droptype,top,left);
+                    
+                    var thisId = id + '-pc'+ elem.subPartitionConditionId;
+                    var finalElement =  newAgent;
+                    var connectionIn = $('<div class="connectorInPart" onclick="getPartitionConnectionDetails('+thisId+')">').attr('id', id + '-pc'+ elem.subPartitionConditionId).addClass('connection').text("pc"+elem.subPartitionConditionId);
+                    finalElement.append(connectionIn);
+
+                    jsPlumb.makeTarget(connectionIn, {
+                        anchor: 'Continuous'
+                    });
+                    jsPlumb.makeSource(connectionIn, {
+                        anchor: 'Continuous'
+                    });
+                    x = elem.subPartitionConditionId;
+                    x++;
+
+                    $(finalElement).on('dblclick',function () {
+
+                        var connectionIn = $('<div class="connectorInPart" onclick="getPartitionConnectionDetails(this.id)">').attr('id', i + '-pc'+ x).addClass('connection').text("pc"+x);
+                        finalElement.append(connectionIn);
+
+                        jsPlumb.makeTarget(connectionIn, {
+                            anchor: 'Continuous'
+                        });
+                        jsPlumb.makeSource(connectionIn, {
+                            anchor: 'Continuous'
+                        });
+
+                        x++;
+                    });
+                    
+                    finalElement.css({
+                        'top': top,
+                        'left': left
+                    });
+
+                    $(function() { $(finalElement).draggable().resizable(); });
+                    $('#container').append(finalElement);
+
+                    //alert("Successful!");
+                    // var newAgent = $('<div>').attr('id', id).addClass('squerydrop');
+                    // dropQuery(newAgent, id,e,"squerydrop",top,left,elem.name);
                 }
             }
             i = parseInt(id)+1;
@@ -2949,12 +3018,12 @@
      * @param droptype
      */
     
-    function dropPartition(newAgent, i, e, droptype) 
+    function dropPartition(newAgent, i, e, droptype,mouseTop,mouseLeft) 
     {
 
         var prop = $('<a><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propPartition')));
         newAgent.append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(prop);
-        dropCompletePartitionElement(newAgent,i,e);
+        dropCompletePartitionElement(newAgent,i,e,mouseTop,mouseLeft);
         
     }
 
@@ -2968,7 +3037,7 @@
      */
     var x =1;
     
-    function dropCompletePartitionElement(newAgent,i,e)
+    function dropCompletePartitionElement(newAgent,i,e,mouseTop,mouseLeft)
     {
 
         // $(droppedElement).draggable({containment: "container"});
@@ -2977,7 +3046,7 @@
 
         $(finalElement).on('dblclick',function () {
 
-            var connectionIn = $('<div class="connectorInPart" onclick="getPartitionConnectionDetails(this)">').attr('id', i + '-pc'+ x).addClass('connection').text("pc"+x);
+            var connectionIn = $('<div class="connectorInPart" onclick="getPartitionConnectionDetails(this.id)">').attr('id', i + '-pc'+ x).addClass('connection').text("pc"+x);
             finalElement.append(connectionIn);
 
             jsPlumb.makeTarget(connectionIn, {
@@ -2991,8 +3060,8 @@
         });
 
         finalElement.css({
-            'top': e.pageY,
-            'left': e.pageX
+            'top': mouseTop,
+            'left': mouseLeft
         });
 
         $(function() { $(finalElement).draggable().resizable(); });
@@ -5564,7 +5633,7 @@
 
     function getPartitionConnectionDetails(element)
     {
-        var clickedId =  element.id;
+        var clickedId =  element;
         
         var con=jsPlumb.getAllConnections();
         var connectedStream, selectedStreamName;
