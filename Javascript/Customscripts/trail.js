@@ -1110,28 +1110,8 @@
                         createdStateMachineQueryArray[id][2][q][2] = elem.stateFilter;
                         q++;
                     });
-                    
-                    //Multiple State Info
-                    // for(var m = 0; m<=numberOfStateDivs ; m++)
-                    // {
-                    //     createdStateMachineQueryArray[id][2][m] = [];
-                    //     createdStateMachineQueryArray[id][2][m][0] = elem.state.id;
-                    //     createdStateMachineQueryArray[id][2][m][1] = elem.state.selectedStream;
-                    //     createdStateMachineQueryArray[id][2][m][2] = elem.state.filter;
-                    // }
 
                     createdStateMachineQueryArray[id][3] = elem.processLogic;
-                    // for(var r=0; r<loopCount;r++)
-                    // {
-                    //     createdStateMachineQueryArray[id][4][r] =[];
-                    //     var inputTextBoxID = "stinput"+r;
-                    //     var attrLabelID = "stlabel" + r;
-                    //     createdStateMachineQueryArray[id][4][r][0] = document.getElementById(inputTextBoxID).value;
-                    //     createdStateMachineQueryArray[id][4][r][1] = document.getElementById(attrLabelID).innerHTML;
-                    //
-                    //     //alert(createdJoinQueryArray[elementID][4][r][0]+" as "+createdJoinQueryArray[elementID][4][r][1]);
-                    // }
-
                     createdStateMachineQueryArray[id][5]= elem.intoStreamName;
 
                     var newAgent = $('<div>').attr('id', id).addClass('stquerydrop');
@@ -2166,7 +2146,7 @@
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //                                                                            WINDOW(STREAM) ELEMENT RELATED FUNCTIONALITIES                                                                                  //
+    //                                                                            WINDOW(STREAM) ELEMENT RELATED FUNCTIONALITIES                                                                              //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -2234,6 +2214,10 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * @function Get the ID of the connected "from-stream"
+     * @param element
+     */
 
     function getConnectionDetailsForWindow(element)
     {
@@ -2266,10 +2250,11 @@
         }
         if(fromStreamIdForWindow==undefined || fromStreamIdForWindow==null) /* No streams are connected to the in-connector anchor point of the window*/
         {
-            createWindowDefinitionForm(elementIdentity);
+            createWindowDefinitionForm(elementIdentity);    /* Define a new window with user-input attributess and types*/
         }
         else
         {
+            //Window derived from a stream
             fromStreamIdForWindow = fromStreamIdForWindow.charAt(0);
             getFromStreamNameForWindow(fromStreamIdForWindow,elementID);
         }
@@ -2277,6 +2262,10 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * @function Display form to define a new window
+     * @param i
+     */
 
     function createWindowDefinitionForm(i)
     {
@@ -2397,6 +2386,10 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * @function Form to create multiple attribute and type specifications as the user wishes.
+     */
+
     function addAttributeForWindow()
     {
         DefWindowAttrDiv=document.createElement("div");
@@ -2511,26 +2504,26 @@
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /*--------------------Global Variables needed for the Window Attributes Table--------------------------------*/
-    var attrName1 = document.createElement("label");
-    var attrType1= document.createElement("label");
-    var closeattr1= document.createElement("button");
+        var attrName1 = document.createElement("label");
+        var attrType1= document.createElement("label");
+        var closeattr1= document.createElement("button");
 
-    var table1 = document.createElement('table');
-    table1.id = "attrtableForWindow";
-    table1.className = "attrtableForWindow";
-    var tr = document.createElement('tr');
-    var attrNameHeader= document.createElement('td');
-    var attrtypeHeader = document.createElement('td');
-    var attrDeleteHeader   = document.createElement('td');
-    attrNameHeader.innerHTML = "Attribute Name";
-    attrtypeHeader.innerHTML = "Attribute Type";
-    attrDeleteHeader.innerHTML = "Delete Row";
-    tr.appendChild(attrNameHeader);
-    tr.appendChild(attrtypeHeader);
-    tr.appendChild(attrDeleteHeader);
-    table1.appendChild(tr);
+        var table1 = document.createElement('table');
+        table1.id = "attrtableForWindow";
+        table1.className = "attrtableForWindow";
+        var tr = document.createElement('tr');
+        var attrNameHeader= document.createElement('td');
+        var attrtypeHeader = document.createElement('td');
+        var attrDeleteHeader   = document.createElement('td');
+        attrNameHeader.innerHTML = "Attribute Name";
+        attrtypeHeader.innerHTML = "Attribute Type";
+        attrDeleteHeader.innerHTML = "Delete Row";
+        tr.appendChild(attrNameHeader);
+        tr.appendChild(attrtypeHeader);
+        tr.appendChild(attrDeleteHeader);
+        table1.appendChild(tr);
 
-    /*--------------------End of Global Variable declaration for Window Attributes Table--------------------------------*/
+    /*--------------------Global Variables needed for the Window Attributes Table--------------------------------*/
 
     /**
      * @function Append Added attributes to the display table
@@ -2578,24 +2571,595 @@
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * @function Delete a row from the table
+     * @function Delete a row from the table of the window form in defining a new window
      * @param row
      */
+
     function deleteRowForWindow(row)
     {
         var i=row.parentNode.parentNode.rowIndex;
         document.getElementById('attrtableForWindow').deleteRow(i);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //                                                                            END OF WINDOW(STREAM) ELEMENT RELATED FUNCTIONALITIES                                                                       //
+    //                                                                        DROPPING QUERIES                                                                                                                //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    
+    function dropQuery(newAgent, i,e,droptype,topP,left,text)
+    {
+        /*A text node division will be appended to the newAgent element so that the element name can be changed in the text node and doesn't need to be appended...
+         ...to the newAgent Element everytime theuser changes it*/
+        var node = document.createElement("div");
+        node.id = i+"-nodeInitial";
+        node.className = "queryNameNode";
+        var textnode = document.createTextNode(text);
+        textnode.id = i+"-textnodeInitial";
+        node.appendChild(textnode);
+
+        //For a pass through query
+        if(droptype=="squerydrop")
+        {
+            var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propsquerydrop')));
+            var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
+            newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
+            dropCompleteQueryElement(newAgent,i,e,topP,left);
+        }
+
+        //For a Window query    
+        else if(droptype=="wquerydrop")
+        {
+            var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propwquerydrop')));
+            var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
+            newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
+            dropCompleteQueryElement(newAgent,i,e,topP,left);
+        }
+
+        //For a filter query
+        if(droptype=="filterdrop")
+        {
+            var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propfilterdrop')));
+            var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
+            newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
+            dropCompleteQueryElement(newAgent,i,e,topP,left);
+        }
+
+        else if(droptype=="joquerydrop")
+        {
+            var prop = $('<a onclick="getJoinConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a> ').attr('id', (i+('-propjoquerydrop')));
+            var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
+            newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
+            dropCompleteJoinQueryElement(newAgent,i,e,topP,left);
+        }
+        else if(droptype=="stquerydrop")
+        {
+            var prop = $('<a onclick="getStateMachineConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a> ').attr('id', (i+('-propstquerydrop')));
+            var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
+            newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
+            dropCompleteStateMQueryElement(newAgent,i,e,topP,left);
+        }
+    }
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                        PASS-THROUGH QUERY ELEMENT RELATED FUNCTIONALITIES                                                                              //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     *
+     * @param newAgent
+     * @param i
+     * @param e
+     * @description Drops the Pass-though,Filter and the window queries as their in and out connectors can permit only one connection each
+     *
+     */
+
+    function dropCompleteQueryElement(newAgent,i,e,topP,left)
+    {
+        $(droppedElement).draggable({containment: "container"});
+
+        var finalElement =  newAgent;
+
+        var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection');
+        var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection');
+
+        finalElement.css({
+            'top': topP,
+            'left': left
+        });
+
+        finalElement.append(connectionIn);
+        finalElement.append(connectionOut);
+
+        $('#container').append(finalElement);
+
+        jsPlumb.draggable(finalElement, {
+            containment: 'parent'
+        });
+
+        jsPlumb.makeTarget(connectionIn, {
+            anchor: 'Continuous',
+            maxConnections:1
+        });
+
+        jsPlumb.makeSource(connectionOut, {
+            anchor: 'Continuous',
+            maxConnections:1
+        });
+
+
+        var myNode = document.getElementById("lot");
+        var fc = myNode.firstChild;
+
+        while( fc ) {
+            myNode.removeChild( fc );
+            fc = myNode.firstChild;
+        }
+
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /*--------------------Global Variables needed for the Window Attributes Table--------------------------------*/
+        var fromStreamId, intoStreamId;
+    /*--------------------Global Variables needed for the Window Attributes Table--------------------------------*/
+
+    /**
+     * @function Get the indices of the "From" Stream/window and the "Into-stream"
+     * @param element
+     */
+
+    function getConnectionDetails(element)
+    {
+        var arr = element.id.match(/-prop(.*)/);
+        if (arr != null) {
+            droptype = arr[1];
+        }
+        var clickedId =  element.id;
+        var elementID=clickedId = clickedId.charAt(0);
+        var from = clickedId+"-out";
+        var from1 = clickedId;
+        clickedId = clickedId+"-in";
+        var con=jsPlumb.getAllConnections();
+        var list=[];
+        for(var i=0;i<con.length;i++)
+        {
+            if(con[i].targetId==clickedId)
+            {
+                list[i] = new Array(2);
+                list[i][0] = con[i].sourceId;
+                fromStreamId =list[i][0];
+                list[i][1] = con[i].targetId;
+            }
+
+            if(con[i].sourceId==from || con[i].sourceId==from1 ||true)
+            {
+                list[i] = new Array(2);
+                list[i][0] = con[i].sourceId;
+                list[i][1] = con[i].targetId;
+                intoStreamId =list[i][1];
+            }
+        }
+        intoStreamId = intoStreamId.charAt(0);
+        getFromStreamName(fromStreamId,intoStreamId,elementID);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @function Retrieve the name of the from stream using the fromstream index(fromId) passed from the calling method.
+     * @param fromId
+     * @param intoId
+     * @param elementID
+     */
+
+
+    function getFromStreamName(fromId,intoId,elementID)
+    {
+        var fromNameSt, intoNameSt, streamType, selctedSt;
+        var fromStreamIndex,intoStreamIndex;
+        var attrList = [];
+        var elClickedId= fromId.substr(0, fromId.indexOf('-'));
+        var subPcId= fromId.substr(fromId.indexOf("c") + 1);
+        var idTest=/^\d+-pc\d+$/.test(fromId);
+
+        fromId = fromId.charAt(0);
+        for (var x = 0; x < 100; x++)
+        {
+            //To retrieve the 'from Stream' Name
+            if(idTest==false)
+            {
+                if (createdImportStreamArray[x][0] == fromId) {
+                    fromNameSt = createdImportStreamArray[x][2];
+                    fromStreamIndex = x;
+                }
+                else if (createdExportStreamArray[x][0] == fromId) {
+                    fromNameSt = createdExportStreamArray[x][2];
+                    fromStreamIndex = x;
+                }
+                else if (createdDefinedStreamArray[x][0] == fromId) {
+                    fromNameSt = createdDefinedStreamArray[x][1];
+                    fromStreamIndex = x;
+                }
+                else if (createdWindowStreamArray[x][0] == fromId) {
+                    fromNameSt = createdWindowStreamArray[x][1];
+                    fromStreamIndex = x;
+                }
+            }
+            else
+            {
+                if (createdPartitionConditionArray[x][0]==elClickedId && createdPartitionConditionArray[x][5]==subPcId)
+                {
+                    fromNameSt = createdPartitionConditionArray[x][6];
+                    fromStreamIndex = x;
+                }
+            }
+
+            //To retrieve the 'into Stream' Name
+            if (createdImportStreamArray[x][0] == intoId)
+            {
+                intoNameSt = createdImportStreamArray[x][2];
+                streamType = "import";
+                selctedSt = createdImportStreamArray[x][1];
+                intoStreamIndex = x;
+            }
+            else if (createdExportStreamArray[x][0] == intoId)
+            {
+                intoNameSt = createdExportStreamArray[x][2];
+                streamType = "export";
+                selctedSt = createdExportStreamArray[x][1];
+                intoStreamIndex = x;
+            }
+            else if (createdDefinedStreamArray[x][0] == intoId)
+            {
+                intoNameSt = createdDefinedStreamArray[x][1];
+                streamType = "defined";
+                intoStreamIndex = x;
+                var defAttrNum = createdDefinedStreamArray[x][2].length;
+            }
+            else if (createdWindowStreamArray[x][0] == intoId)
+            {
+                intoNameSt = createdWindowStreamArray[x][1];
+                streamType = "window";
+                intoStreamIndex = x;
+                var defAttrNum = createdWindowStreamArray[x][4].length;
+            }
+
+
+        }
+
+
+        //To retrieve the number of attributes
+        getAttributes(selctedSt);
+        // alert("element ID: "+ elementID);
+        //attrNumber gives the number of attributes
+        //streamInd gives the index of the selected stream
+        if(droptype=="squerydrop")
+        {
+            createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum, "Pass-through Query");
+        }
+        else if (droptype=="filterdrop")
+        {
+            createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum, "Filter Query");
+        }
+        else if(droptype=="wquerydrop")
+        {
+            createWindowQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum);
+        }
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /*--------------------Global Variables needed for the Window Attributes Table--------------------------------*/
+        var queryDiv;
+        var simpleQueryLabel, simpleQueryName,queryNameInput, fromStreamLabel, fromStream, filterLabel,filterInput, selectLabel, insertIntoLabel, insertIntoStream;
+        var inputtxtName;
+        var inputlblName;
+        var queryFomButton;
+    /*--------------------Global Variables needed for the Window Attributes Table--------------------------------*/
+
+    /**
+     * @function Create the query form for Pass-through and Filter queries.
+     * @param elementID
+     * @param fromNameSt
+     * @param intoNameSt
+     * @param fromStreamIndex
+     * @param intoStreamIndex
+     * @param streamType
+     * @param defAttrNum
+     * @param formHeading
+     */
+
+
+
+    function createQueryForm(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum,formHeading)
+    {
+        $("#container").addClass("disabledbutton");
+        $("#toolbox").addClass("disabledbutton");
+        var tableQueryForm = document.createElement('table');
+        tableQueryForm.id = "tableQueryForm";
+        tableQueryForm.className = "tableQueryForm";
+        var predefarr = PredefinedStreams();
+
+        queryDiv=document.createElement("div");
+        queryDiv.className="queryDiv";
+        queryDiv.id="queryDiv";
+
+        simpleQueryLabel= document.createElement("label");
+        simpleQueryLabel.className="simpleQueryLabel";
+        simpleQueryLabel.id="simpleQueryLabel";
+        simpleQueryLabel.innerHTML=formHeading;
+
+        simpleQueryName= document.createElement("label");
+        simpleQueryName.id ="simpleQueryName";
+        simpleQueryName.className ="simpleQueryName";
+        simpleQueryName.innerHTML = "Query name";
+
+        queryNameInput= document.createElement("input");
+        queryNameInput.id = "queryNameInput";
+        queryNameInput.className = "queryNameInput";
+
+        fromStreamLabel= document.createElement("label");
+        fromStreamLabel.className="fromStreamLabel";
+        fromStreamLabel.id="fromStreamLabel";
+        fromStreamLabel.innerHTML= "from: ";
+
+        fromStream= document.createElement("label");
+        fromStream.id ="fromStream";
+        fromStream.className = "fromStream";
+        fromStream.innerHTML = fromNameSt;
+
+        //Append the filter option only for Filter Queries
+        if(formHeading=="Filter Query")
+        {
+            filterLabel = document.createElement("label");
+            filterLabel.className = "filterLabel";
+            filterLabel.id = "filterLabel";
+            filterLabel.innerHTML = "Filter: ";
+
+            filterInput = document.createElement("input");
+            filterInput.id = "filterInput";
+            filterInput.className = "filterInput";
+            filterInput.innerHTML = "";
+        }
+
+        selectLabel= document.createElement("label");
+        selectLabel.className="selectLabel";
+        selectLabel.id="selectLabel";
+        selectLabel.innerHTML= "Select : ";
+
+        insertIntoLabel=document.createElement("label");
+        insertIntoLabel.className="insertIntoLabel";
+        insertIntoLabel.id="insertIntoLabel";
+        insertIntoLabel.innerHTML="insert into: ";
+
+        insertIntoStream=document.createElement("label");
+        insertIntoStream.className="insertIntoStream";
+        insertIntoStream.id="insertIntoStream";
+        insertIntoStream.innerHTML=intoNameSt;
+
+        queryFomButton=document.createElement("button");
+        queryFomButton.type="button";
+        queryFomButton.className="queryFormButton";
+        queryFomButton.id="queryFormButton";
+        queryFomButton.innerHTML="Submit Query";
+
+        //To set the Heading of the form as "Pass-through" or "Filter" query depending on the calling method
+        queryFomButton.onclick = function () {
+            if(formHeading == "Pass-through Query")
+            {
+                getPassThroughQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
+            }
+            else if(formHeading == "Filter Query")
+            {
+                getFilterQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
+            }
+        };
+
+        queryFomCloseButton=document.createElement("button");
+        queryFomCloseButton.type="button";
+        queryFomCloseButton.className="queryFomCloseButton";
+        queryFomCloseButton.id="queryFomCloseButton";
+        queryFomCloseButton.innerHTML="Cancel";
+        queryFomCloseButton.onclick = function() {
+            closeForm();
+        };
+
+
+        queryDiv.appendChild(simpleQueryLabel);
+
+        //Row 1
+
+        var tr1 = document.createElement('tr');
+        var td1=document.createElement('td');
+        var td2=document.createElement('td');
+
+        td1.appendChild(simpleQueryName);
+        tr1.appendChild(td1);
+        td2.appendChild(queryNameInput);
+        tr1.appendChild(td2);
+        tableQueryForm.appendChild(tr1);
+
+        //Row 2
+
+        var tr2 = document.createElement('tr');
+        var td3=document.createElement('td');
+        var td4=document.createElement('td');
+
+        td3.appendChild(fromStreamLabel);
+        tr2.appendChild(td3);
+        td4.appendChild(fromStream);
+        tr2.appendChild(td4);
+        tableQueryForm.appendChild(tr2);
+
+        //Row 3
+
+        if(formHeading == "Filter Query")
+        {
+            var tr3 = document.createElement('tr');
+            var td5 = document.createElement('td');
+            var td6 = document.createElement('td');
+
+            td5.appendChild(filterLabel);
+            tr3.appendChild(td5);
+            td6.appendChild(filterInput);
+            tr3.appendChild(td6);
+            tableQueryForm.appendChild(tr3);
+        }
+        //Row 4
+
+        var tr4 = document.createElement('tr');
+        var td7=document.createElement('td');
+
+        td7.appendChild(selectLabel);
+        tr4.appendChild(td7);
+        tableQueryForm.appendChild(tr4);
+
+        //Row 5
+        if(streamType=="import" || streamType=="export")
+        {
+            for (var f = 0; f < attrNumber; f++)
+            {
+                inputtxtName = document.createElement("input");
+                inputtxtName.className = "input" + f;
+                inputtxtName.id = "input" + f;
+
+                var aslblName = document.createElement("label");
+                aslblName.innerHTML = " as ";
+
+                inputlblName = document.createElement("label");
+                inputlblName.innerHTML = predefarr[streamInd][1][f];
+                inputlblName.className = "label" + f;
+                inputlblName.id = "label" + f;
+
+                var trName = document.createElement('tr');
+
+                var tdName1 = document.createElement('td');
+                tdName1.appendChild(inputtxtName);
+                trName.appendChild(tdName1);
+
+                var tdName2 = document.createElement('td');
+                tdName2.appendChild(aslblName);
+                trName.appendChild(tdName2);
+
+                var tdName3 = document.createElement('td');
+                tdName3.appendChild(inputlblName);
+                trName.appendChild(tdName3);
+
+                tableQueryForm.appendChild(trName);
+            }
+        }
+        else if(streamType=="defined")
+        {
+            for (var f =0; f<defAttrNum-1;f++)
+            {
+                inputtxtName = document.createElement("input");
+                inputtxtName.className = "input" + f;
+                inputtxtName.id = "input" + f;
+
+                var aslblName = document.createElement("label");
+                aslblName.innerHTML = " as ";
+
+                inputlblName = document.createElement("label");
+                inputlblName.className = "label" + f;
+                inputlblName.id = "label" + f;
+                inputlblName.innerHTML = createdDefinedStreamArray[intoStreamIndex][2][f][0];
+                var trName = document.createElement('tr');
+
+                var tdName1 = document.createElement('td');
+                tdName1.appendChild(inputtxtName);
+                trName.appendChild(tdName1);
+
+                var tdName2 = document.createElement('td');
+                tdName2.appendChild(aslblName);
+                trName.appendChild(tdName2);
+
+                var tdName3 = document.createElement('td');
+                tdName3.appendChild(inputlblName);
+                trName.appendChild(tdName3);
+
+                tableQueryForm.appendChild(trName);
+
+            }
+        }
+        else
+        {
+            for (var f =0; f<defAttrNum;f++)
+            {
+                inputtxtName = document.createElement("input");
+                inputtxtName.className = "input" + f;
+                inputtxtName.id = "input" + f;
+
+                var aslblName = document.createElement("label");
+                aslblName.innerHTML = " as ";
+
+                inputlblName = document.createElement("label");
+                inputlblName.className = "label" + f;
+                inputlblName.id = "label" + f;
+                inputlblName.innerHTML = createdWindowStreamArray[intoStreamIndex][4][f][0];
+                var trName = document.createElement('tr');
+
+                var tdName1 = document.createElement('td');
+                tdName1.appendChild(inputtxtName);
+                trName.appendChild(tdName1);
+
+                var tdName2 = document.createElement('td');
+                tdName2.appendChild(aslblName);
+                trName.appendChild(tdName2);
+
+                var tdName3 = document.createElement('td');
+                tdName3.appendChild(inputlblName);
+                trName.appendChild(tdName3);
+
+                tableQueryForm.appendChild(trName);
+
+            }
+        }
+
+        //Row attrnum+5
+
+
+        var tr8= document.createElement('tr');
+        var td17 = document.createElement('td');
+        var td18 = document.createElement('td');
+
+        td17.appendChild(insertIntoLabel);
+        tr8.appendChild(td17);
+        td18.appendChild(insertIntoStream);
+        tr8.appendChild(td18);
+        tableQueryForm.appendChild(tr8);
+
+        //Row 9
+
+
+        var tr9= document.createElement('tr');
+        var td19 = document.createElement('td');
+        var td20 = document.createElement('td');
+
+        td19.appendChild(queryFomButton);
+        tr9.appendChild(td19);
+        td20.appendChild(queryFomCloseButton);
+        tr9.appendChild(td20);
+        tableQueryForm.appendChild(tr9);
+
+
+        queryDiv.appendChild(tableQueryForm);
+
+        lot.appendChild(queryDiv);
+
+        $(".toolbox-titlex").show();
+        $(".panel").show();
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /*--------------------Global Variables needed for the Window Attributes Table--------------------------------*/
     var attrName = document.createElement("label");
     var attrType= document.createElement("label");
     var closeattr= document.createElement("button");
@@ -2614,6 +3178,7 @@
     tr.appendChild(attrtypeHeader);
     tr.appendChild(attrDeleteHeader);
     table.appendChild(tr);
+    /*--------------------Global Variables needed for the Window Attributes Table--------------------------------*/
 
 
 
@@ -2802,119 +3367,7 @@
 
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    function dropQuery(newAgent, i,e,droptype,topP,left,text)
-    {
-        /*A text node division will be appended to the newAgent element so that the element name can be changed in the text node and doesn't need to be appended...
-        ...to the newAgent Element everytime theuser changes it*/
-        var node = document.createElement("div");
-        node.id = i+"-nodeInitial";
-        node.className = "queryNameNode";
-        var textnode = document.createTextNode(text);
-        textnode.id = i+"-textnodeInitial";
-        node.appendChild(textnode);
-
-        //For a pass through query
-        if(droptype=="squerydrop")
-        {
-            var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propsquerydrop')));
-            var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
-            newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
-            dropCompleteQueryElement(newAgent,i,e,topP,left);
-        }
-            
-        //For a Window query    
-        else if(droptype=="wquerydrop")
-        {
-            var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propwquerydrop')));
-            var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
-            newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
-            dropCompleteQueryElement(newAgent,i,e,topP,left);
-        }
-        
-        //For a filter query
-        if(droptype=="filterdrop")
-        {
-            var prop = $('<a onclick="getConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a>').attr('id', (i+('-propfilterdrop')));
-            var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
-            newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
-            dropCompleteQueryElement(newAgent,i,e,topP,left);
-        }
-            
-        else if(droptype=="joquerydrop")
-        {
-            var prop = $('<a onclick="getJoinConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a> ').attr('id', (i+('-propjoquerydrop')));
-            var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
-            newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
-            dropCompleteJoinQueryElement(newAgent,i,e,topP,left);
-        }
-        else if(droptype=="stquerydrop")
-        {
-            var prop = $('<a onclick="getStateMachineConnectionDetails(this)"><b><img src="../Images/settings.png" class="querySettingIconLoc"></b></a> ').attr('id', (i+('-propstquerydrop')));
-            var conIcon = $('<img src="../Images/connection.png" onclick="connectionShowHideToggle(this)" class="showIconDefined1"></b></a> ').attr('id', (i+'vis'));
-            newAgent.append(node).append('<a class="boxclose1" id="boxclose"><b><img src="../Images/Cancel.png"></b></a> ').append(conIcon).append(prop);
-            dropCompleteStateMQueryElement(newAgent,i,e,topP,left);
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     *
-     * @param newAgent
-     * @param i
-     * @param e
-     * @description Drops the simple and the window query as their in and out connectors can permit only one connection each
-     *
-     */
-
-    function dropCompleteQueryElement(newAgent,i,e,topP,left)
-    {
-        $(droppedElement).draggable({containment: "container"});
-
-        var finalElement =  newAgent;
-
-        var connectionIn = $('<div class="connectorIn">').attr('id', i + '-in').addClass('connection');
-        var connectionOut = $('<div class="connectorOut">').attr('id', i + '-out').addClass('connection');
-
-        finalElement.css({
-            'top': topP,
-            'left': left
-        });
-
-        finalElement.append(connectionIn);
-        finalElement.append(connectionOut);
-
-        $('#container').append(finalElement);
-
-        jsPlumb.draggable(finalElement, {
-            containment: 'parent'
-        });
-
-        jsPlumb.makeTarget(connectionIn, {
-            anchor: 'Continuous',
-            maxConnections:1
-        });
-
-        jsPlumb.makeSource(connectionOut, {
-            anchor: 'Continuous',
-            maxConnections:1
-        });
-
-
-        var myNode = document.getElementById("lot");
-        var fc = myNode.firstChild;
-
-        while( fc ) {
-            myNode.removeChild( fc );
-            fc = myNode.firstChild;
-        }
-
-    }
-
+    
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -3711,46 +4164,6 @@
         }
 
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        var fromStreamId, intoStreamId;
-
-        function getConnectionDetails(element)
-        {
-            var arr = element.id.match(/-prop(.*)/);
-            if (arr != null) {
-                droptype = arr[1];
-            }
-            var clickedId =  element.id;
-            var elementID=clickedId = clickedId.charAt(0);
-            var from = clickedId+"-out";
-            var from1 = clickedId;
-            clickedId = clickedId+"-in";
-            var con=jsPlumb.getAllConnections();
-            var list=[];
-            for(var i=0;i<con.length;i++)
-            {
-                if(con[i].targetId==clickedId)
-                {
-                    list[i] = new Array(2);
-                    list[i][0] = con[i].sourceId;
-                    fromStreamId =list[i][0];
-                    list[i][1] = con[i].targetId;
-                }
-
-                if(con[i].sourceId==from || con[i].sourceId==from1 ||true)
-                {
-                    list[i] = new Array(2);
-                    list[i][0] = con[i].sourceId;
-                    list[i][1] = con[i].targetId;
-                    intoStreamId =list[i][1];
-                }
-            }
-            intoStreamId = intoStreamId.charAt(0);
-            getFromStreamName(fromStreamId,intoStreamId,elementID);
-        }
-
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3869,104 +4282,6 @@
         $(".panel").hide();
     }
 
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function getFromStreamName(fromId,intoId,elementID)
-    {
-        var fromNameSt, intoNameSt, streamType, selctedSt;
-        var fromStreamIndex,intoStreamIndex;
-        var attrList = [];
-        var elClickedId= fromId.substr(0, fromId.indexOf('-'));
-        var subPcId= fromId.substr(fromId.indexOf("c") + 1);
-        var idTest=/^\d+-pc\d+$/.test(fromId);
-
-            fromId = fromId.charAt(0);
-            for (var x = 0; x < 100; x++)
-            {
-                //To retrieve the 'from Stream' Name
-                if(idTest==false)
-                {
-                    if (createdImportStreamArray[x][0] == fromId) {
-                        fromNameSt = createdImportStreamArray[x][2];
-                        fromStreamIndex = x;
-                    }
-                    else if (createdExportStreamArray[x][0] == fromId) {
-                        fromNameSt = createdExportStreamArray[x][2];
-                        fromStreamIndex = x;
-                    }
-                    else if (createdDefinedStreamArray[x][0] == fromId) {
-                        fromNameSt = createdDefinedStreamArray[x][1];
-                        fromStreamIndex = x;
-                    }
-                    else if (createdWindowStreamArray[x][0] == fromId) {
-                        fromNameSt = createdWindowStreamArray[x][1];
-                        fromStreamIndex = x;
-                    }
-                }
-                else
-                {
-                    if (createdPartitionConditionArray[x][0]==elClickedId && createdPartitionConditionArray[x][5]==subPcId)
-                    {
-                        fromNameSt = createdPartitionConditionArray[x][6];
-                        fromStreamIndex = x;
-                    }
-                }
-
-                //To retrieve the 'into Stream' Name
-                if (createdImportStreamArray[x][0] == intoId)
-                {
-                    intoNameSt = createdImportStreamArray[x][2];
-                    streamType = "import";
-                    selctedSt = createdImportStreamArray[x][1];
-                    intoStreamIndex = x;
-                }
-                else if (createdExportStreamArray[x][0] == intoId)
-                {
-                    intoNameSt = createdExportStreamArray[x][2];
-                    streamType = "export";
-                    selctedSt = createdExportStreamArray[x][1];
-                    intoStreamIndex = x;
-                }
-                else if (createdDefinedStreamArray[x][0] == intoId)
-                {
-                    intoNameSt = createdDefinedStreamArray[x][1];
-                    streamType = "defined";
-                    intoStreamIndex = x;
-                    var defAttrNum = createdDefinedStreamArray[x][2].length;
-                }
-                else if (createdWindowStreamArray[x][0] == intoId)
-                {
-                    intoNameSt = createdWindowStreamArray[x][1];
-                    streamType = "window";
-                    intoStreamIndex = x;
-                    var defAttrNum = createdWindowStreamArray[x][4].length;
-                }
-
-
-            }
-        
-
-        //To retrieve the number of attributes
-        getAttributes(selctedSt);
-        // alert("element ID: "+ elementID);
-        //attrNumber gives the number of attributes
-        //streamInd gives the index of the selected stream
-        if(droptype=="squerydrop") 
-        {
-            createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum, "Pass-through Query");
-        }
-        else if (droptype=="filterdrop") 
-        {
-            createQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum, "Filter Query");
-        }
-        else if(droptype=="wquerydrop")
-        {
-            createWindowQueryForm(elementID, fromNameSt, intoNameSt, fromStreamIndex, intoStreamIndex, streamType, defAttrNum);
-        }
-
-    }
 
     function getFromStreamNameForWindow(fromStreamId,elementID)
     {
@@ -4181,293 +4496,6 @@
 
         $(".toolbox-titlex").hide();
         $(".panel").hide();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var queryDiv;
-    var simpleQueryLabel, simpleQueryName,queryNameInput, fromStreamLabel, fromStream, filterLabel,filterInput, selectLabel, insertIntoLabel, insertIntoStream;
-    var inputtxtName;
-    var inputlblName;
-    var queryFomButton;
-
-
-
-    function createQueryForm(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum,formHeading)
-    {
-        $("#container").addClass("disabledbutton");
-        $("#toolbox").addClass("disabledbutton");
-        var tableQueryForm = document.createElement('table');
-        tableQueryForm.id = "tableQueryForm";
-        tableQueryForm.className = "tableQueryForm";
-        var predefarr = PredefinedStreams();
-
-        queryDiv=document.createElement("div");
-        queryDiv.className="queryDiv";
-        queryDiv.id="queryDiv";
-
-        simpleQueryLabel= document.createElement("label");
-        simpleQueryLabel.className="simpleQueryLabel";
-        simpleQueryLabel.id="simpleQueryLabel";
-        simpleQueryLabel.innerHTML=formHeading;
-
-        simpleQueryName= document.createElement("label");
-        simpleQueryName.id ="simpleQueryName";
-        simpleQueryName.className ="simpleQueryName";
-        simpleQueryName.innerHTML = "Query name";
-
-        queryNameInput= document.createElement("input");
-        queryNameInput.id = "queryNameInput";
-        queryNameInput.className = "queryNameInput";
-
-        fromStreamLabel= document.createElement("label");
-        fromStreamLabel.className="fromStreamLabel";
-        fromStreamLabel.id="fromStreamLabel";
-        fromStreamLabel.innerHTML= "from: ";
-
-        fromStream= document.createElement("label");
-        fromStream.id ="fromStream";
-        fromStream.className = "fromStream";
-        fromStream.innerHTML = fromNameSt;
-
-        if(formHeading=="Filter Query")
-        {
-            filterLabel = document.createElement("label");
-            filterLabel.className = "filterLabel";
-            filterLabel.id = "filterLabel";
-            filterLabel.innerHTML = "Filter: ";
-
-            filterInput = document.createElement("input");
-            filterInput.id = "filterInput";
-            filterInput.className = "filterInput";
-            filterInput.innerHTML = "";
-        }
-
-        selectLabel= document.createElement("label");
-        selectLabel.className="selectLabel";
-        selectLabel.id="selectLabel";
-        selectLabel.innerHTML= "Select : ";
-
-        insertIntoLabel=document.createElement("label");
-        insertIntoLabel.className="insertIntoLabel";
-        insertIntoLabel.id="insertIntoLabel";
-        insertIntoLabel.innerHTML="insert into: ";
-
-        insertIntoStream=document.createElement("label");
-        insertIntoStream.className="insertIntoStream";
-        insertIntoStream.id="insertIntoStream";
-        insertIntoStream.innerHTML=intoNameSt;
-
-        queryFomButton=document.createElement("button");
-        queryFomButton.type="button";
-        queryFomButton.className="queryFormButton";
-        queryFomButton.id="queryFormButton";
-        queryFomButton.innerHTML="Submit Query";
-        queryFomButton.onclick = function () {
-            if(formHeading == "Pass-through Query")
-            {
-                getPassThroughQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
-            }
-            else if(formHeading == "Filter Query")
-            {
-                getFilterQueryData(elementID,fromNameSt,intoNameSt, fromStreamIndex,intoStreamIndex,streamType,defAttrNum);
-            }
-        };
-
-        queryFomCloseButton=document.createElement("button");
-        queryFomCloseButton.type="button";
-        queryFomCloseButton.className="queryFomCloseButton";
-        queryFomCloseButton.id="queryFomCloseButton";
-        queryFomCloseButton.innerHTML="Cancel";
-        queryFomCloseButton.onclick = function() {
-            closeForm();
-        };
-
-
-        queryDiv.appendChild(simpleQueryLabel);
-
-        //Row 1
-
-        var tr1 = document.createElement('tr');
-        var td1=document.createElement('td');
-        var td2=document.createElement('td');
-
-        td1.appendChild(simpleQueryName);
-        tr1.appendChild(td1);
-        td2.appendChild(queryNameInput);
-        tr1.appendChild(td2);
-        tableQueryForm.appendChild(tr1);
-
-        //Row 2
-
-        var tr2 = document.createElement('tr');
-        var td3=document.createElement('td');
-        var td4=document.createElement('td');
-
-        td3.appendChild(fromStreamLabel);
-        tr2.appendChild(td3);
-        td4.appendChild(fromStream);
-        tr2.appendChild(td4);
-        tableQueryForm.appendChild(tr2);
-
-        //Row 3
-
-        if(formHeading == "Filter Query") 
-        {
-            var tr3 = document.createElement('tr');
-            var td5 = document.createElement('td');
-            var td6 = document.createElement('td');
-
-            td5.appendChild(filterLabel);
-            tr3.appendChild(td5);
-            td6.appendChild(filterInput);
-            tr3.appendChild(td6);
-            tableQueryForm.appendChild(tr3);
-        }
-        //Row 4
-
-        var tr4 = document.createElement('tr');
-        var td7=document.createElement('td');
-
-        td7.appendChild(selectLabel);
-        tr4.appendChild(td7);
-        tableQueryForm.appendChild(tr4);
-
-        //Row 5
-        if(streamType=="import" || streamType=="export")
-        {
-            for (var f = 0; f < attrNumber; f++)
-            {
-                inputtxtName = document.createElement("input");
-                inputtxtName.className = "input" + f;
-                inputtxtName.id = "input" + f;
-
-                var aslblName = document.createElement("label");
-                aslblName.innerHTML = " as ";
-
-                inputlblName = document.createElement("label");
-                inputlblName.innerHTML = predefarr[streamInd][1][f];
-                inputlblName.className = "label" + f;
-                inputlblName.id = "label" + f;
-
-                var trName = document.createElement('tr');
-
-                var tdName1 = document.createElement('td');
-                tdName1.appendChild(inputtxtName);
-                trName.appendChild(tdName1);
-
-                var tdName2 = document.createElement('td');
-                tdName2.appendChild(aslblName);
-                trName.appendChild(tdName2);
-
-                var tdName3 = document.createElement('td');
-                tdName3.appendChild(inputlblName);
-                trName.appendChild(tdName3);
-
-                tableQueryForm.appendChild(trName);
-            }
-        }
-        else if(streamType=="defined")
-        {
-            for (var f =0; f<defAttrNum-1;f++)
-            {
-                    inputtxtName = document.createElement("input");
-                    inputtxtName.className = "input" + f;
-                    inputtxtName.id = "input" + f;
-
-                    var aslblName = document.createElement("label");
-                    aslblName.innerHTML = " as ";
-
-                    inputlblName = document.createElement("label");
-                    inputlblName.className = "label" + f;
-                    inputlblName.id = "label" + f;
-                    inputlblName.innerHTML = createdDefinedStreamArray[intoStreamIndex][2][f][0];
-                    var trName = document.createElement('tr');
-
-                    var tdName1 = document.createElement('td');
-                    tdName1.appendChild(inputtxtName);
-                    trName.appendChild(tdName1);
-
-                    var tdName2 = document.createElement('td');
-                    tdName2.appendChild(aslblName);
-                    trName.appendChild(tdName2);
-
-                    var tdName3 = document.createElement('td');
-                    tdName3.appendChild(inputlblName);
-                    trName.appendChild(tdName3);
-
-                    tableQueryForm.appendChild(trName);
-
-            }
-        }
-        else
-        {
-            for (var f =0; f<defAttrNum;f++)
-            {
-                inputtxtName = document.createElement("input");
-                inputtxtName.className = "input" + f;
-                inputtxtName.id = "input" + f;
-
-                var aslblName = document.createElement("label");
-                aslblName.innerHTML = " as ";
-
-                inputlblName = document.createElement("label");
-                inputlblName.className = "label" + f;
-                inputlblName.id = "label" + f;
-                inputlblName.innerHTML = createdWindowStreamArray[intoStreamIndex][4][f][0];
-                var trName = document.createElement('tr');
-
-                var tdName1 = document.createElement('td');
-                tdName1.appendChild(inputtxtName);
-                trName.appendChild(tdName1);
-
-                var tdName2 = document.createElement('td');
-                tdName2.appendChild(aslblName);
-                trName.appendChild(tdName2);
-
-                var tdName3 = document.createElement('td');
-                tdName3.appendChild(inputlblName);
-                trName.appendChild(tdName3);
-
-                tableQueryForm.appendChild(trName);
-
-            }
-        }
-
-        //Row attrnum+5
-
-
-        var tr8= document.createElement('tr');
-        var td17 = document.createElement('td');
-        var td18 = document.createElement('td');
-
-        td17.appendChild(insertIntoLabel);
-        tr8.appendChild(td17);
-        td18.appendChild(insertIntoStream);
-        tr8.appendChild(td18);
-        tableQueryForm.appendChild(tr8);
-
-        //Row 9
-
-
-        var tr9= document.createElement('tr');
-        var td19 = document.createElement('td');
-        var td20 = document.createElement('td');
-
-        td19.appendChild(queryFomButton);
-        tr9.appendChild(td19);
-        td20.appendChild(queryFomCloseButton);
-        tr9.appendChild(td20);
-        tableQueryForm.appendChild(tr9);
-
-
-        queryDiv.appendChild(tableQueryForm);
-
-        lot.appendChild(queryDiv);
-
-        $(".toolbox-titlex").show();
-        $(".panel").show();
-
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
