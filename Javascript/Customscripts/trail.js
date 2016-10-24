@@ -196,6 +196,8 @@
                       Stream element before it has been initialized
                     */
 
+                    $('#container').append(newAgent);
+
                     createStreamForm(newAgent, i, e,mouseTop,mouseLeft);
                     i++;    //Increment the Element ID for the next dropped Element
                     finalElementCount=i;
